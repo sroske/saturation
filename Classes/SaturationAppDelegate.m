@@ -12,15 +12,19 @@
 
 @synthesize window;
 
-
-- (void)applicationDidFinishLaunching:(UIApplication *)application {    
-
-    // Override point for customization after application launch
+- (void)applicationDidFinishLaunching:(UIApplication *)application 
+{
+	window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+	
+	controller = [[BGSMainViewController alloc] init];
+	[window addSubview:controller.view];
+	
     [window makeKeyAndVisible];
 }
 
 
-- (void)dealloc {
+- (void)dealloc 
+{
     [window release];
     [super dealloc];
 }

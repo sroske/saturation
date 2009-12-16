@@ -12,6 +12,11 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		A9A0F7FB10D8903100823BC9 /* BGSMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */; };
+		A9A0F80610D8910100823BC9 /* BGSCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F80510D8910100823BC9 /* BGSCircleView.m */; };
+		A9A0F80910D8911100823BC9 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F80810D8911100823BC9 /* RegexKitLite.m */; };
+		A9A0F80B10D8912D00823BC9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */; };
+		A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +29,15 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Saturation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Saturation_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Saturation-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Saturation-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		A9A0F7F910D8903100823BC9 /* BGSMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSMainViewController.h; sourceTree = "<group>"; };
+		A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSMainViewController.m; sourceTree = "<group>"; };
+		A9A0F80410D8910100823BC9 /* BGSCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSCircleView.h; sourceTree = "<group>"; };
+		A9A0F80510D8910100823BC9 /* BGSCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSCircleView.m; sourceTree = "<group>"; };
+		A9A0F80710D8911100823BC9 /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
+		A9A0F80810D8911100823BC9 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
+		A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A9A0F86910D8941A00823BC9 /* BGSKulerParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerParser.h; sourceTree = "<group>"; };
+		A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerParser.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,6 +48,7 @@
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
+				A9A0F80B10D8912D00823BC9 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +58,9 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A9A0F86E10D8952E00823BC9 /* Controllers */,
+				A9A0F86D10D8952A00823BC9 /* Views */,
+				A9A0F86C10D8952400823BC9 /* Helpers */,
 				1D3623240D0F684500981E51 /* SaturationAppDelegate.h */,
 				1D3623250D0F684500981E51 /* SaturationAppDelegate.m */,
 			);
@@ -89,11 +107,41 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A9A0F86C10D8952400823BC9 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				A9A0F80710D8911100823BC9 /* RegexKitLite.h */,
+				A9A0F80810D8911100823BC9 /* RegexKitLite.m */,
+				A9A0F86910D8941A00823BC9 /* BGSKulerParser.h */,
+				A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		A9A0F86D10D8952A00823BC9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A9A0F80410D8910100823BC9 /* BGSCircleView.h */,
+				A9A0F80510D8910100823BC9 /* BGSCircleView.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		A9A0F86E10D8952E00823BC9 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A9A0F7F910D8903100823BC9 /* BGSMainViewController.h */,
+				A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -150,6 +198,10 @@
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* SaturationAppDelegate.m in Sources */,
+				A9A0F7FB10D8903100823BC9 /* BGSMainViewController.m in Sources */,
+				A9A0F80610D8910100823BC9 /* BGSCircleView.m in Sources */,
+				A9A0F80910D8911100823BC9 /* RegexKitLite.m in Sources */,
+				A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,6 +242,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_LDFLAGS = "-licucore";
 				PREBINDING = NO;
 				SDKROOT = iphoneos3.0;
 			};

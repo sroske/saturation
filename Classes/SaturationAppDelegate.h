@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BGSMainViewController.h"
 
-@interface SaturationAppDelegate : NSObject <UIApplicationDelegate> {
+@interface SaturationAppDelegate : NSObject <UIApplicationDelegate> 
+{
     UIWindow *window;
+	BGSMainViewController *controller;
 }
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
+@property (nonatomic, retain) UIWindow *window;
 
 @end
 
