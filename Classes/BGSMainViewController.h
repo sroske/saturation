@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FontsAndColors.h"
 #import "BGSCircleView.h"
-#import "BGSKulerParser.h"
 
 #define ROWS		3
 #define COLS		2
@@ -16,9 +16,11 @@
 
 @interface BGSMainViewController : UIViewController 
 {
-	NSArray *colors;
+	NSDictionary *entry;
 }
 
-@property (nonatomic, retain) NSArray *colors;
+@property (nonatomic, retain) NSDictionary *entry;
+
+- (id)initWithEntry:(NSDictionary *)entryData;
 
 @end

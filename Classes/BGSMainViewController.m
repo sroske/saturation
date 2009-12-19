@@ -11,47 +11,35 @@
 
 @interface BGSMainViewController (Private)
 
-//- (void)randomKulerProfile;
-//- (UIColor *)colorForHex:(NSString *)hexColor;
+- (UIColor *)randomColor;
 
 @end
 
 
 @implementation BGSMainViewController
 
-@synthesize colors;
+@synthesize entry;
 
-- (NSArray *)colors
+- (id)initWithEntry:(NSDictionary *)entryData
 {
-	if (colors == nil)
+	if (self = [super init])
 	{
-		NSArray *array = [NSArray arrayWithObjects:[UIColor colorWithRed:247.0f/255.0f green:197.0f/255.0f blue:92.0f/255.0f alpha:1.0f], 
-						  [UIColor colorWithRed:255.0f/255.0f green:169.0f/255.0f blue:35.0f/255.0f alpha:1.0f], 
-						  [UIColor colorWithRed:218.0f/255.0f green:123.0f/255.0f blue:37.0f/255.0f alpha:1.0f],
-						  [UIColor colorWithRed:149.0f/255.0f green:89.0f/255.0f blue:64.0f/255.0f alpha:1.0f], nil];
-		[self setColors:array];
+		[self setEntry:entryData];
+		NSLog(@"themeTitle: %@", [self.entry objectForKey:@"themeTitle"]);
 	}
-	return colors;
-}
-
-- (UIColor *)randomColor
-{
-	int i = arc4random()%[self.colors count];
-	return [self.colors objectAtIndex:i];
+	return self;
 }
 
 
 - (void)loadView 
-{
-	//[self randomKulerProfile];
-	
+{	
 	CGRect frame = [[UIScreen mainScreen] bounds];
 	
 	UIView *newView = [[UIView alloc] initWithFrame:frame];
 	[newView setAutoresizesSubviews:YES];
 	[newView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
 	[newView sizeToFit];
-	[newView setBackgroundColor:[UIColor colorWithRed:17.0f/255.0f green:23.0f/255.0f blue:23.0f/255.0f alpha:1.0f]];
+	[newView setBackgroundColor:CC_BACKGROUND];
 	self.view = newView;
 	[newView release];
 	
@@ -67,18 +55,28 @@
 		[self.view addSubview:circle];
 		[circle release];
 	}
-	
-	
-	BGSKulerParser *parser = [[BGSKulerParser alloc] init];
-	NSArray *entries = [parser fetchEntriesFromURL:@"http://kuler-api.adobe.com/feeds/rss/get.cfm?timeSpan=30&listType=rating"];
-	NSLog(@"entries: %@", entries);
-	[parser release];
 }
 
 - (void)dealloc 
 {
-	[colors release];
+	[entry release];
     [super dealloc];
+}
+
+- (UIColor *)randomColor
+{
+	NSArray *swatches = [self.entry objectForKey:@"swatches"];
+	int i = arc4random()%[swatches count];
+	NSDictionary *swatch = [swatches objectAtIndex:i];
+	UIColor *color = [UIColor whiteColor];
+	if ([[swatch objectForKey:@"swatchColorMode"] isEqualToString:@"rgb"])
+	{
+		CGFloat r = [[swatch objectForKey:@"swatchChannel1"] floatValue];
+		CGFloat g = [[swatch objectForKey:@"swatchChannel2"] floatValue];
+		CGFloat b = [[swatch objectForKey:@"swatchChannel3"] floatValue];
+		color = [UIColor colorWithRed:r green:g blue:b alpha:1.0f];
+	}
+	return color;
 }
 
 - (void)dupeCircle:(BGSCircleView *)circle1

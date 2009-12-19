@@ -35,6 +35,7 @@
 		A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A9A0F86910D8941A00823BC9 /* BGSKulerParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerParser.h; sourceTree = "<group>"; };
 		A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerParser.m; sourceTree = "<group>"; };
+		A9BCCE9F10DC910200742013 /* FontsAndColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontsAndColors.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +61,7 @@
 				A9A0F86C10D8952400823BC9 /* Helpers */,
 				1D3623240D0F684500981E51 /* SaturationAppDelegate.h */,
 				1D3623250D0F684500981E51 /* SaturationAppDelegate.m */,
+				A9BCCE9F10DC910200742013 /* FontsAndColors.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
