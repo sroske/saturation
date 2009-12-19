@@ -21,6 +21,7 @@
 @synthesize titleLabel;
 @synthesize authorLabel;
 @synthesize closeButton;
+@synthesize colorStrip;
 
 - (UIButton *)closeButton
 {
@@ -51,10 +52,10 @@
 {
 	if (titleLabel == nil)
 	{
-		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(18.0f, 
-																 18.0f, 
+		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(12.0f, 
+																 0.0f, 
 																 480.0f-36.0f, 
-																 60.0f)];
+																 66.0f)];
 		[lbl setFont:CF_DETAIL_TITLE];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_BACKGROUND];
@@ -69,18 +70,33 @@
 {
 	if (authorLabel == nil)
 	{
-		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(18.0f, 
-																 70.0f, 
+		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(14.0f, 
+																 50.0f, 
 																 480.0f-36.0f, 
 																 30.0f)];
 		[lbl setFont:CF_DETAIL_AUTHOR];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:[UIColor clearColor]];
 		[lbl setText:[NSString stringWithFormat:@"by: %@", [[self.entry objectForKey:@"authorLabel"] lowercaseString]]];
 		[self setAuthorLabel:lbl];
 		[lbl release];
 	}
 	return authorLabel;
+}
+
+- (BGSSwatchStrip *)colorStrip
+{
+	if (colorStrip == nil)
+	{
+		BGSSwatchStrip *s = [[BGSSwatchStrip alloc] initWithFrame:CGRectMake(0.0f, 
+																			 92.0f, 
+																			 480.0f, 
+																			 10.0f) 
+													  andSwatches:[self.entry objectForKey:@"swatches"]];
+		[self setColorStrip:s];
+		[s release];
+	}
+	return colorStrip;
 }
 
 - (id)initWithEntry:(NSDictionary *)entryData
@@ -107,6 +123,7 @@
 	[self.view addSubview:self.titleLabel];
 	[self.view addSubview:self.authorLabel];
 	[self.view addSubview:self.closeButton];
+	[self.view addSubview:self.colorStrip];
 }
 
 
@@ -146,6 +163,7 @@
 	[entry release];
 	[titleLabel release];
 	[authorLabel release];
+	[colorStrip release];
     [super dealloc];
 }
 

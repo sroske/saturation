@@ -154,15 +154,7 @@
 	NSArray *swatches = [self.entry objectForKey:@"swatches"];
 	int i = arc4random()%[swatches count];
 	NSDictionary *swatch = [swatches objectAtIndex:i];
-	UIColor *color = [UIColor whiteColor];
-	if ([[swatch objectForKey:@"swatchColorMode"] isEqualToString:@"rgb"])
-	{
-		CGFloat r = [[swatch objectForKey:@"swatchChannel1"] floatValue];
-		CGFloat g = [[swatch objectForKey:@"swatchChannel2"] floatValue];
-		CGFloat b = [[swatch objectForKey:@"swatchChannel3"] floatValue];
-		color = [UIColor colorWithRed:r green:g blue:b alpha:1.0f];
-	}
-	return color;
+	return CC_FROM_SWATCH(swatch);
 }
 
 - (void)dupeCircle:(BGSCircleView *)circle1

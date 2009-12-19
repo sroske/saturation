@@ -25,6 +25,8 @@
 		A9EFADD110DCAB6D005CCAA3 /* icon-favorite-unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCD10DCAB6D005CCAA3 /* icon-favorite-unselected.png */; };
 		A9EFADF710DD1F52005CCAA3 /* button-gear.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADF510DD1F52005CCAA3 /* button-gear.png */; };
 		A9EFADF810DD1F52005CCAA3 /* button-info.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADF610DD1F52005CCAA3 /* button-info.png */; };
+		A9EFAE6C10DD2508005CCAA3 /* BGSSwatchColor.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFAE6B10DD2508005CCAA3 /* BGSSwatchColor.m */; };
+		A9EFAEA110DD2D59005CCAA3 /* BGSSwatchStrip.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFAEA010DD2D59005CCAA3 /* BGSSwatchStrip.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +57,10 @@
 		A9EFADCD10DCAB6D005CCAA3 /* icon-favorite-unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-favorite-unselected.png"; sourceTree = "<group>"; };
 		A9EFADF510DD1F52005CCAA3 /* button-gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-gear.png"; sourceTree = "<group>"; };
 		A9EFADF610DD1F52005CCAA3 /* button-info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-info.png"; sourceTree = "<group>"; };
+		A9EFAE6A10DD2508005CCAA3 /* BGSSwatchColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSwatchColor.h; sourceTree = "<group>"; };
+		A9EFAE6B10DD2508005CCAA3 /* BGSSwatchColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSwatchColor.m; sourceTree = "<group>"; };
+		A9EFAE9F10DD2D59005CCAA3 /* BGSSwatchStrip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSwatchStrip.h; sourceTree = "<group>"; };
+		A9EFAEA010DD2D59005CCAA3 /* BGSSwatchStrip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSwatchStrip.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +155,10 @@
 			children = (
 				A9A0F80410D8910100823BC9 /* BGSCircleView.h */,
 				A9A0F80510D8910100823BC9 /* BGSCircleView.m */,
+				A9EFAE6A10DD2508005CCAA3 /* BGSSwatchColor.h */,
+				A9EFAE6B10DD2508005CCAA3 /* BGSSwatchColor.m */,
+				A9EFAE9F10DD2D59005CCAA3 /* BGSSwatchStrip.h */,
+				A9EFAEA010DD2D59005CCAA3 /* BGSSwatchStrip.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -245,6 +255,8 @@
 				A9A0F80610D8910100823BC9 /* BGSCircleView.m in Sources */,
 				A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */,
 				A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */,
+				A9EFAE6C10DD2508005CCAA3 /* BGSSwatchColor.m in Sources */,
+				A9EFAEA110DD2D59005CCAA3 /* BGSSwatchStrip.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
