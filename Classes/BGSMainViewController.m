@@ -12,6 +12,7 @@
 @interface BGSMainViewController (Private)
 
 - (UIColor *)randomColor;
+- (void)showSettings:(id)sender;
 - (void)showDetailView:(id)sender;
 
 @end
@@ -21,6 +22,7 @@
 
 @synthesize circleView;
 @synthesize entry;
+@synthesize settingsButton;
 @synthesize infoButton;
 
 - (UIView *)circleView
@@ -37,12 +39,45 @@
 	return circleView;
 }
 
+- (UIButton *)settingsButton
+{
+	if (settingsButton == nil)
+	{
+		UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+		[btn setShowsTouchWhenHighlighted:YES];
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"button-gear.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		[btn setImage:i forState:UIControlStateNormal];
+		[btn addTarget:self action:@selector(showSettings:) forControlEvents:UIControlEventTouchUpInside];
+		[btn setFrame:CGRectMake(10.0f, 
+								 self.view.bounds.size.height-i.size.height-10.0f, 
+								 i.size.width, 
+								 i.size.height)];
+		[self setSettingsButton:btn];
+		[btn release];
+	}
+	return settingsButton;
+}
+
+- (void)showSettings:(id)sender
+{
+	NSLog(@"show settings");
+}
+
 - (UIButton *)infoButton
 {
 	if (infoButton == nil)
 	{
-		UIButton *btn = [UIButton buttonWithType:UIButtonTypeInfoLight];
-		[btn addTarget:self action:@selector(showDetailView:) forControlEvents:UIControlEventTouchDown];
+		UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+		[btn setShowsTouchWhenHighlighted:YES];
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"button-info.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		[btn setImage:i forState:UIControlStateNormal];
+		[btn addTarget:self action:@selector(showDetailView:) forControlEvents:UIControlEventTouchUpInside];
+		[btn setFrame:CGRectMake(self.view.bounds.size.width-i.size.width-10.0f, 
+								 self.view.bounds.size.height-i.size.height-10.0f, 
+								 i.size.width, 
+								 i.size.height)];
 		[self setInfoButton:btn];
 		[btn release];
 	}
@@ -51,7 +86,6 @@
 
 - (void)showDetailView:(id)sender
 {
-	NSLog(@"showDetailView");
 	BGSDetailViewController *controller = [[BGSDetailViewController alloc] initWithEntry:self.entry];
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
@@ -70,7 +104,6 @@
 - (void)loadView 
 {	
 	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
-	NSLog(@"frame: w: %f, h: %f", frame.size.width, frame.size.height);
 	
 	UIView *v = [[UIView alloc] initWithFrame:frame];
 	[v setBackgroundColor:CC_BACKGROUND];
@@ -81,6 +114,7 @@
 	[v release];
 	
 	[self.view addSubview:self.circleView];
+	[self.view addSubview:self.settingsButton];
 	[self.view addSubview:self.infoButton];
 	
 	for (int i = 0; i < ROWS*COLS; i++)
@@ -112,7 +146,6 @@
 {
 	[circleView release];
 	[entry release];
-	[infoButton release];
     [super dealloc];
 }
 

@@ -8,12 +8,44 @@
 
 #import "BGSDetailViewController.h"
 
+@interface BGSDetailViewController (Private)
+
+- (void)close:(id)sender;
+
+@end
+
 
 @implementation BGSDetailViewController
 
 @synthesize entry;
 @synthesize titleLabel;
 @synthesize authorLabel;
+@synthesize closeButton;
+
+- (UIButton *)closeButton
+{
+	if (closeButton == nil)
+	{
+		UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+		[btn setShowsTouchWhenHighlighted:YES];
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"button-close.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		[btn setImage:i forState:UIControlStateNormal];
+		[btn addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
+		[btn setFrame:CGRectMake(self.view.bounds.size.width-i.size.width-10.0f, 
+								 10.0f, 
+								 i.size.width, 
+								 i.size.height)];
+		[self setCloseButton:btn];
+		[btn release];
+	}
+	return closeButton;
+}
+
+- (void)close:(id)sender
+{
+	[self.navigationController popViewControllerAnimated:YES];
+}
 
 - (UILabel *)titleLabel
 {
@@ -74,6 +106,7 @@
 	
 	[self.view addSubview:self.titleLabel];
 	[self.view addSubview:self.authorLabel];
+	[self.view addSubview:self.closeButton];
 }
 
 

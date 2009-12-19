@@ -19,11 +19,13 @@
 {
 	UIView *circleView;
 	NSDictionary *entry;
+	UIButton *settingsButton;
 	UIButton *infoButton;
 }
 
 @property (nonatomic, retain) UIView *circleView;
 @property (nonatomic, retain) NSDictionary *entry;
+@property (nonatomic, retain) UIButton *settingsButton;
 @property (nonatomic, retain) UIButton *infoButton;
 
 - (id)initWithEntry:(NSDictionary *)entryData;

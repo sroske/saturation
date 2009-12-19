@@ -14,11 +14,13 @@
 	NSDictionary *entry;
 	UILabel *titleLabel;
 	UILabel *authorLabel;
+	UIButton *closeButton;
 }
 
 @property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) UILabel *authorLabel;
+@property (nonatomic, retain) UIButton *closeButton;
 
 - (id)initWithEntry:(NSDictionary *)entryData;
 

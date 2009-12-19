@@ -19,7 +19,12 @@
 		A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */; };
 		A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACD510DC9FE4005CCAA3 /* button-close.png */; };
 		A9EFACF610DCA0ED005CCAA3 /* NOTES in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACF510DCA0ED005CCAA3 /* NOTES */; };
-		A9EFAD3D10DCA5CF005CCAA3 /* BGSCloseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFAD3C10DCA5CF005CCAA3 /* BGSCloseButton.m */; };
+		A9EFADCE10DCAB6D005CCAA3 /* button-stretch-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCA10DCAB6D005CCAA3 /* button-stretch-background.png */; };
+		A9EFADCF10DCAB6D005CCAA3 /* icon-email.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCB10DCAB6D005CCAA3 /* icon-email.png */; };
+		A9EFADD010DCAB6D005CCAA3 /* icon-favorite-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCC10DCAB6D005CCAA3 /* icon-favorite-selected.png */; };
+		A9EFADD110DCAB6D005CCAA3 /* icon-favorite-unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCD10DCAB6D005CCAA3 /* icon-favorite-unselected.png */; };
+		A9EFADF710DD1F52005CCAA3 /* button-gear.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADF510DD1F52005CCAA3 /* button-gear.png */; };
+		A9EFADF810DD1F52005CCAA3 /* button-info.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADF610DD1F52005CCAA3 /* button-info.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,8 +49,12 @@
 		A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSDetailViewController.m; sourceTree = "<group>"; };
 		A9EFACD510DC9FE4005CCAA3 /* button-close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-close.png"; sourceTree = "<group>"; };
 		A9EFACF510DCA0ED005CCAA3 /* NOTES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTES; sourceTree = "<group>"; };
-		A9EFAD3B10DCA5CF005CCAA3 /* BGSCloseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSCloseButton.h; sourceTree = "<group>"; };
-		A9EFAD3C10DCA5CF005CCAA3 /* BGSCloseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSCloseButton.m; sourceTree = "<group>"; };
+		A9EFADCA10DCAB6D005CCAA3 /* button-stretch-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-stretch-background.png"; sourceTree = "<group>"; };
+		A9EFADCB10DCAB6D005CCAA3 /* icon-email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-email.png"; sourceTree = "<group>"; };
+		A9EFADCC10DCAB6D005CCAA3 /* icon-favorite-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-favorite-selected.png"; sourceTree = "<group>"; };
+		A9EFADCD10DCAB6D005CCAA3 /* icon-favorite-unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-favorite-unselected.png"; sourceTree = "<group>"; };
+		A9EFADF510DD1F52005CCAA3 /* button-gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-gear.png"; sourceTree = "<group>"; };
+		A9EFADF610DD1F52005CCAA3 /* button-info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-info.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,7 +75,6 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				A9EFAD3A10DCA5B7005CCAA3 /* Controls */,
 				A9A0F86E10D8952E00823BC9 /* Controllers */,
 				A9A0F86D10D8952A00823BC9 /* Views */,
 				A9A0F86C10D8952400823BC9 /* Helpers */,
@@ -159,20 +167,17 @@
 		A9EFACD410DC9FE4005CCAA3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A9EFADF510DD1F52005CCAA3 /* button-gear.png */,
+				A9EFADF610DD1F52005CCAA3 /* button-info.png */,
+				A9EFADCA10DCAB6D005CCAA3 /* button-stretch-background.png */,
+				A9EFADCB10DCAB6D005CCAA3 /* icon-email.png */,
+				A9EFADCC10DCAB6D005CCAA3 /* icon-favorite-selected.png */,
+				A9EFADCD10DCAB6D005CCAA3 /* icon-favorite-unselected.png */,
 				A9EFACD510DC9FE4005CCAA3 /* button-close.png */,
 			);
 			name = Images;
 			path = ../saturation/Assets/Optimized;
 			sourceTree = SOURCE_ROOT;
-		};
-		A9EFAD3A10DCA5B7005CCAA3 /* Controls */ = {
-			isa = PBXGroup;
-			children = (
-				A9EFAD3B10DCA5CF005CCAA3 /* BGSCloseButton.h */,
-				A9EFAD3C10DCA5CF005CCAA3 /* BGSCloseButton.m */,
-			);
-			name = Controls;
-			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -218,6 +223,12 @@
 			files = (
 				A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */,
 				A9EFACF610DCA0ED005CCAA3 /* NOTES in Resources */,
+				A9EFADCE10DCAB6D005CCAA3 /* button-stretch-background.png in Resources */,
+				A9EFADCF10DCAB6D005CCAA3 /* icon-email.png in Resources */,
+				A9EFADD010DCAB6D005CCAA3 /* icon-favorite-selected.png in Resources */,
+				A9EFADD110DCAB6D005CCAA3 /* icon-favorite-unselected.png in Resources */,
+				A9EFADF710DD1F52005CCAA3 /* button-gear.png in Resources */,
+				A9EFADF810DD1F52005CCAA3 /* button-info.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,7 +245,6 @@
 				A9A0F80610D8910100823BC9 /* BGSCircleView.m in Sources */,
 				A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */,
 				A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */,
-				A9EFAD3D10DCA5CF005CCAA3 /* BGSCloseButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

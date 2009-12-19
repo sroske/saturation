@@ -27,5 +27,7 @@
 
 - (void)fetchNewEntries;
 
+- (void)showDetailFor:(NSDictionary *)entryData;
+
 @end
 

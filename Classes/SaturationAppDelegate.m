@@ -51,22 +51,6 @@
 	return entries;
 }
 
-- (void)fetchNewEntries
-{
-	BGSKulerParser *parser = [[BGSKulerParser alloc] init];
-	NSArray *e = [parser fetchEntriesFromURL:FEED_URL];
-	[self setEntries:e];
-	[parser release];
-	
-	[self.entries writeToFile:self.path atomically:YES];
-}
-
-- (NSDictionary *)randomEntry
-{
-	int i = arc4random()%[self.entries count];
-	return [self.entries objectAtIndex:i];
-}
-
 - (UIWindow *)window
 {
 	if (window == nil)
@@ -93,7 +77,8 @@
 {
 	if (mainController == nil)
 	{
-		BGSMainViewController *c = [[BGSMainViewController alloc] initWithEntry:[self.entries objectAtIndex:0]];
+		int i = arc4random()%[self.entries count];
+		BGSMainViewController *c = [[BGSMainViewController alloc] initWithEntry:[self.entries objectAtIndex:i]];
 		[self setMainController:c];
 		[c release];
 	}
@@ -114,6 +99,27 @@
 	[navController release];
 	[mainController release];
     [super dealloc];
+}
+
+- (void)fetchNewEntries
+{
+	BGSKulerParser *parser = [[BGSKulerParser alloc] init];
+	NSArray *e = [parser fetchEntriesFromURL:FEED_URL];
+	[self setEntries:e];
+	[parser release];
+	
+	[self.entries writeToFile:self.path atomically:YES];
+}
+
+- (NSDictionary *)randomEntry
+{
+	int i = arc4random()%[self.entries count];
+	return [self.entries objectAtIndex:i];
+}
+
+- (void)showDetailFor:(NSDictionary *)entryData
+{
+	// TODO
 }
 
 @end
