@@ -10,168 +10,130 @@
 
 @interface BGSKulerParser (Private)
 
-- (void)parseXMLFileAtURL:(NSString *)URL;
+- (UIColor *)colorForHex:(NSString *)hexColor;
 
 @end
 
 
 @implementation BGSKulerParser
 
-- (id)init
+@synthesize xml;
+@synthesize currentElement;
+
+@synthesize entries;
+@synthesize entry;
+
+@synthesize swatch;
+
+- (NSMutableArray *)entries
 {
-	if (self = [super init])
+	if (entries == nil)
 	{
-		NSString * path = @"http://kuler-api.adobe.com/feeds/rss/get.cfm?timeSpan=30&listType=rating";
-		[self parseXMLFileAtURL:path];
+		NSMutableArray *a = [[NSMutableArray alloc] init];
+		[self setEntries:a];
+		[a release];
 	}
-	return self;
+	return entries;
 }
 
-- (void)parseXMLFileAtURL:(NSString *)URL {
-	stories = [[NSMutableArray alloc] init];
-	
-	//you must then convert the path to a proper NSURL or it won't work
-	NSURL *xmlURL = [NSURL URLWithString:URL];
-	
-	// here, for some reason you have to use NSClassFromString when trying to alloc NSXMLParser, otherwise you will get an object not found error
-	// this may be necessary only for the toolchain
-	rssParser = [[NSXMLParser alloc] initWithContentsOfURL:xmlURL];
-	
-	// Set self as the delegate of the parser so that it will receive the parser delegate methods callbacks.
-	[rssParser setDelegate:self];
-	
-	// Depending on the XML document you're parsing, you may want to enable these features of NSXMLParser.
-	[rssParser setShouldProcessNamespaces:NO];
-	[rssParser setShouldReportNamespacePrefixes:NO];
-	[rssParser setShouldResolveExternalEntities:NO];
-	
-	[rssParser parse];
-}
-
-- (void)parserDidStartDocument:(NSXMLParser *)parser {
-	NSLog(@"found file and started parsing");
-}
-
-- (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
-	NSString * errorString = [NSString stringWithFormat:@"Unable to download story feed from web site (Error code %i )", [parseError code]];
-	NSLog(@"error parsing XML: %@", errorString);
-	
-	UIAlertView * errorAlert = [[UIAlertView alloc] initWithTitle:@"Error loading content" message:errorString delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-	[errorAlert show];
-}
-
-- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict{
-	//NSLog(@"found this element: %@", elementName);
-	currentElement = [elementName copy];
-	
-	if ([elementName isEqualToString:@"item"]) {
-		// clear out our story item caches...
-		item = [[NSMutableDictionary alloc] init];
-		currentTitle = [[NSMutableString alloc] init];
-		currentDate = [[NSMutableString alloc] init];
-		currentSummary = [[NSMutableString alloc] init];
-		currentLink = [[NSMutableString alloc] init];
+- (NSMutableDictionary *)entry
+{
+	if (entry == nil)
+	{
+		NSMutableDictionary *d = [[NSMutableDictionary alloc] init];
+		[self setEntry:d];
+		[d release];
 	}
+	return entry;
 }
 
-- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName{
+- (NSArray *)fetchEntriesFromURL:(NSString *)url
+{
+	NSXMLParser *p = [[NSXMLParser alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
+	[p setDelegate:self];
+	[p setShouldProcessNamespaces:NO];
+	[p setShouldReportNamespacePrefixes:NO];
+	[p setShouldResolveExternalEntities:NO];
+	[self setXml:p];
+	[p release];
 	
-	//NSLog(@"ended element: %@", elementName);
-	if ([elementName isEqualToString:@"item"]) {
-		// save values to an item, then store that item into the array...
-		[item setObject:currentTitle forKey:@"title"];
-		[item setObject:currentLink forKey:@"link"];
-		[item setObject:currentSummary forKey:@"summary"];
-		[item setObject:currentDate forKey:@"date"];
+	[self.xml parse];
+	
+	return [[self.entries copy] autorelease];
+}
+
+- (void)parserDidStartDocument:(NSXMLParser *)parser 
+{
+	// nothing
+}
+
+- (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError 
+{
+	NSLog(@"error parsing XML: %@", [NSString stringWithFormat:@"Unable to download story feed from web site (Error code %i )", [parseError code]]);
+}
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict
+{
+	if ([elementName isEqualToString:@"kuler:swatch"])
+	{
+		NSMutableDictionary *d = [[NSMutableDictionary alloc] init];
+		[self setSwatch:d];
+		[d release];
+	}
+	else if ([elementName isEqualToString:@"item"]) 
+	{
+		self.entry = nil;
 		
-		[stories addObject:[item copy]];
-		NSLog(@"adding story: %@", currentTitle);
+		NSMutableArray *a = [[NSMutableArray alloc] init];
+		[self.entry setValue:a forKey:@"swatches"];
+		[a release];
+	}
+	[self setCurrentElement:elementName];
+}
+
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName 
+{	
+	if ([elementName isEqualToString:@"kuler:swatch"])
+	{
+		NSMutableArray *swatches = [self.entry objectForKey:@"swatches"];
+		[swatches addObject:self.swatch];
+		[self setSwatch:nil];
+	}
+	else if ([elementName isEqualToString:@"item"]) 
+	{
+		[self.entries addObject:[self.entry copy]];
 	}
 }
 
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string{
-	NSLog(@"found characters in element '%@': %@", currentElement, string);
-	// save the characters for the current item...
-	if ([currentElement isEqualToString:@"title"]) {
-		[currentTitle appendString:string];
-	} else if ([currentElement isEqualToString:@"link"]) {
-		[currentLink appendString:string];
-	} else if ([currentElement isEqualToString:@"description"]) {
-		[currentSummary appendString:string];
-	} else if ([currentElement isEqualToString:@"pubDate"]) {
-		[currentDate appendString:string];
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string 
+{	
+	if ([self.currentElement hasPrefix:@"kuler:"])
+	{
+		NSMutableString *key = [[NSMutableString alloc] initWithString:self.currentElement];
+		[key replaceOccurrencesOfString:@"kuler:" withString:@"" options:0 range:NSMakeRange(0, [key length])];
+		
+		if (self.swatch != nil)
+			[self.swatch setValue:string forKey:key];
+		else 
+			[self.entry setValue:string forKey:key];
+		
+		[key release];
 	}
 }
 
-- (void)parserDidEndDocument:(NSXMLParser *)parser {
-	NSLog(@"all done!");
-	NSLog(@"stories array has %d items", [stories count]);
-	NSLog(@"stories: %@", stories);
+- (void)parserDidEndDocument:(NSXMLParser *)parser 
+{
+	// nothing
 }
-
 
 - (void)dealloc
 {
-	[rssParser release];
-	[stories release];
-	[item release];
+	[xml release];
 	[currentElement release];
-	[currentTitle release];
-	[currentDate release];
-	[currentSummary release];
-	[currentLink release];
+	[entries release];
+	[entry release];
+	[swatch release];
 	[super dealloc];
-}
-
-/*
- 
- NSString *description = [profile objectForKey:@"description"];
- NSString *rx = @"Hex:\\s([A-Z0-9\\,\\s]+)";
- NSString *matchedString = [[description stringByMatching:rx capture:1L] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
- NSArray  *splitArray = [matchedString componentsSeparatedByRegex:@"\\,\\s"];
- 
- NSMutableArray *results = [[NSMutableArray alloc] init];
- for (NSString *hex in splitArray) 
- {
- UIColor *color = [self colorForHex:hex];
- [results addObject:color];
- }
-*/
-
-
-- (UIColor *) colorForHex:(NSString *)hexColor 
-{
-	hexColor = [[hexColor stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];  
-    if ([hexColor length] < 6) 
-		return [UIColor blackColor];  
-    if ([hexColor hasPrefix:@"#"]) 
-		hexColor = [hexColor substringFromIndex:1];  
-    if ([hexColor length] != 6) 
-		return [UIColor blackColor];  
-	
-    // Separate into r, g, b substrings  
-    NSRange range;  
-    range.location = 0;  
-    range.length = 2; 
-	
-    NSString *rString = [hexColor substringWithRange:range];  
-	
-    range.location = 2;  
-    NSString *gString = [hexColor substringWithRange:range];  
-	
-    range.location = 4;  
-    NSString *bString = [hexColor substringWithRange:range];  
-	
-    // Scan values  
-    unsigned int r, g, b;  
-    [[NSScanner scannerWithString:rString] scanHexInt:&r];  
-    [[NSScanner scannerWithString:gString] scanHexInt:&g];  
-    [[NSScanner scannerWithString:bString] scanHexInt:&b];  
-	
-    return [UIColor colorWithRed:((float) r / 255.0f)  
-                           green:((float) g / 255.0f)  
-                            blue:((float) b / 255.0f)  
-                           alpha:1.0f];
 }
 
 @end

@@ -7,18 +7,27 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RegexKitLite.h"
 
 @interface BGSKulerParser : NSObject 
 {
-	NSXMLParser *rssParser;
-	NSMutableArray *stories;
-	NSMutableDictionary *item;
-	NSMutableString *currentElement;
-	NSMutableString *currentTitle;
-	NSMutableString *currentDate;
-	NSMutableString *currentSummary;
-	NSMutableString *currentLink;
+	NSXMLParser *xml;
+	NSString *currentElement;
+	
+	NSMutableArray *entries;
+	NSMutableDictionary *entry;
+	
+	NSMutableDictionary *swatch;
 }
+
+@property (nonatomic, retain) NSXMLParser *xml;
+@property (nonatomic, copy) NSString *currentElement;
+
+@property (nonatomic, retain) NSMutableArray *entries;
+@property (nonatomic, retain) NSMutableDictionary *entry;
+
+@property (nonatomic, retain) NSMutableDictionary *swatch;
+
+
+- (NSArray *)fetchEntriesFromURL:(NSString *)url;
 
 @end

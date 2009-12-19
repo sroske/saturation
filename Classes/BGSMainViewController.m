@@ -40,94 +40,6 @@
 	return [self.colors objectAtIndex:i];
 }
 
-/*
-- (void)randomKulerProfile 
-{
-    NSMutableArray *entries = [[NSMutableArray alloc] init];
-	NSURL *url = [NSURL URLWithString:@"http://kuler-api.adobe.com/feeds/rss/get.cfm?timeSpan=30&listType=rating"];
-    //NSURL *url = [NSURL URLWithString:@"http://kuler-api.adobe.com/feeds/rss/get.cfm?timeSpan=30&listType=random"];
-    CXMLDocument *doc = [[CXMLDocument alloc] initWithContentsOfURL:url options:0 error:nil];
-    NSArray *nodes = [doc nodesForXPath:@"//item" error:nil];
-    for (CXMLElement *element in nodes) 
-	{
-        NSMutableDictionary *item = [[NSMutableDictionary alloc] init];
-        for(int i = 0; i < [element childCount]; i++) 
-		{
-			NSString *key = [[element childAtIndex:i] name];
-			NSString *val = [[element childAtIndex:i] stringValue];
-			if (val != nil) 
-			{
-				val = [val stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-				[item setObject:val forKey:key];
-			}
-        }
-        [entries addObject:[item copy]];
-		[item release];
-    }
-	[doc release];
-	
-	// pluck the first profile off the random stack
-	NSLog(@"count; %i", [entries count]);
-	int randomIndex = arc4random()%[entries count];
-	NSLog(@"randomIndex: %i", randomIndex);
-	NSMutableDictionary *profile = [entries objectAtIndex:randomIndex];
-	NSLog(@"profile: %@", profile);
-	NSString *description = [profile objectForKey:@"description"];
-	NSString *rx = @"Hex:\\s([A-Z0-9\\,\\s]+)";
-	NSString *matchedString = [[description stringByMatching:rx capture:1L] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-	NSArray  *splitArray = [matchedString componentsSeparatedByRegex:@"\\,\\s"];
-	
-	NSMutableArray *results = [[NSMutableArray alloc] init];
-	for (NSString *hex in splitArray) 
-	{
-		UIColor *color = [self colorForHex:hex];
-		[results addObject:color];
-	}
-	
-	[self setBgColor:[results objectAtIndex:0]];
-	[results removeObjectAtIndex:0];
-	
-	[self setColorChoices:results];
-	[results release];
-	
-	[entries release];
-}
-
-- (UIColor *) colorForHex:(NSString *)hexColor 
-{
-	hexColor = [[hexColor stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];  
-    if ([hexColor length] < 6) 
-		return [UIColor blackColor];  
-    if ([hexColor hasPrefix:@"#"]) 
-		hexColor = [hexColor substringFromIndex:1];  
-    if ([hexColor length] != 6) 
-		return [UIColor blackColor];  
-	
-    // Separate into r, g, b substrings  
-    NSRange range;  
-    range.location = 0;  
-    range.length = 2; 
-	
-    NSString *rString = [hexColor substringWithRange:range];  
-	
-    range.location = 2;  
-    NSString *gString = [hexColor substringWithRange:range];  
-	
-    range.location = 4;  
-    NSString *bString = [hexColor substringWithRange:range];  
-	
-    // Scan values  
-    unsigned int r, g, b;  
-    [[NSScanner scannerWithString:rString] scanHexInt:&r];  
-    [[NSScanner scannerWithString:gString] scanHexInt:&g];  
-    [[NSScanner scannerWithString:bString] scanHexInt:&b];  
-	
-    return [UIColor colorWithRed:((float) r / 255.0f)  
-                           green:((float) g / 255.0f)  
-                            blue:((float) b / 255.0f)  
-                           alpha:1.0f];
-}
-*/
 
 - (void)loadView 
 {
@@ -158,6 +70,8 @@
 	
 	
 	BGSKulerParser *parser = [[BGSKulerParser alloc] init];
+	NSArray *entries = [parser fetchEntriesFromURL:@"http://kuler-api.adobe.com/feeds/rss/get.cfm?timeSpan=30&listType=rating"];
+	NSLog(@"entries: %@", entries);
 	[parser release];
 }
 
