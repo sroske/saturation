@@ -15,12 +15,14 @@
 	NSString *path;
 	NSArray *entries;
     UIWindow *window;
+	UINavigationController *navController;
 	BGSMainViewController *mainController;
 }
 
 @property (nonatomic, retain) NSString *path;
 @property (nonatomic, retain) NSArray *entries;
 @property (nonatomic, retain) UIWindow *window;
+@property (nonatomic, retain) UINavigationController *navController;
 @property (nonatomic, retain) BGSMainViewController *mainController;
 
 - (void)fetchNewEntries;

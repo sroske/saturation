@@ -12,13 +12,50 @@
 @interface BGSMainViewController (Private)
 
 - (UIColor *)randomColor;
+- (void)showDetailView:(id)sender;
 
 @end
 
 
 @implementation BGSMainViewController
 
+@synthesize circleView;
 @synthesize entry;
+@synthesize infoButton;
+
+- (UIView *)circleView
+{
+	if (circleView == nil)
+	{
+		UIView *v = [[UIView alloc] initWithFrame:self.view.bounds];
+		[v setAutoresizesSubviews:YES];
+		[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+		[v sizeToFit];
+		[self setCircleView:v];
+		[v release];
+	}
+	return circleView;
+}
+
+- (UIButton *)infoButton
+{
+	if (infoButton == nil)
+	{
+		UIButton *btn = [UIButton buttonWithType:UIButtonTypeInfoLight];
+		[btn addTarget:self action:@selector(showDetailView:) forControlEvents:UIControlEventTouchDown];
+		[self setInfoButton:btn];
+		[btn release];
+	}
+	return infoButton;
+}
+
+- (void)showDetailView:(id)sender
+{
+	NSLog(@"showDetailView");
+	BGSDetailViewController *controller = [[BGSDetailViewController alloc] initWithEntry:self.entry];
+	[self.navigationController pushViewController:controller animated:YES];
+	[controller release];
+}
 
 - (id)initWithEntry:(NSDictionary *)entryData
 {
@@ -32,15 +69,19 @@
 
 - (void)loadView 
 {	
-	CGRect frame = [[UIScreen mainScreen] bounds];
+	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
+	NSLog(@"frame: w: %f, h: %f", frame.size.width, frame.size.height);
 	
-	UIView *newView = [[UIView alloc] initWithFrame:frame];
-	[newView setAutoresizesSubviews:YES];
-	[newView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-	[newView sizeToFit];
-	[newView setBackgroundColor:CC_BACKGROUND];
-	self.view = newView;
-	[newView release];
+	UIView *v = [[UIView alloc] initWithFrame:frame];
+	[v setBackgroundColor:CC_BACKGROUND];
+	[v setAutoresizesSubviews:YES];
+	[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+	[v sizeToFit];
+	self.view = v;
+	[v release];
+	
+	[self.view addSubview:self.circleView];
+	[self.view addSubview:self.infoButton];
 	
 	for (int i = 0; i < ROWS*COLS; i++)
 	{
@@ -51,14 +92,27 @@
 																				frame.size.width/COLS, 
 																				frame.size.height/ROWS)];
 		[circle setColor:[self randomColor]];
-		[self.view addSubview:circle];
+		[self.circleView addSubview:circle];
 		[circle release];
 	}
 }
 
+- (void)viewWillAppear:(BOOL)animated 
+{
+	[self.navigationController setNavigationBarHidden:YES animated:animated];
+    [super viewWillAppear:animated];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
+    return (interfaceOrientation == UIInterfaceOrientationLandscapeRight);
+}
+
 - (void)dealloc 
 {
+	[circleView release];
 	[entry release];
+	[infoButton release];
     [super dealloc];
 }
 
@@ -88,17 +142,17 @@
 	BGSCircleView *circle2 = [[BGSCircleView alloc] initWithFrame:smallerRect];
 	[circle2 setColor:circle1.color];
 	[circle2 setNewColor:[self randomColor]];
-	[self.view addSubview:circle2];
+	[self.circleView addSubview:circle2];
 	
 	BGSCircleView *circle3 = [[BGSCircleView alloc] initWithFrame:smallerRect];
 	[circle3 setColor:circle1.color];
 	[circle3 setNewColor:[self randomColor]];
-	[self.view addSubview:circle3];
+	[self.circleView addSubview:circle3];
 	
 	BGSCircleView *circle4 = [[BGSCircleView alloc] initWithFrame:smallerRect];
 	[circle4 setColor:circle1.color];
 	[circle4 setNewColor:[self randomColor]];
-	[self.view addSubview:circle4];
+	[self.circleView addSubview:circle4];
 	
 	CGRect original = circle1.frame;
 	
@@ -153,6 +207,7 @@
 				[self dupeCircle:(BGSCircleView *)[touch view]];
 		}		
 	}
+	[super touchesBegan:touches withEvent:event];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
@@ -166,8 +221,9 @@
 			BGSCircleView *cv = (BGSCircleView *)v;
 			if (!cv.animating)
 				[self dupeCircle:cv];
-		}		
+		}
 	}
+	[super touchesMoved:touches withEvent:event];
 }
 
 @end

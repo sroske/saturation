@@ -16,6 +16,10 @@
 		A9A0F80610D8910100823BC9 /* BGSCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F80510D8910100823BC9 /* BGSCircleView.m */; };
 		A9A0F80B10D8912D00823BC9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */; };
 		A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */; };
+		A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */; };
+		A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACD510DC9FE4005CCAA3 /* button-close.png */; };
+		A9EFACF610DCA0ED005CCAA3 /* NOTES in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACF510DCA0ED005CCAA3 /* NOTES */; };
+		A9EFAD3D10DCA5CF005CCAA3 /* BGSCloseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFAD3C10DCA5CF005CCAA3 /* BGSCloseButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +40,12 @@
 		A9A0F86910D8941A00823BC9 /* BGSKulerParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerParser.h; sourceTree = "<group>"; };
 		A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerParser.m; sourceTree = "<group>"; };
 		A9BCCE9F10DC910200742013 /* FontsAndColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontsAndColors.h; sourceTree = "<group>"; };
+		A9EFACCB10DC9A8B005CCAA3 /* BGSDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSDetailViewController.h; sourceTree = "<group>"; };
+		A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSDetailViewController.m; sourceTree = "<group>"; };
+		A9EFACD510DC9FE4005CCAA3 /* button-close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-close.png"; sourceTree = "<group>"; };
+		A9EFACF510DCA0ED005CCAA3 /* NOTES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTES; sourceTree = "<group>"; };
+		A9EFAD3B10DCA5CF005CCAA3 /* BGSCloseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSCloseButton.h; sourceTree = "<group>"; };
+		A9EFAD3C10DCA5CF005CCAA3 /* BGSCloseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSCloseButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +66,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A9EFAD3A10DCA5B7005CCAA3 /* Controls */,
 				A9A0F86E10D8952E00823BC9 /* Controllers */,
 				A9A0F86D10D8952A00823BC9 /* Views */,
 				A9A0F86C10D8952400823BC9 /* Helpers */,
@@ -82,6 +93,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				A9EFACF510DCA0ED005CCAA3 /* NOTES */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -98,6 +110,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A9EFACD410DC9FE4005CCAA3 /* Images */,
 				8D1107310486CEB800E47090 /* Saturation-Info.plist */,
 			);
 			name = Resources;
@@ -137,8 +150,28 @@
 			children = (
 				A9A0F7F910D8903100823BC9 /* BGSMainViewController.h */,
 				A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */,
+				A9EFACCB10DC9A8B005CCAA3 /* BGSDetailViewController.h */,
+				A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		A9EFACD410DC9FE4005CCAA3 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				A9EFACD510DC9FE4005CCAA3 /* button-close.png */,
+			);
+			name = Images;
+			path = ../saturation/Assets/Optimized;
+			sourceTree = SOURCE_ROOT;
+		};
+		A9EFAD3A10DCA5B7005CCAA3 /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				A9EFAD3B10DCA5CF005CCAA3 /* BGSCloseButton.h */,
+				A9EFAD3C10DCA5CF005CCAA3 /* BGSCloseButton.m */,
+			);
+			name = Controls;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -183,6 +216,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */,
+				A9EFACF610DCA0ED005CCAA3 /* NOTES in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,6 +233,8 @@
 				A9A0F7FB10D8903100823BC9 /* BGSMainViewController.m in Sources */,
 				A9A0F80610D8910100823BC9 /* BGSCircleView.m in Sources */,
 				A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */,
+				A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */,
+				A9EFAD3D10DCA5CF005CCAA3 /* BGSCloseButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -20,6 +20,7 @@
 @synthesize path;
 @synthesize entries;
 @synthesize window;
+@synthesize navController;
 @synthesize mainController;
 
 #define FEED_URL @"http://kuler-api.adobe.com/feeds/rss/get.cfm?timeSpan=30&listType=rating"
@@ -77,6 +78,17 @@
 	return window;
 }
 
+- (UINavigationController *)navController
+{
+	if (navController == nil)
+	{
+		UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:self.mainController];
+		[self setNavController:nc];
+		[nc release];
+	}
+	return navController;
+}
+
 - (BGSMainViewController *)mainController
 {
 	if (mainController == nil)
@@ -90,7 +102,7 @@
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
-	[self.window addSubview:self.mainController.view];
+	[self.window addSubview:self.navController.view];
     [self.window makeKeyAndVisible];
 }
 
@@ -99,6 +111,7 @@
 	[path release];
 	[entries release];
     [window release];
+	[navController release];
 	[mainController release];
     [super dealloc];
 }
