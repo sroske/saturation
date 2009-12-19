@@ -27,6 +27,7 @@
 		A9EFADF810DD1F52005CCAA3 /* button-info.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADF610DD1F52005CCAA3 /* button-info.png */; };
 		A9EFAE6C10DD2508005CCAA3 /* BGSSwatchColor.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFAE6B10DD2508005CCAA3 /* BGSSwatchColor.m */; };
 		A9EFAEA110DD2D59005CCAA3 /* BGSSwatchStrip.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFAEA010DD2D59005CCAA3 /* BGSSwatchStrip.m */; };
+		A9EFB00910DD79A7005CCAA3 /* UIColor+CMYK.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFB00810DD79A7005CCAA3 /* UIColor+CMYK.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +62,8 @@
 		A9EFAE6B10DD2508005CCAA3 /* BGSSwatchColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSwatchColor.m; sourceTree = "<group>"; };
 		A9EFAE9F10DD2D59005CCAA3 /* BGSSwatchStrip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSwatchStrip.h; sourceTree = "<group>"; };
 		A9EFAEA010DD2D59005CCAA3 /* BGSSwatchStrip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSwatchStrip.m; sourceTree = "<group>"; };
+		A9EFB00710DD79A7005CCAA3 /* UIColor+CMYK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+CMYK.h"; sourceTree = "<group>"; };
+		A9EFB00810DD79A7005CCAA3 /* UIColor+CMYK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+CMYK.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +90,8 @@
 				1D3623240D0F684500981E51 /* SaturationAppDelegate.h */,
 				1D3623250D0F684500981E51 /* SaturationAppDelegate.m */,
 				A9BCCE9F10DC910200742013 /* FontsAndColors.h */,
+				A9EFB00710DD79A7005CCAA3 /* UIColor+CMYK.h */,
+				A9EFB00810DD79A7005CCAA3 /* UIColor+CMYK.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -257,6 +262,7 @@
 				A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */,
 				A9EFAE6C10DD2508005CCAA3 /* BGSSwatchColor.m in Sources */,
 				A9EFAEA110DD2D59005CCAA3 /* BGSSwatchStrip.m in Sources */,
+				A9EFB00910DD79A7005CCAA3 /* UIColor+CMYK.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

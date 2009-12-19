@@ -31,8 +31,7 @@
 	{
 		for (NSDictionary *swatch in self.swatches)
 		{
-			UIColor *c = CC_FROM_SWATCH(swatch);
-			CGContextSetFillColorWithColor(context, c.CGColor);
+			CGContextSetFillColorWithColor(context, CC_FROM_SWATCH(swatch).CGColor);
 			CGContextFillRect(context, CGRectMake(p.x, 
 												  p.y, 
 												  COLOR_STRIP_ENTRY_WIDTH, 

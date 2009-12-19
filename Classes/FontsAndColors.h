@@ -16,7 +16,7 @@
 	colorWithRed:[[s objectForKey:@"swatchChannel1"] floatValue] \
 	green:[[s objectForKey:@"swatchChannel2"] floatValue] \
 	blue:[[s objectForKey:@"swatchChannel3"] floatValue] \
-	alpha:1.0f];
+	alpha:1.0f]
 
 #define CF_FROM_NAME(n, s) [UIFont fontWithName:n size:s]
 
@@ -29,5 +29,5 @@
 #define CF_DETAIL_TITLE			CF_FROM_NAME(@"HelveticaNeue", 48.0f)
 #define CF_DETAIL_AUTHOR		CF_FROM_NAME(@"HelveticaNeue", 24.0f)
 #define CF_DETAIL_COLOR_TYPE	CF_FROM_NAME(@"HelveticaNeue", 24.0f)
-#define CF_DETAIL_COLOR_DATA	CF_FROM_NAME(@"HelveticaNeue", 14.0f)
+#define CF_DETAIL_COLOR_DATA	CF_FROM_NAME(@"HelveticaNeue", 12.0f)
 #define CF_DETAIL_EMAIL			CF_FROM_NAME(@"HelveticaNeue", 16.0f)
