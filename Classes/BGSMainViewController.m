@@ -30,7 +30,6 @@
 	return self;
 }
 
-
 - (void)loadView 
 {	
 	CGRect frame = [[UIScreen mainScreen] bounds];
@@ -48,9 +47,9 @@
 		int row = i/COLS;
 		int col = i%COLS;
 		BGSCircleView *circle = [[BGSCircleView alloc] initWithFrame:CGRectMake(col*(frame.size.width/COLS), 
-																		  row*(frame.size.height/ROWS), 
-																		  frame.size.width/COLS, 
-																		  frame.size.height/ROWS)];
+																				row*(frame.size.height/ROWS), 
+																				frame.size.width/COLS, 
+																				frame.size.height/ROWS)];
 		[circle setColor:[self randomColor]];
 		[self.view addSubview:circle];
 		[circle release];

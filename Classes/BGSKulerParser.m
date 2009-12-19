@@ -18,11 +18,9 @@
 @implementation BGSKulerParser
 
 @synthesize xml;
-@synthesize currentElement;
-
+@synthesize element;
 @synthesize entries;
 @synthesize entry;
-
 @synthesize swatch;
 
 - (NSMutableArray *)entries
@@ -88,7 +86,7 @@
 		[self.entry setValue:a forKey:@"swatches"];
 		[a release];
 	}
-	[self setCurrentElement:elementName];
+	[self setElement:elementName];
 }
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName 
@@ -107,9 +105,9 @@
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string 
 {	
-	if ([self.currentElement hasPrefix:@"kuler:"])
+	if ([self.element hasPrefix:@"kuler:"])
 	{
-		NSMutableString *key = [[NSMutableString alloc] initWithString:self.currentElement];
+		NSMutableString *key = [[NSMutableString alloc] initWithString:self.element];
 		[key replaceOccurrencesOfString:@"kuler:" withString:@"" options:0 range:NSMakeRange(0, [key length])];
 		
 		if (self.swatch != nil)
@@ -129,7 +127,7 @@
 - (void)dealloc
 {
 	[xml release];
-	[currentElement release];
+	[element release];
 	[entries release];
 	[entry release];
 	[swatch release];

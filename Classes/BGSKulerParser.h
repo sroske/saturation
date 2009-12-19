@@ -11,22 +11,17 @@
 @interface BGSKulerParser : NSObject 
 {
 	NSXMLParser *xml;
-	NSString *currentElement;
-	
+	NSString *element;
 	NSMutableArray *entries;
 	NSMutableDictionary *entry;
-	
 	NSMutableDictionary *swatch;
 }
 
 @property (nonatomic, retain) NSXMLParser *xml;
-@property (nonatomic, copy) NSString *currentElement;
-
+@property (nonatomic, copy) NSString *element;
 @property (nonatomic, retain) NSMutableArray *entries;
 @property (nonatomic, retain) NSMutableDictionary *entry;
-
 @property (nonatomic, retain) NSMutableDictionary *swatch;
-
 
 - (NSArray *)fetchEntriesFromURL:(NSString *)url;
 
