@@ -209,13 +209,13 @@
 			[UIView beginAnimations:nil context:NULL];
 			[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
 			[UIView setAnimationDelay:delay];
-			[UIView setAnimationDuration:0.4];
+			[UIView setAnimationDuration:0.6];
 			
 			[c setAlpha:1.0f];
 			
 			[UIView commitAnimations];
 			
-			delay += 0.2f;
+			delay += 0.4f;
 		}
 		
 		[UIView beginAnimations:@"kulerLogoFade" context:self.kulerLogo];

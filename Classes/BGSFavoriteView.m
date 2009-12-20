@@ -20,7 +20,7 @@
 @synthesize background;
 @synthesize unfavoritedIcon;
 @synthesize favoritedIcon;
-@synthesize icon;
+@synthesize iconButton;
 
 - (UIImageView *)background
 {
@@ -60,30 +60,37 @@
 	return favoritedIcon;
 }
 
-/*
-- (UIImageView *)icon
+- (UIButton *)iconButton
 {
-	if (icon == nil)
+	if (iconButton == nil)
 	{
-
-		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 
-																		0.0f, 
-																		i.size.width, 
-																		i.size.height)];
-		[iv setImage:i];
-		[self setIcon:iv];
-		[iv release];
+		UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+		[btn setShowsTouchWhenHighlighted:YES];
+		[btn setImage:self.unfavoritedIcon forState:UIControlStateNormal];
+		[btn addTarget:self action:@selector(toggleFavorite:) forControlEvents:UIControlEventTouchUpInside];
+		[btn setFrame:CGRectMake(self.bounds.size.width/2-self.unfavoritedIcon.size.width/2, 
+								 self.bounds.size.height/2-self.unfavoritedIcon.size.height/2, 
+								 self.unfavoritedIcon.size.width, 
+								 self.unfavoritedIcon.size.height)];
+		[self setIconButton:btn];
+		[btn release];
 	}
-	return icon;
+	return iconButton;
 }
- */
+
+- (void)toggleFavorite:(id)sender
+{
+	isFavorite = !isFavorite;
+	[self.iconButton setImage:(isFavorite ? self.favoritedIcon : self.unfavoritedIcon) forState:UIControlStateNormal];
+}
 
 - (id)initWithFrame:(CGRect)frame 
 {
     if (self = [super initWithFrame:frame]) 
 	{
+		isFavorite = NO;
 		[self addSubview:self.background];
-		[self addSubview:self.icon];
+		[self addSubview:self.iconButton];
     }
     return self;
 }
@@ -95,6 +102,7 @@
 
 - (void)dealloc 
 {
+	[background release];
     [super dealloc];
 }
 

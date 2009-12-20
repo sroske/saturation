@@ -14,13 +14,14 @@
 	UIImageView *background;
 	UIImage *unfavoritedIcon;
 	UIImage *favoritedIcon;
-	UIButton *icon;
+	UIButton *iconButton;
+	BOOL isFavorite;
 }
 
 
 @property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) UIImage *unfavoritedIcon;
 @property (nonatomic, retain) UIImage *favoritedIcon;
-@property (nonatomic, retain) UIButton *icon;
+@property (nonatomic, retain) UIButton *iconButton;
 
 @end
