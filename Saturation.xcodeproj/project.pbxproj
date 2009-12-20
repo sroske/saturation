@@ -19,7 +19,6 @@
 		A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */; };
 		A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACD510DC9FE4005CCAA3 /* button-close.png */; };
 		A9EFACF610DCA0ED005CCAA3 /* NOTES in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACF510DCA0ED005CCAA3 /* NOTES */; };
-		A9EFADCE10DCAB6D005CCAA3 /* button-stretch-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCA10DCAB6D005CCAA3 /* button-stretch-background.png */; };
 		A9EFADCF10DCAB6D005CCAA3 /* icon-email.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCB10DCAB6D005CCAA3 /* icon-email.png */; };
 		A9EFADD010DCAB6D005CCAA3 /* icon-favorite-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCC10DCAB6D005CCAA3 /* icon-favorite-selected.png */; };
 		A9EFADD110DCAB6D005CCAA3 /* icon-favorite-unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCD10DCAB6D005CCAA3 /* icon-favorite-unselected.png */; };
@@ -28,6 +27,11 @@
 		A9EFAE6C10DD2508005CCAA3 /* BGSSwatchColor.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFAE6B10DD2508005CCAA3 /* BGSSwatchColor.m */; };
 		A9EFAEA110DD2D59005CCAA3 /* BGSSwatchStrip.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFAEA010DD2D59005CCAA3 /* BGSSwatchStrip.m */; };
 		A9EFB00910DD79A7005CCAA3 /* UIColor+CMYK.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFB00810DD79A7005CCAA3 /* UIColor+CMYK.m */; };
+		A9EFB0AC10DD8D79005CCAA3 /* BGSEmailCTAView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFB0AB10DD8D79005CCAA3 /* BGSEmailCTAView.m */; };
+		A9EFB11710DD9B5E005CCAA3 /* button-email-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB11610DD9B5E005CCAA3 /* button-email-background.png */; };
+		A9EFB12810DD9CA2005CCAA3 /* button-favorite-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB12710DD9CA2005CCAA3 /* button-favorite-background.png */; };
+		A9EFB18710DDA7F5005CCAA3 /* BGSFavoriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFB18610DDA7F5005CCAA3 /* BGSFavoriteView.m */; };
+		A9EFB18E10DDAA93005CCAA3 /* BGSWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFB18D10DDAA93005CCAA3 /* BGSWelcomeViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,7 +56,6 @@
 		A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSDetailViewController.m; sourceTree = "<group>"; };
 		A9EFACD510DC9FE4005CCAA3 /* button-close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-close.png"; sourceTree = "<group>"; };
 		A9EFACF510DCA0ED005CCAA3 /* NOTES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTES; sourceTree = "<group>"; };
-		A9EFADCA10DCAB6D005CCAA3 /* button-stretch-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-stretch-background.png"; sourceTree = "<group>"; };
 		A9EFADCB10DCAB6D005CCAA3 /* icon-email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-email.png"; sourceTree = "<group>"; };
 		A9EFADCC10DCAB6D005CCAA3 /* icon-favorite-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-favorite-selected.png"; sourceTree = "<group>"; };
 		A9EFADCD10DCAB6D005CCAA3 /* icon-favorite-unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-favorite-unselected.png"; sourceTree = "<group>"; };
@@ -64,6 +67,14 @@
 		A9EFAEA010DD2D59005CCAA3 /* BGSSwatchStrip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSwatchStrip.m; sourceTree = "<group>"; };
 		A9EFB00710DD79A7005CCAA3 /* UIColor+CMYK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+CMYK.h"; sourceTree = "<group>"; };
 		A9EFB00810DD79A7005CCAA3 /* UIColor+CMYK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+CMYK.m"; sourceTree = "<group>"; };
+		A9EFB0AA10DD8D79005CCAA3 /* BGSEmailCTAView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSEmailCTAView.h; sourceTree = "<group>"; };
+		A9EFB0AB10DD8D79005CCAA3 /* BGSEmailCTAView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSEmailCTAView.m; sourceTree = "<group>"; };
+		A9EFB11610DD9B5E005CCAA3 /* button-email-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-email-background.png"; sourceTree = "<group>"; };
+		A9EFB12710DD9CA2005CCAA3 /* button-favorite-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-favorite-background.png"; sourceTree = "<group>"; };
+		A9EFB18510DDA7F5005CCAA3 /* BGSFavoriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSFavoriteView.h; sourceTree = "<group>"; };
+		A9EFB18610DDA7F5005CCAA3 /* BGSFavoriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSFavoriteView.m; sourceTree = "<group>"; };
+		A9EFB18C10DDAA93005CCAA3 /* BGSWelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSWelcomeViewController.h; sourceTree = "<group>"; };
+		A9EFB18D10DDAA93005CCAA3 /* BGSWelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSWelcomeViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +175,10 @@
 				A9EFAE6B10DD2508005CCAA3 /* BGSSwatchColor.m */,
 				A9EFAE9F10DD2D59005CCAA3 /* BGSSwatchStrip.h */,
 				A9EFAEA010DD2D59005CCAA3 /* BGSSwatchStrip.m */,
+				A9EFB0AA10DD8D79005CCAA3 /* BGSEmailCTAView.h */,
+				A9EFB0AB10DD8D79005CCAA3 /* BGSEmailCTAView.m */,
+				A9EFB18510DDA7F5005CCAA3 /* BGSFavoriteView.h */,
+				A9EFB18610DDA7F5005CCAA3 /* BGSFavoriteView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -175,6 +190,8 @@
 				A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */,
 				A9EFACCB10DC9A8B005CCAA3 /* BGSDetailViewController.h */,
 				A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */,
+				A9EFB18C10DDAA93005CCAA3 /* BGSWelcomeViewController.h */,
+				A9EFB18D10DDAA93005CCAA3 /* BGSWelcomeViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -182,9 +199,10 @@
 		A9EFACD410DC9FE4005CCAA3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A9EFB12710DD9CA2005CCAA3 /* button-favorite-background.png */,
+				A9EFB11610DD9B5E005CCAA3 /* button-email-background.png */,
 				A9EFADF510DD1F52005CCAA3 /* button-gear.png */,
 				A9EFADF610DD1F52005CCAA3 /* button-info.png */,
-				A9EFADCA10DCAB6D005CCAA3 /* button-stretch-background.png */,
 				A9EFADCB10DCAB6D005CCAA3 /* icon-email.png */,
 				A9EFADCC10DCAB6D005CCAA3 /* icon-favorite-selected.png */,
 				A9EFADCD10DCAB6D005CCAA3 /* icon-favorite-unselected.png */,
@@ -238,12 +256,13 @@
 			files = (
 				A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */,
 				A9EFACF610DCA0ED005CCAA3 /* NOTES in Resources */,
-				A9EFADCE10DCAB6D005CCAA3 /* button-stretch-background.png in Resources */,
 				A9EFADCF10DCAB6D005CCAA3 /* icon-email.png in Resources */,
 				A9EFADD010DCAB6D005CCAA3 /* icon-favorite-selected.png in Resources */,
 				A9EFADD110DCAB6D005CCAA3 /* icon-favorite-unselected.png in Resources */,
 				A9EFADF710DD1F52005CCAA3 /* button-gear.png in Resources */,
 				A9EFADF810DD1F52005CCAA3 /* button-info.png in Resources */,
+				A9EFB11710DD9B5E005CCAA3 /* button-email-background.png in Resources */,
+				A9EFB12810DD9CA2005CCAA3 /* button-favorite-background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -263,6 +282,9 @@
 				A9EFAE6C10DD2508005CCAA3 /* BGSSwatchColor.m in Sources */,
 				A9EFAEA110DD2D59005CCAA3 /* BGSSwatchStrip.m in Sources */,
 				A9EFB00910DD79A7005CCAA3 /* UIColor+CMYK.m in Sources */,
+				A9EFB0AC10DD8D79005CCAA3 /* BGSEmailCTAView.m in Sources */,
+				A9EFB18710DDA7F5005CCAA3 /* BGSFavoriteView.m in Sources */,
+				A9EFB18E10DDAA93005CCAA3 /* BGSWelcomeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

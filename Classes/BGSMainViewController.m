@@ -96,7 +96,6 @@
 	if (self = [super init])
 	{
 		[self setEntry:entryData];
-		NSLog(@"themeTitle: %@", [self.entry objectForKey:@"themeTitle"]);
 	}
 	return self;
 }
@@ -186,7 +185,8 @@
 	[UIView beginAnimations:@"shrink" context:[[NSArray arrayWithObjects:circle1, circle2, circle3, circle4, nil] retain]];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(shrinkComplete:finished:context:)];
-    [UIView setAnimationDuration:1.0f];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+    [UIView setAnimationDuration:0.5f];
     
 	[circle1 setFrame:CGRectMake(original.origin.x, 
 								 original.origin.y, 

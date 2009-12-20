@@ -30,9 +30,15 @@
 
 @synthesize colorIcons;
 @synthesize hexContentLabels;
+
+@synthesize hexSeperator;
+
 @synthesize rgbRContentLabels;
 @synthesize rgbGContentLabels;
 @synthesize rgbBContentLabels;
+
+@synthesize rgbSeperator;
+
 @synthesize cmykCContentLabels;
 @synthesize cmykMContentLabels;
 @synthesize cmykYContentLabels;
@@ -191,6 +197,22 @@
 	}
 	return hexContentLabels;
 }
+
+- (BGSSwatchColor *)hexSeperator
+{
+	if (hexSeperator == nil)
+	{
+		BGSSwatchColor *c = [[BGSSwatchColor alloc] initWithFrame:CGRectMake(104.0f, 
+																			 163.0f, 
+																			 1.0f, 
+																			 91.0f) 
+														 andColor:CC_WHITE];
+		[self setHexSeperator:c];
+		[c release];
+	}
+	return hexSeperator;
+}
+
 - (NSMutableArray *)rgbRContentLabels
 {
 	if (rgbRContentLabels == nil)
@@ -221,6 +243,22 @@
 	}
 	return rgbBContentLabels;
 }
+
+- (BGSSwatchColor *)rgbSeperator
+{
+	if (rgbSeperator == nil)
+	{
+		BGSSwatchColor *c = [[BGSSwatchColor alloc] initWithFrame:CGRectMake(268.0f, 
+																			 163.0f, 
+																			 1.0f, 
+																			 91.0f) 
+														 andColor:CC_WHITE];
+		[self setRgbSeperator:c];
+		[c release];
+	}
+	return rgbSeperator;
+}
+
 - (NSMutableArray *)cmykCContentLabels
 {
 	if (cmykCContentLabels == nil)
@@ -262,6 +300,19 @@
 	return cmykKContentLabels;
 }
 
+- (BGSEmailCTAView *)emailButton
+{
+	if (emailButton == nil)
+	{
+		BGSEmailCTAView *e = [[BGSEmailCTAView alloc] initWithFrame:CGRectMake(70.0f, 
+																			   268.0f, 
+																			   401.0f, 
+																			   48.0f)];
+		[self setEmailButton:e];
+		[e release];
+	}
+	return emailButton;
+}
 
 - (id)initWithEntry:(NSDictionary *)entryData
 {
@@ -296,6 +347,9 @@
 	
 	[self setupColorRows];
 	
+	[self.view addSubview:self.hexSeperator];
+	[self.view addSubview:self.rgbSeperator];
+	
 	[self.view addSubview:self.favoriteButton];
 	[self.view addSubview:self.emailButton];
 }
@@ -303,7 +357,7 @@
 - (void)setupColorRows
 {
 	CGFloat originX = 16.0f;
-	CGFloat rowHeight = 24.0f;
+	CGFloat rowHeight = 20.0f;
 	
 	CGPoint p = CGPointMake(originX, 162.0f);
 	
@@ -313,7 +367,7 @@
 		UIColor *color = CC_FROM_SWATCH(swatch);
 		// color icon
 		BGSSwatchColor *i = [[BGSSwatchColor alloc] initWithFrame:CGRectMake(p.x, 
-																			 p.y, 
+																			 p.y+2.0f, 
 																			 10.0f, 
 																			 10.0f) 
 														 andColor:color];
@@ -321,11 +375,11 @@
 		[self.colorIcons addObject:i];
 		[i release];
 		
-		p.x += 18.0f;
+		p.x += 16.0f;
 		
 		// hex label
 		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(p.x, 
-																 p.y-2.0f, 
+																 p.y-1.0f, 
 																 70.0f, 
 																 16.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_DATA];
@@ -500,9 +554,15 @@
 	
 	[colorIcons release];
 	[hexContentLabels release];
+	
+	[hexSeperator release];
+	
 	[rgbRContentLabels release];
 	[rgbGContentLabels release];
 	[rgbBContentLabels release];
+	
+	[rgbSeperator release];
+	
 	[cmykCContentLabels release];
 	[cmykMContentLabels release];
 	[cmykYContentLabels release];

@@ -1,6 +1,14 @@
-button-stretch-background
+Add splash screen
+cicles fade in randomly
+splash text fades out
+detail and lists use modal popup
+have light overlay on that modal reveal
 
-	top cap 11 hight
-	left cap 11 width
-	
-swatch icon 10x10
+Need:
+
+animated state for rows and email links
+animation states
+
+
+list views
+selecting tab will snap new item to white, old item will fade to grey
