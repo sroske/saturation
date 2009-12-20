@@ -39,6 +39,7 @@
 		A9EFB20310DDB730005CCAA3 /* logo-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB20210DDB730005CCAA3 /* logo-background.png */; };
 		A9EFB2DA10DDCAB5005CCAA3 /* NSArray-Shuffle.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFB2D910DDCAB5005CCAA3 /* NSArray-Shuffle.m */; };
 		A9EFB31110DDCE3D005CCAA3 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB31010DDCE3D005CCAA3 /* background.png */; };
+		A9EFB3A410DDD5B4005CCAA3 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB3A310DDD5B4005CCAA3 /* Entitlements.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,6 +91,7 @@
 		A9EFB2D810DDCAB5005CCAA3 /* NSArray-Shuffle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray-Shuffle.h"; sourceTree = "<group>"; };
 		A9EFB2D910DDCAB5005CCAA3 /* NSArray-Shuffle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Shuffle.m"; sourceTree = "<group>"; };
 		A9EFB31010DDCE3D005CCAA3 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
+		A9EFB3A310DDD5B4005CCAA3 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +161,7 @@
 			children = (
 				A9EFACD410DC9FE4005CCAA3 /* Images */,
 				8D1107310486CEB800E47090 /* Saturation-Info.plist */,
+				A9EFB3A310DDD5B4005CCAA3 /* Entitlements.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 				A9EFB1D210DDB58B005CCAA3 /* Default.png in Resources */,
 				A9EFB20310DDB730005CCAA3 /* logo-background.png in Resources */,
 				A9EFB31110DDCE3D005CCAA3 /* background.png in Resources */,
+				A9EFB3A410DDD5B4005CCAA3 /* Entitlements.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,6 +351,33 @@
 			};
 			name = Release;
 		};
+		A9EFB39E10DDD58F005CCAA3 /* Ad Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Shawn Roske";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "54EB59E4-AEA7-472A-A451-72E1BDF2FA0B";
+				SDKROOT = iphoneos3.0;
+			};
+			name = "Ad Hoc";
+		};
+		A9EFB39F10DDD58F005CCAA3 /* Ad Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Saturation_Prefix.pch;
+				INFOPLIST_FILE = "Saturation-Info.plist";
+				PRODUCT_NAME = Saturation;
+			};
+			name = "Ad Hoc";
+		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -382,6 +413,7 @@
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+				A9EFB39F10DDD58F005CCAA3 /* Ad Hoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -391,6 +423,7 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+				A9EFB39E10DDD58F005CCAA3 /* Ad Hoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
