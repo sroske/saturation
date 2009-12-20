@@ -10,6 +10,7 @@
 #import "FontsAndColors.h"
 #import "BGSDetailViewController.h"
 #import "BGSCircleView.h"
+#import "NSArray-Shuffle.h"
 
 #define ROWS		2
 #define COLS		3
@@ -17,12 +18,20 @@
 
 @interface BGSMainViewController : UIViewController 
 {
+	UIImageView *logo;
+	UIImageView *kulerLogo;
+	UIImageView *background;
 	UIView *circleView;
 	NSDictionary *entry;
 	UIButton *settingsButton;
 	UIButton *infoButton;
+	BOOL hasAnimated;
+	NSMutableArray *initialCircles;
 }
 
+@property (nonatomic, retain) UIImageView *logo;
+@property (nonatomic, retain) UIImageView *kulerLogo;
+@property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) UIView *circleView;
 @property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) UIButton *settingsButton;

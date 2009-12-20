@@ -32,6 +32,13 @@
 		A9EFB12810DD9CA2005CCAA3 /* button-favorite-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB12710DD9CA2005CCAA3 /* button-favorite-background.png */; };
 		A9EFB18710DDA7F5005CCAA3 /* BGSFavoriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFB18610DDA7F5005CCAA3 /* BGSFavoriteView.m */; };
 		A9EFB18E10DDAA93005CCAA3 /* BGSWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFB18D10DDAA93005CCAA3 /* BGSWelcomeViewController.m */; };
+		A9EFB1BE10DDB2F1005CCAA3 /* logo-kuler.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB1BA10DDB2F1005CCAA3 /* logo-kuler.png */; };
+		A9EFB1BF10DDB2F1005CCAA3 /* logo-saturation.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB1BB10DDB2F1005CCAA3 /* logo-saturation.png */; };
+		A9EFB1C010DDB2F1005CCAA3 /* logo-shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB1BC10DDB2F1005CCAA3 /* logo-shadow.png */; };
+		A9EFB1D210DDB58B005CCAA3 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB1D110DDB58B005CCAA3 /* Default.png */; };
+		A9EFB20310DDB730005CCAA3 /* logo-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB20210DDB730005CCAA3 /* logo-background.png */; };
+		A9EFB2DA10DDCAB5005CCAA3 /* NSArray-Shuffle.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFB2D910DDCAB5005CCAA3 /* NSArray-Shuffle.m */; };
+		A9EFB31110DDCE3D005CCAA3 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFB31010DDCE3D005CCAA3 /* background.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +82,14 @@
 		A9EFB18610DDA7F5005CCAA3 /* BGSFavoriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSFavoriteView.m; sourceTree = "<group>"; };
 		A9EFB18C10DDAA93005CCAA3 /* BGSWelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSWelcomeViewController.h; sourceTree = "<group>"; };
 		A9EFB18D10DDAA93005CCAA3 /* BGSWelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSWelcomeViewController.m; sourceTree = "<group>"; };
+		A9EFB1BA10DDB2F1005CCAA3 /* logo-kuler.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-kuler.png"; sourceTree = "<group>"; };
+		A9EFB1BB10DDB2F1005CCAA3 /* logo-saturation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-saturation.png"; sourceTree = "<group>"; };
+		A9EFB1BC10DDB2F1005CCAA3 /* logo-shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-shadow.png"; sourceTree = "<group>"; };
+		A9EFB1D110DDB58B005CCAA3 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		A9EFB20210DDB730005CCAA3 /* logo-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-background.png"; sourceTree = "<group>"; };
+		A9EFB2D810DDCAB5005CCAA3 /* NSArray-Shuffle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray-Shuffle.h"; sourceTree = "<group>"; };
+		A9EFB2D910DDCAB5005CCAA3 /* NSArray-Shuffle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Shuffle.m"; sourceTree = "<group>"; };
+		A9EFB31010DDCE3D005CCAA3 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +116,8 @@
 				1D3623240D0F684500981E51 /* SaturationAppDelegate.h */,
 				1D3623250D0F684500981E51 /* SaturationAppDelegate.m */,
 				A9BCCE9F10DC910200742013 /* FontsAndColors.h */,
+				A9EFB2D810DDCAB5005CCAA3 /* NSArray-Shuffle.h */,
+				A9EFB2D910DDCAB5005CCAA3 /* NSArray-Shuffle.m */,
 				A9EFB00710DD79A7005CCAA3 /* UIColor+CMYK.h */,
 				A9EFB00810DD79A7005CCAA3 /* UIColor+CMYK.m */,
 			);
@@ -199,6 +216,12 @@
 		A9EFACD410DC9FE4005CCAA3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A9EFB31010DDCE3D005CCAA3 /* background.png */,
+				A9EFB20210DDB730005CCAA3 /* logo-background.png */,
+				A9EFB1D110DDB58B005CCAA3 /* Default.png */,
+				A9EFB1BA10DDB2F1005CCAA3 /* logo-kuler.png */,
+				A9EFB1BB10DDB2F1005CCAA3 /* logo-saturation.png */,
+				A9EFB1BC10DDB2F1005CCAA3 /* logo-shadow.png */,
 				A9EFB12710DD9CA2005CCAA3 /* button-favorite-background.png */,
 				A9EFB11610DD9B5E005CCAA3 /* button-email-background.png */,
 				A9EFADF510DD1F52005CCAA3 /* button-gear.png */,
@@ -263,6 +286,12 @@
 				A9EFADF810DD1F52005CCAA3 /* button-info.png in Resources */,
 				A9EFB11710DD9B5E005CCAA3 /* button-email-background.png in Resources */,
 				A9EFB12810DD9CA2005CCAA3 /* button-favorite-background.png in Resources */,
+				A9EFB1BE10DDB2F1005CCAA3 /* logo-kuler.png in Resources */,
+				A9EFB1BF10DDB2F1005CCAA3 /* logo-saturation.png in Resources */,
+				A9EFB1C010DDB2F1005CCAA3 /* logo-shadow.png in Resources */,
+				A9EFB1D210DDB58B005CCAA3 /* Default.png in Resources */,
+				A9EFB20310DDB730005CCAA3 /* logo-background.png in Resources */,
+				A9EFB31110DDCE3D005CCAA3 /* background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,6 +314,7 @@
 				A9EFB0AC10DD8D79005CCAA3 /* BGSEmailCTAView.m in Sources */,
 				A9EFB18710DDA7F5005CCAA3 /* BGSFavoriteView.m in Sources */,
 				A9EFB18E10DDAA93005CCAA3 /* BGSWelcomeViewController.m in Sources */,
+				A9EFB2DA10DDCAB5005CCAA3 /* NSArray-Shuffle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

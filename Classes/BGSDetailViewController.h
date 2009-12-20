@@ -10,11 +10,14 @@
 #import "FontsAndColors.h"
 #import "BGSSwatchColor.h"
 #import "BGSSwatchStrip.h"
+#import "BGSFavoriteView.h"
 #import "BGSEmailCTAView.h"
 #import "UIColor+CMYK.h"
 
 @interface BGSDetailViewController : UIViewController 
 {
+	UIImageView *background;
+	
 	NSDictionary *entry;
 	UILabel *titleLabel;
 	UILabel *authorLabel;
@@ -41,10 +44,11 @@
 	NSMutableArray *cmykYContentLabels;
 	NSMutableArray *cmykKContentLabels;
 	
-	UIView *favoriteButton;
+	BGSFavoriteView *favoriteButton;
 	BGSEmailCTAView *emailButton;
 }
 
+@property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) UILabel *authorLabel;
@@ -71,7 +75,7 @@
 @property (nonatomic, retain) NSMutableArray *cmykYContentLabels;
 @property (nonatomic, retain) NSMutableArray *cmykKContentLabels;
 
-@property (nonatomic, retain) UIView *favoriteButton;
+@property (nonatomic, retain) BGSFavoriteView *favoriteButton;
 @property (nonatomic, retain) BGSEmailCTAView *emailButton;
 
 - (id)initWithEntry:(NSDictionary *)entryData;

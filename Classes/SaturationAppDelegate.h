@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BGSKulerParser.h"
-#import "BGSMainViewController.h"
+#import "BGSWelcomeViewController.h"
 
 @interface SaturationAppDelegate : NSObject <UIApplicationDelegate> 
 {
@@ -16,17 +16,17 @@
 	NSArray *entries;
     UIWindow *window;
 	UINavigationController *navController;
-	BGSMainViewController *mainController;
+	BGSWelcomeViewController *welcomeController;
 }
 
 @property (nonatomic, retain) NSString *path;
 @property (nonatomic, retain) NSArray *entries;
 @property (nonatomic, retain) UIWindow *window;
 @property (nonatomic, retain) UINavigationController *navController;
-@property (nonatomic, retain) BGSMainViewController *mainController;
+@property (nonatomic, retain) BGSWelcomeViewController *welcomeController;
 
 - (void)fetchNewEntries;
-
+- (NSDictionary *)randomEntry;
 - (void)showDetailFor:(NSDictionary *)entryData;
 
 @end

@@ -15,15 +15,71 @@
 - (void)showSettings:(id)sender;
 - (void)showDetailView:(id)sender;
 
+- (void)logoFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
+
 @end
 
 
 @implementation BGSMainViewController
 
+@synthesize background;
+@synthesize logo;
+@synthesize kulerLogo;
 @synthesize circleView;
 @synthesize entry;
 @synthesize settingsButton;
 @synthesize infoButton;
+
+- (UIImageView *)logo
+{
+	if (logo == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"logo-saturation.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(46.0f, 
+																		137.0f, 
+																		i.size.width, 
+																		i.size.height)];
+		[iv setImage:i];
+		[self setLogo:iv];
+		[iv release];
+	}
+	return logo;
+}
+
+- (UIImageView *)kulerLogo
+{
+	if (kulerLogo == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"logo-kuler.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(293.0f, 
+																		140.0f, 
+																		i.size.width, 
+																		i.size.height)];
+		[iv setImage:i];
+		[self setKulerLogo:iv];
+		[iv release];
+	}
+	return kulerLogo;
+}
+
+- (UIImageView *)background
+{
+	if (background == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"background.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 
+																		0.0f, 
+																		i.size.width, 
+																		i.size.height)];
+		[iv setImage:i];
+		[self setBackground:iv];
+		[iv release];
+	}
+	return background;
+}
 
 - (UIView *)circleView
 {
@@ -95,6 +151,7 @@
 {
 	if (self = [super init])
 	{
+		hasAnimated = NO;
 		[self setEntry:entryData];
 	}
 	return self;
@@ -112,19 +169,28 @@
 	self.view = v;
 	[v release];
 	
+	[self.view addSubview:self.background];
+	
 	[self.view addSubview:self.circleView];
+	[self.view addSubview:self.logo];
+	[self.view addSubview:self.kulerLogo];
+	
 	[self.view addSubview:self.settingsButton];
 	[self.view addSubview:self.infoButton];
+	
+	initialCircles = [[NSMutableArray alloc] init];
 	
 	for (int i = 0; i < ROWS*COLS; i++)
 	{
 		int row = i/COLS;
 		int col = i%COLS;
-		BGSCircleView *circle = [[BGSCircleView alloc] initWithFrame:CGRectMake(col*(frame.size.width/COLS), 
-																				row*(frame.size.height/ROWS), 
-																				frame.size.width/COLS, 
-																				frame.size.height/ROWS)];
+		BGSCircleView *circle = [[BGSCircleView alloc] initWithFrame:CGRectMake(col*(self.view.frame.size.width/COLS), 
+																				row*(self.view.frame.size.height/ROWS), 
+																				self.view.frame.size.width/COLS, 
+																				self.view.frame.size.height/ROWS)];
 		[circle setColor:[self randomColor]];
+		[circle setHidden:YES];
+		[initialCircles addObject:circle];
 		[self.circleView addSubview:circle];
 		[circle release];
 	}
@@ -132,8 +198,59 @@
 
 - (void)viewWillAppear:(BOOL)animated 
 {
+	if (!hasAnimated)
+	{
+		CGFloat delay = 0.3;
+		NSArray *circles = [initialCircles shuffledArray];
+		for (BGSCircleView *c in circles)
+		{
+			[c setHidden:NO];
+			[c setAlpha:0.0f];
+			[UIView beginAnimations:nil context:NULL];
+			[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+			[UIView setAnimationDelay:delay];
+			[UIView setAnimationDuration:0.4];
+			
+			[c setAlpha:1.0f];
+			
+			[UIView commitAnimations];
+			
+			delay += 0.2f;
+		}
+		
+		[UIView beginAnimations:@"kulerLogoFade" context:self.kulerLogo];
+		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+		[UIView setAnimationDelay:0.4];
+		[UIView setAnimationDuration:0.6];
+		[UIView setAnimationDelegate:self];
+		[UIView setAnimationDidStopSelector:@selector(logoFaded:finished:context:)];
+		
+		[self.kulerLogo setAlpha:0.0f];
+		
+		[UIView commitAnimations];
+		
+		[UIView beginAnimations:@"logoFade" context:self.logo];
+		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+		[UIView setAnimationDelay:1.0];
+		[UIView setAnimationDuration:0.6];
+		[UIView setAnimationDelegate:self];
+		[UIView setAnimationDidStopSelector:@selector(logoFaded:finished:context:)];
+		
+		[self.logo setAlpha:0.0f];
+		
+		[UIView commitAnimations];
+		
+		hasAnimated = YES;
+	}
+	
 	[self.navigationController setNavigationBarHidden:YES animated:animated];
     [super viewWillAppear:animated];
+}
+
+- (void)logoFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+{
+	UIView *v = (UIView *)context;
+	[v removeFromSuperview];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
@@ -143,6 +260,10 @@
 
 - (void)dealloc 
 {
+	[background release];
+	[initialCircles release];
+	[logo release];
+	[kulerLogo release];
 	[circleView release];
 	[entry release];
     [super dealloc];

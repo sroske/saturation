@@ -18,6 +18,8 @@
 
 @implementation BGSDetailViewController
 
+@synthesize background;
+
 @synthesize entry;
 @synthesize titleLabel;
 @synthesize authorLabel;
@@ -46,6 +48,23 @@
 
 @synthesize favoriteButton;
 @synthesize emailButton;
+
+- (UIImageView *)background
+{
+	if (background == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"background.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 
+																		0.0f, 
+																		i.size.width, 
+																		i.size.height)];
+		[iv setImage:i];
+		[self setBackground:iv];
+		[iv release];
+	}
+	return background;
+}
 
 - (UIButton *)closeButton
 {
@@ -82,7 +101,7 @@
 																 66.0f)];
 		[lbl setFont:CF_DETAIL_TITLE];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:[[self.entry objectForKey:@"themeTitle"] lowercaseString]];
 		[self setTitleLabel:lbl];
 		[lbl release];
@@ -100,7 +119,7 @@
 																 30.0f)];
 		[lbl setFont:CF_DETAIL_AUTHOR];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:[UIColor clearColor]];
+		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:[NSString stringWithFormat:@"by: %@", [[self.entry objectForKey:@"authorLabel"] lowercaseString]]];
 		[self setAuthorLabel:lbl];
 		[lbl release];
@@ -133,7 +152,7 @@
 																 30.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_TYPE];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:@"hex:"];
 		[self setHexheaderLabel:lbl];
 		[lbl release];
@@ -151,7 +170,7 @@
 																 30.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_TYPE];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:@"rgb:"];
 		[self setRgbHeaderLabel:lbl];
 		[lbl release];
@@ -169,7 +188,7 @@
 																 30.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_TYPE];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:@"cmyk:"];
 		[self setCmykHeaderLabel:lbl];
 		[lbl release];
@@ -300,6 +319,21 @@
 	return cmykKContentLabels;
 }
 
+
+- (BGSFavoriteView *)favoriteButton
+{
+	if (favoriteButton == nil)
+	{
+		BGSFavoriteView *e = [[BGSFavoriteView alloc] initWithFrame:CGRectMake(14.0f, 
+																			   268.0f, 
+																			   48.0f, 
+																			   48.0f)];
+		[self setFavoriteButton:e];
+		[e release];
+	}
+	return favoriteButton;
+}
+
 - (BGSEmailCTAView *)emailButton
 {
 	if (emailButton == nil)
@@ -335,6 +369,8 @@
 	[v sizeToFit];
 	self.view = v;
 	[v release];
+	
+	[self.view addSubview:self.background];
 	
 	[self.view addSubview:self.titleLabel];
 	[self.view addSubview:self.authorLabel];
@@ -384,7 +420,7 @@
 																 16.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_DATA];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:[swatch objectForKey:@"swatchHexColor"]];
 		[self.view addSubview:lbl];
 		[self.hexContentLabels addObject:lbl];
@@ -399,7 +435,7 @@
 														16.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_DATA];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		int v = [[swatch objectForKey:@"swatchChannel1"] floatValue]*255;
 		[lbl setText:[NSString stringWithFormat:@"%i", v]];
 		[self.view addSubview:lbl];
@@ -415,7 +451,7 @@
 														16.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_DATA];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		v = [[swatch objectForKey:@"swatchChannel2"] floatValue]*255;
 		[lbl setText:[NSString stringWithFormat:@"%i", v]];
 		[self.view addSubview:lbl];
@@ -431,7 +467,7 @@
 														16.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_DATA];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		v = [[swatch objectForKey:@"swatchChannel3"] floatValue]*255;
 		[lbl setText:[NSString stringWithFormat:@"%i", v]];
 		[self.view addSubview:lbl];
@@ -449,7 +485,7 @@
 														16.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_DATA];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		v = [[cmyk objectForKey:@"c"] floatValue]*100;
 		[lbl setText:[NSString stringWithFormat:@"%i", v]];
 		[self.view addSubview:lbl];
@@ -465,7 +501,7 @@
 														16.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_DATA];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		v = [[cmyk objectForKey:@"m"] floatValue]*100;
 		[lbl setText:[NSString stringWithFormat:@"%i", v]];
 		[self.view addSubview:lbl];
@@ -481,7 +517,7 @@
 														16.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_DATA];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		v = [[cmyk objectForKey:@"y"] floatValue]*100;
 		[lbl setText:[NSString stringWithFormat:@"%i", v]];
 		[self.view addSubview:lbl];
@@ -497,7 +533,7 @@
 														16.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_DATA];
 		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_BACKGROUND];
+		[lbl setBackgroundColor:CC_CLEAR];
 		v = [[cmyk objectForKey:@"k"] floatValue]*100;
 		[lbl setText:[NSString stringWithFormat:@"%i", v]];
 		[self.view addSubview:lbl];
@@ -543,6 +579,8 @@
 
 - (void)dealloc 
 {
+	[background release];
+	
 	[entry release];
 	[titleLabel release];
 	[authorLabel release];
