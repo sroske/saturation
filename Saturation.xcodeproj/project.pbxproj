@@ -13,6 +13,9 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
 		A911891A10DDD9C7003AA0EB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A911891910DDD9C7003AA0EB /* icon.png */; };
+		A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893110DDDD12003AA0EB /* list-background-normal.png */; };
+		A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893210DDDD12003AA0EB /* list-background-selected.png */; };
+		A911893710DDDD30003AA0EB /* BGSListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A911893610DDDD30003AA0EB /* BGSListViewController.m */; };
 		A9A0F7FB10D8903100823BC9 /* BGSMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */; };
 		A9A0F80610D8910100823BC9 /* BGSCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F80510D8910100823BC9 /* BGSCircleView.m */; };
 		A9A0F80B10D8912D00823BC9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */; };
@@ -54,6 +57,10 @@
 		32CA4F630368D1EE00C91783 /* Saturation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Saturation_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Saturation-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Saturation-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A911891910DDD9C7003AA0EB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		A911893110DDDD12003AA0EB /* list-background-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-normal.png"; sourceTree = "<group>"; };
+		A911893210DDDD12003AA0EB /* list-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-selected.png"; sourceTree = "<group>"; };
+		A911893510DDDD30003AA0EB /* BGSListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSListViewController.h; sourceTree = "<group>"; };
+		A911893610DDDD30003AA0EB /* BGSListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSListViewController.m; sourceTree = "<group>"; };
 		A9A0F7F910D8903100823BC9 /* BGSMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSMainViewController.h; sourceTree = "<group>"; };
 		A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSMainViewController.m; sourceTree = "<group>"; };
 		A9A0F80410D8910100823BC9 /* BGSCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSCircleView.h; sourceTree = "<group>"; };
@@ -214,6 +221,8 @@
 				A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */,
 				A9EFB18C10DDAA93005CCAA3 /* BGSWelcomeViewController.h */,
 				A9EFB18D10DDAA93005CCAA3 /* BGSWelcomeViewController.m */,
+				A911893510DDDD30003AA0EB /* BGSListViewController.h */,
+				A911893610DDDD30003AA0EB /* BGSListViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -221,6 +230,8 @@
 		A9EFACD410DC9FE4005CCAA3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A911893110DDDD12003AA0EB /* list-background-normal.png */,
+				A911893210DDDD12003AA0EB /* list-background-selected.png */,
 				A911891910DDD9C7003AA0EB /* icon.png */,
 				A9EFB31010DDCE3D005CCAA3 /* background.png */,
 				A9EFB20210DDB730005CCAA3 /* logo-background.png */,
@@ -300,6 +311,8 @@
 				A9EFB31110DDCE3D005CCAA3 /* background.png in Resources */,
 				A9EFB3A410DDD5B4005CCAA3 /* Entitlements.plist in Resources */,
 				A911891A10DDD9C7003AA0EB /* icon.png in Resources */,
+				A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */,
+				A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,6 +336,7 @@
 				A9EFB18710DDA7F5005CCAA3 /* BGSFavoriteView.m in Sources */,
 				A9EFB18E10DDAA93005CCAA3 /* BGSWelcomeViewController.m in Sources */,
 				A9EFB2DA10DDCAB5005CCAA3 /* NSArray-Shuffle.m in Sources */,
+				A911893710DDDD30003AA0EB /* BGSListViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

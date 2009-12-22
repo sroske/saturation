@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "FontsAndColors.h"
-#import "BGSDetailViewController.h"
 #import "BGSCircleView.h"
 #import "NSArray-Shuffle.h"
 
@@ -27,6 +26,7 @@
 	UIButton *infoButton;
 	BOOL hasAnimated;
 	NSMutableArray *initialCircles;
+	UIScrollView *scrollView;
 }
 
 @property (nonatomic, retain) UIImageView *logo;

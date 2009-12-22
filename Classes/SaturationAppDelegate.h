@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "BGSKulerParser.h"
 #import "BGSWelcomeViewController.h"
+#import "BGSMainViewController.h"
+#import "BGSDetailViewController.h"
+#import "BGSListViewController.h"
 
 @interface SaturationAppDelegate : NSObject <UIApplicationDelegate> 
 {
@@ -25,9 +28,9 @@
 @property (nonatomic, retain) UINavigationController *navController;
 @property (nonatomic, retain) BGSWelcomeViewController *welcomeController;
 
-- (void)fetchNewEntries;
-- (NSDictionary *)randomEntry;
+- (void)showListView;
 - (void)showDetailFor:(NSDictionary *)entryData;
+- (void)hideModalView;
 
 @end
 

@@ -1,6 +1,3 @@
-Add splash screen
-cicles fade in randomly
-splash text fades out
 detail and lists use modal popup
 have light overlay on that modal reveal
 
@@ -12,3 +9,6 @@ animation states
 
 list views
 selecting tab will snap new item to white, old item will fade to grey
+
+
+change font to helvetica nueue light.

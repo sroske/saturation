@@ -12,6 +12,7 @@
 
 @interface BGSWelcomeViewController : UIViewController 
 {
+	NSDictionary *entry;
 	UIImageView *background;
 	UIImageView *shadow;
 	UIImageView *logo;
@@ -19,6 +20,7 @@
 	UIImageView *light;
 }
 
+@property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) UIImageView *shadow;
 @property (nonatomic, retain) UIImageView *logo;

@@ -10,6 +10,7 @@
 
 @interface SaturationAppDelegate (Private)
 
+- (void)fetchNewEntries;
 - (NSDictionary *)randomEntry;
 
 @end
@@ -66,9 +67,9 @@
 {
 	if (navController == nil)
 	{
-		UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:self.welcomeController];
-		[self setNavController:nc];
-		[nc release];
+		UINavigationController *c = [[UINavigationController alloc] initWithRootViewController:self.welcomeController];
+		[self setNavController:c];
+		[c release];
 	}
 	return navController;
 }
@@ -77,7 +78,7 @@
 {
 	if (welcomeController == nil)
 	{
-		BGSWelcomeViewController *c = [[BGSWelcomeViewController alloc] init];
+		BGSWelcomeViewController *c = [[BGSWelcomeViewController alloc] initWithEntry:[self randomEntry]];
 		[self setWelcomeController:c];
 		[c release];
 	}
@@ -116,9 +117,25 @@
 	return [self.entries objectAtIndex:i];
 }
 
+- (void)showListView
+{
+	BGSListViewController *controller = [[BGSListViewController alloc] init];
+	[self.navController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+	[self.navController presentModalViewController:controller animated:YES];
+	[controller release];	
+}
+
 - (void)showDetailFor:(NSDictionary *)entryData
 {
-	// TODO
+	BGSDetailViewController *controller = [[BGSDetailViewController alloc] initWithEntry:entryData];
+	[self.navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+	[self.navController presentModalViewController:controller animated:YES];
+	[controller release];
+}
+
+- (void)hideModalView
+{
+	[self.navController dismissModalViewControllerAnimated:YES];
 }
 
 @end

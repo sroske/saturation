@@ -7,7 +7,7 @@
 //
 
 #import "BGSMainViewController.h"
-
+#import "SaturationAppDelegate.h"
 
 @interface BGSMainViewController (Private)
 
@@ -15,6 +15,7 @@
 - (void)showSettings:(id)sender;
 - (void)showDetailView:(id)sender;
 
+- (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
 - (void)logoFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
 
 @end
@@ -117,7 +118,8 @@
 
 - (void)showSettings:(id)sender
 {
-	NSLog(@"show settings");
+	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	[ad showListView];
 }
 
 - (UIButton *)infoButton
@@ -142,9 +144,8 @@
 
 - (void)showDetailView:(id)sender
 {
-	BGSDetailViewController *controller = [[BGSDetailViewController alloc] initWithEntry:self.entry];
-	[self.navigationController pushViewController:controller animated:YES];
-	[controller release];
+	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	[ad showDetailFor:self.entry];
 }
 
 - (id)initWithEntry:(NSDictionary *)entryData
@@ -211,6 +212,12 @@
 			[UIView setAnimationDelay:delay];
 			[UIView setAnimationDuration:0.6];
 			
+			if (c == [circles objectAtIndex:[circles count]-1])
+			{
+				[UIView setAnimationDelegate:self];
+				[UIView setAnimationDidStopSelector:@selector(circlesFaded:finished:context:)];
+			}
+			
 			[c setAlpha:1.0f];
 			
 			[UIView commitAnimations];
@@ -246,6 +253,12 @@
 	[self.navigationController setNavigationBarHidden:YES animated:animated];
     [super viewWillAppear:animated];
 }
+
+- (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+{
+	NSLog(@"Circles Faded");
+}
+
 
 - (void)logoFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {

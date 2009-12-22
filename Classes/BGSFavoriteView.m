@@ -69,7 +69,7 @@
 		[btn setImage:self.unfavoritedIcon forState:UIControlStateNormal];
 		[btn addTarget:self action:@selector(toggleFavorite:) forControlEvents:UIControlEventTouchUpInside];
 		[btn setFrame:CGRectMake(self.bounds.size.width/2-self.unfavoritedIcon.size.width/2, 
-								 self.bounds.size.height/2-self.unfavoritedIcon.size.height/2, 
+								 self.bounds.size.height/2-self.unfavoritedIcon.size.height/2-2.0f, 
 								 self.unfavoritedIcon.size.width, 
 								 self.unfavoritedIcon.size.height)];
 		[self setIconButton:btn];
@@ -102,6 +102,8 @@
 
 - (void)dealloc 
 {
+	[favoritedIcon release];
+	[unfavoritedIcon release];
 	[background release];
     [super dealloc];
 }

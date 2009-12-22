@@ -7,7 +7,6 @@
 //
 
 #import "BGSWelcomeViewController.h"
-#import "SaturationAppDelegate.h"
 
 @interface BGSWelcomeViewController (Private)
 
@@ -18,6 +17,7 @@
 
 @implementation BGSWelcomeViewController
 
+@synthesize entry;
 @synthesize background;
 @synthesize shadow;
 @synthesize logo;
@@ -109,6 +109,15 @@
 	return light;
 }
 
+- (id)initWithEntry:(NSDictionary *)entryData
+{
+	if (self = [super init])
+	{
+		self.entry = entryData;
+	}
+	return self;
+}
+
 - (void)loadView 
 {	
 	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
@@ -165,8 +174,7 @@
 
 - (void)introCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
-	SaturationAppDelegate *appDelegate = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-	BGSMainViewController *controller = [[BGSMainViewController alloc] initWithEntry:[appDelegate randomEntry]];
+	BGSMainViewController *controller = [[BGSMainViewController alloc] initWithEntry:self.entry];
 	[self.navigationController pushViewController:controller animated:NO];
 	[controller release];
 }
@@ -186,6 +194,7 @@
 
 - (void)dealloc 
 {
+	[entry release];
 	[background release];
 	[shadow release];
 	[logo release];

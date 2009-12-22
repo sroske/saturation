@@ -7,6 +7,7 @@
 //
 
 #import "BGSDetailViewController.h"
+#import "SaturationAppDelegate.h"
 
 @interface BGSDetailViewController (Private)
 
@@ -88,7 +89,8 @@
 
 - (void)close:(id)sender
 {
-	[self.navigationController popViewControllerAnimated:YES];
+	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	[ad hideModalView];
 }
 
 - (UILabel *)titleLabel
