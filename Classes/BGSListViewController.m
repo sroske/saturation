@@ -12,6 +12,7 @@
 
 @implementation BGSListViewController
 
+@synthesize currentEntries;
 @synthesize background;
 @synthesize closeButton;
 @synthesize tableView;
@@ -64,9 +65,9 @@
 	if (tableView == nil)
 	{
 		UITableView *table = [[UITableView alloc] initWithFrame:CGRectMake(0.0f, 
-																		   41.0f, 
-																		   0, 
-																		   0) 
+																		   40.0f, 
+																		   480.0f, 
+																		   280.0f) 
 														  style:UITableViewStylePlain];
 		[table setBackgroundColor:[UIColor clearColor]];
 		[table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -78,7 +79,12 @@
 }
 
 - (void)loadView 
-{		
+{
+	
+	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	self.currentEntries = [ad entries];
+	
+	
 	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
 	
 	UIView *newView = [[UIView alloc] initWithFrame:frame];
@@ -168,32 +174,38 @@
 
 
 // Customize the number of rows in the table view.
-- (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)section {
-    return 0;
+- (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)section 
+{
+    return [self.currentEntries count];
 }
 
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)ip {
-    
+- (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)ip 
+{    
     static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tv dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+    BGSEntryViewCell *cell = (BGSEntryViewCell *)[tv dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) 
+	{
+        cell = [[[BGSEntryViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
-    
-    // Set up the cell...
+	
+	NSDictionary *entry = [self.currentEntries objectAtIndex:ip.row];
+	[cell setEntry:entry];
 	
     return cell;
 }
 
 
-- (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)ip {
+- (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)ip 
+{
     // Navigation logic may go here. Create and push another view controller.
 	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
 	// [self.navigationController pushViewController:anotherViewController];
 	// [anotherViewController release];
+	
+	
 }
 
 
@@ -239,6 +251,7 @@
 
 - (void)dealloc 
 {
+	[currentEntries release];
 	[background release];
 	[tableView release];
     [super dealloc];

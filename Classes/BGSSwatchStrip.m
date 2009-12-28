@@ -13,6 +13,16 @@
 
 @synthesize swatches;
 
+- (void)setSwatches:(NSArray *)newSwatches
+{
+	if (swatches != newSwatches)
+	{
+		[swatches release];
+		swatches = [newSwatches retain];
+	}
+	[self setNeedsDisplay];
+}
+
 - (id)initWithFrame:(CGRect)frame andSwatches:(NSArray *)swatchEntries
 {
     if (self = [super initWithFrame:frame]) 

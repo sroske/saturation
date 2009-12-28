@@ -16,6 +16,7 @@
 	UIImage *favoritedIcon;
 	UIButton *iconButton;
 	BOOL isFavorite;
+	BOOL hasBackground;
 }
 
 
@@ -23,5 +24,7 @@
 @property (nonatomic, retain) UIImage *unfavoritedIcon;
 @property (nonatomic, retain) UIImage *favoritedIcon;
 @property (nonatomic, retain) UIButton *iconButton;
+@property (nonatomic, assign) BOOL isFavorite;
+@property (nonatomic, assign) BOOL hasBackground;
 
 @end

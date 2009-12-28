@@ -23,6 +23,7 @@
 		color = [nc retain];
 	}
 	
+	[self.layer setBackgroundColor:color];
 	[self setNeedsDisplay];
 }
 

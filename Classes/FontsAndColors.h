@@ -31,3 +31,4 @@
 #define CF_DETAIL_COLOR_TYPE	CF_FROM_NAME(@"HelveticaNeue", 24.0f)
 #define CF_DETAIL_COLOR_DATA	CF_FROM_NAME(@"HelveticaNeue", 14.0f)
 #define CF_DETAIL_EMAIL			CF_FROM_NAME(@"HelveticaNeue", 16.0f)
+#define CF_LIST_TITLE			CF_FROM_NAME(@"HelveticaNeue", 16.0f)

@@ -21,7 +21,16 @@
 @synthesize unfavoritedIcon;
 @synthesize favoritedIcon;
 @synthesize iconButton;
+@synthesize isFavorite;
+@synthesize hasBackground;
 
+- (void)setHasBackground:(BOOL)newHasBackground
+{
+	hasBackground = newHasBackground;
+	[self.background removeFromSuperview];
+	if (self.hasBackground)
+		[self insertSubview:self.background atIndex:0];
+}
 - (UIImageView *)background
 {
 	if (background == nil)
@@ -37,6 +46,12 @@
 		[iv release];
 	}
 	return background;
+}
+
+- (void)setIsFavorite:(BOOL)newIsFavorite
+{
+	isFavorite = newIsFavorite;
+	[self.iconButton setImage:(self.isFavorite ? self.favoritedIcon : self.unfavoritedIcon) forState:UIControlStateNormal];
 }
 
 - (UIImage *)unfavoritedIcon
@@ -66,12 +81,7 @@
 	{
 		UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
 		[btn setShowsTouchWhenHighlighted:YES];
-		[btn setImage:self.unfavoritedIcon forState:UIControlStateNormal];
 		[btn addTarget:self action:@selector(toggleFavorite:) forControlEvents:UIControlEventTouchUpInside];
-		[btn setFrame:CGRectMake(self.bounds.size.width/2-self.unfavoritedIcon.size.width/2, 
-								 self.bounds.size.height/2-self.unfavoritedIcon.size.height/2-2.0f, 
-								 self.unfavoritedIcon.size.width, 
-								 self.unfavoritedIcon.size.height)];
 		[self setIconButton:btn];
 		[btn release];
 	}
@@ -80,15 +90,15 @@
 
 - (void)toggleFavorite:(id)sender
 {
-	isFavorite = !isFavorite;
-	[self.iconButton setImage:(isFavorite ? self.favoritedIcon : self.unfavoritedIcon) forState:UIControlStateNormal];
+	self.isFavorite = !self.isFavorite;
 }
 
 - (id)initWithFrame:(CGRect)frame 
 {
     if (self = [super initWithFrame:frame]) 
 	{
-		isFavorite = NO;
+		self.isFavorite = NO;
+		self.hasBackground = YES;
 		[self addSubview:self.background];
 		[self addSubview:self.iconButton];
     }
@@ -98,6 +108,11 @@
 - (void)layoutSubviews
 {
 	[super layoutSubviews];
+	
+	self.iconButton.frame = CGRectMake(floor(self.bounds.size.width/2-self.unfavoritedIcon.size.width/2), 
+									   floor(self.bounds.size.height/2-self.unfavoritedIcon.size.height/2-2.0f), 
+									   self.unfavoritedIcon.size.width, 
+									   self.unfavoritedIcon.size.height);
 }
 
 - (void)dealloc 
