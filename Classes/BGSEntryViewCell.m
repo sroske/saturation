@@ -137,7 +137,7 @@
 									   10.0f);
 	self.nameLabel.frame = CGRectMake(self.colorStrip.frame.origin.x+self.colorStrip.frame.size.width+14.0f, 
 									  self.bounds.size.height/2-10.0f, 
-									  150.0f, 
+									  280.0f, 
 									  20.0f);
 }
 

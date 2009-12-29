@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FontsAndColors.h"
 #import "BGSEntryViewCell.h"
+#import "BGSKulerFeedController.h"
 
 @interface BGSListViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> 
 {
@@ -16,6 +17,10 @@
 	UIImageView *background;
 	UIButton *closeButton;
 	UITableView *tableView;
+	UIButton *newestButton;
+	UIButton *popularButton;
+	UIButton *randomButton;
+	UIButton *favoritesButton;
 }
 
 @property (nonatomic, retain) NSArray *currentEntries;

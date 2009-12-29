@@ -80,10 +80,9 @@
 
 - (void)loadView 
 {
-	
-	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-	self.currentEntries = [ad entries];
-	
+	BGSKulerFeedController *feed = [[BGSKulerFeedController alloc] init];
+	self.currentEntries = feed.newestEntries;
+	[feed release];
 	
 	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
 	

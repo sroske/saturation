@@ -12,6 +12,7 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		A903733210EA66AD00D515F5 /* BGSKulerFeedController.m in Sources */ = {isa = PBXBuildFile; fileRef = A903733110EA66AD00D515F5 /* BGSKulerFeedController.m */; };
 		A911891A10DDD9C7003AA0EB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A911891910DDD9C7003AA0EB /* icon.png */; };
 		A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893110DDDD12003AA0EB /* list-background-normal.png */; };
 		A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893210DDDD12003AA0EB /* list-background-selected.png */; };
@@ -57,6 +58,8 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Saturation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Saturation_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Saturation-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Saturation-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		A903733010EA66AD00D515F5 /* BGSKulerFeedController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerFeedController.h; sourceTree = "<group>"; };
+		A903733110EA66AD00D515F5 /* BGSKulerFeedController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerFeedController.m; sourceTree = "<group>"; };
 		A911891910DDD9C7003AA0EB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		A911893110DDDD12003AA0EB /* list-background-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-normal.png"; sourceTree = "<group>"; };
 		A911893210DDDD12003AA0EB /* list-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-selected.png"; sourceTree = "<group>"; };
@@ -194,6 +197,8 @@
 			children = (
 				A9A0F86910D8941A00823BC9 /* BGSKulerParser.h */,
 				A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */,
+				A903733010EA66AD00D515F5 /* BGSKulerFeedController.h */,
+				A903733110EA66AD00D515F5 /* BGSKulerFeedController.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -343,6 +348,7 @@
 				A9EFB2DA10DDCAB5005CCAA3 /* NSArray-Shuffle.m in Sources */,
 				A911893710DDDD30003AA0EB /* BGSListViewController.m in Sources */,
 				A94EABE610E09886002CD007 /* BGSEntryViewCell.m in Sources */,
+				A903733210EA66AD00D515F5 /* BGSKulerFeedController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

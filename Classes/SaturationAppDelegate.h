@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BGSKulerParser.h"
+#import "BGSKulerFeedController.h"
 #import "BGSWelcomeViewController.h"
 #import "BGSMainViewController.h"
 #import "BGSDetailViewController.h"
@@ -15,15 +15,11 @@
 
 @interface SaturationAppDelegate : NSObject <UIApplicationDelegate> 
 {
-	NSString *path;
-	NSArray *entries;
     UIWindow *window;
 	UINavigationController *navController;
 	BGSWelcomeViewController *welcomeController;
 }
 
-@property (nonatomic, retain) NSString *path;
-@property (nonatomic, retain) NSArray *entries;
 @property (nonatomic, retain) UIWindow *window;
 @property (nonatomic, retain) UINavigationController *navController;
 @property (nonatomic, retain) BGSWelcomeViewController *welcomeController;

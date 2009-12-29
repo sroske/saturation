@@ -8,49 +8,11 @@
 
 #import "SaturationAppDelegate.h"
 
-@interface SaturationAppDelegate (Private)
-
-- (void)fetchNewEntries;
-- (NSDictionary *)randomEntry;
-
-@end
-
-
 @implementation SaturationAppDelegate
 
-@synthesize path;
-@synthesize entries;
 @synthesize window;
 @synthesize navController;
 @synthesize welcomeController;
-
-#define FEED_URL @"http://kuler-api.adobe.com/feeds/rss/get.cfm?timeSpan=30&listType=rating"
-
-- (NSString *)path
-{
-	if (path == nil)
-	{
-		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES); 
-		NSString *documentsPath = [paths objectAtIndex:0];
-		NSString *p = [documentsPath stringByAppendingPathComponent:@"entries.plist"];
-		[self setPath:p];
-	}
-	return path;
-}
-
-- (NSArray *)entries
-{
-	if (entries == nil)
-	{
-		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:self.path];
-		if (saved != nil)
-			[self setEntries:saved];
-		else 
-			[self fetchNewEntries];
-		[saved release];
-	}
-	return entries;
-}
 
 - (UIWindow *)window
 {
@@ -78,9 +40,12 @@
 {
 	if (welcomeController == nil)
 	{
-		BGSWelcomeViewController *c = [[BGSWelcomeViewController alloc] initWithEntry:[self randomEntry]];
+		BGSKulerFeedController *feed = [[BGSKulerFeedController alloc] init];
+		int i = arc4random()%[feed.popularEntries count];
+		BGSWelcomeViewController *c = [[BGSWelcomeViewController alloc] initWithEntry:[feed.popularEntries objectAtIndex:i]];
 		[self setWelcomeController:c];
 		[c release];
+		[feed release];
 	}
 	return welcomeController;
 }
@@ -93,28 +58,10 @@
 
 - (void)dealloc 
 {
-	[path release];
-	[entries release];
     [window release];
 	[navController release];
 	[welcomeController release];
     [super dealloc];
-}
-
-- (void)fetchNewEntries
-{
-	BGSKulerParser *parser = [[BGSKulerParser alloc] init];
-	NSArray *e = [parser fetchEntriesFromURL:FEED_URL];
-	[self setEntries:e];
-	[parser release];
-	
-	[self.entries writeToFile:self.path atomically:YES];
-}
-
-- (NSDictionary *)randomEntry
-{
-	int i = arc4random()%[self.entries count];
-	return [self.entries objectAtIndex:i];
 }
 
 - (void)showListView
