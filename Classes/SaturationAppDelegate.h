@@ -26,6 +26,7 @@
 
 - (void)showListView;
 - (void)showDetailFor:(NSDictionary *)entryData;
+- (void)changeEntry:(NSDictionary *)entryData;
 - (void)hideModalView;
 
 @end

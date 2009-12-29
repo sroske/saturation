@@ -11,7 +11,10 @@
 
 @interface BGSMainViewController (Private)
 
+- (void)loadCircles;
+- (void)fadeInCircles;
 - (UIColor *)randomColor;
+
 - (void)showSettings:(id)sender;
 - (void)showDetailView:(id)sender;
 
@@ -86,6 +89,7 @@
 {
 	if (circleView == nil)
 	{
+		NSLog(@"creating a new circleview");
 		UIView *v = [[UIView alloc] initWithFrame:self.view.bounds];
 		[v setAutoresizesSubviews:YES];
 		[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
@@ -94,6 +98,24 @@
 		[v release];
 	}
 	return circleView;
+}
+
+- (void)setEntry:(NSDictionary *)newEntry
+{
+	if (newEntry != entry)
+	{
+		[entry release];
+		entry = [newEntry retain];
+	}
+	
+	if (circleView != nil)
+	{
+		[self.circleView removeFromSuperview];
+		self.circleView = nil;
+		[self.view insertSubview:self.circleView atIndex:1];
+		[self loadCircles];
+		[self fadeInCircles];
+	}
 }
 
 - (UIButton *)settingsButton
@@ -179,6 +201,11 @@
 	[self.view addSubview:self.settingsButton];
 	[self.view addSubview:self.infoButton];
 	
+	[self loadCircles];
+}
+
+- (void)loadCircles
+{
 	initialCircles = [[NSMutableArray alloc] init];
 	
 	for (int i = 0; i < ROWS*COLS; i++)
@@ -201,29 +228,7 @@
 {
 	if (!hasAnimated)
 	{
-		CGFloat delay = 0.3;
-		NSArray *circles = [initialCircles shuffledArray];
-		for (BGSCircleView *c in circles)
-		{
-			[c setHidden:NO];
-			[c setAlpha:0.0f];
-			[UIView beginAnimations:nil context:NULL];
-			[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-			[UIView setAnimationDelay:delay];
-			[UIView setAnimationDuration:0.6];
-			
-			if (c == [circles objectAtIndex:[circles count]-1])
-			{
-				[UIView setAnimationDelegate:self];
-				[UIView setAnimationDidStopSelector:@selector(circlesFaded:finished:context:)];
-			}
-			
-			[c setAlpha:1.0f];
-			
-			[UIView commitAnimations];
-			
-			delay += 0.4f;
-		}
+		[self fadeInCircles];
 		
 		[UIView beginAnimations:@"kulerLogoFade" context:self.kulerLogo];
 		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
@@ -254,9 +259,37 @@
     [super viewWillAppear:animated];
 }
 
+- (void)fadeInCircles
+{
+	CGFloat delay = 0.3;
+	NSArray *circles = [initialCircles shuffledArray];
+	for (BGSCircleView *c in circles)
+	{
+		[c setHidden:NO];
+		[c setAlpha:0.0f];
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+		[UIView setAnimationDelay:delay];
+		[UIView setAnimationDuration:0.6];
+		
+		if (c == [circles objectAtIndex:[circles count]-1])
+		{
+			[UIView setAnimationDelegate:self];
+			[UIView setAnimationDidStopSelector:@selector(circlesFaded:finished:context:)];
+		}
+		
+		[c setAlpha:1.0f];
+		
+		[UIView commitAnimations];
+		
+		delay += 0.4f;
+	}
+}
+
 - (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
 	NSLog(@"Circles Faded");
+	[initialCircles release];
 }
 
 

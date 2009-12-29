@@ -80,6 +80,14 @@
 	[controller release];
 }
 
+- (void)changeEntry:(NSDictionary *)entryData
+{
+	// TODO
+	BGSMainViewController *c = (BGSMainViewController *)[self.navController topViewController];
+	[c setEntry:entryData];
+	[self hideModalView];
+}
+
 - (void)hideModalView
 {
 	[self.navController dismissModalViewControllerAnimated:YES];
