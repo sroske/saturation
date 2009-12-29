@@ -9,23 +9,33 @@
 #import <UIKit/UIKit.h>
 #import "FontsAndColors.h"
 #import "BGSEntryViewCell.h"
+#import "BGSSectionButton.h"
+#import "BGSSwatchColor.h"
 #import "BGSKulerFeedController.h"
 
 @interface BGSListViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> 
 {
-	NSArray *currentEntries;
+	NSArray *selectedEntries;
 	UIImageView *background;
 	UIButton *closeButton;
 	UITableView *tableView;
-	UIButton *newestButton;
-	UIButton *popularButton;
-	UIButton *randomButton;
-	UIButton *favoritesButton;
+	BGSKulerFeedController *feed;
+	BGSSectionButton *newestButton;
+	BGSSectionButton *popularButton;
+	BGSSectionButton *randomButton;
+	BGSSectionButton *favoritesButton;
+	BGSSwatchColor *seperator;
 }
 
-@property (nonatomic, retain) NSArray *currentEntries;
+@property (nonatomic, retain) NSArray *selectedEntries;
 @property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) UIButton *closeButton;
 @property (nonatomic, retain) UITableView *tableView;
+@property (nonatomic, retain) BGSKulerFeedController *feed;
+@property (nonatomic, retain) BGSSectionButton *newestButton;
+@property (nonatomic, retain) BGSSectionButton *popularButton;
+@property (nonatomic, retain) BGSSectionButton *randomButton;
+@property (nonatomic, retain) BGSSectionButton *favoritesButton;
+@property (nonatomic, retain) BGSSwatchColor *seperator;
 
 @end

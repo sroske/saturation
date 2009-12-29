@@ -9,13 +9,25 @@
 #import "BGSListViewController.h"
 #import "SaturationAppDelegate.h"
 
+@interface BGSListViewController (Private)
+
+- (void)changeSection:(id)sender;
+
+@end
+
 
 @implementation BGSListViewController
 
-@synthesize currentEntries;
+@synthesize selectedEntries;
 @synthesize background;
 @synthesize closeButton;
 @synthesize tableView;
+@synthesize feed;
+@synthesize newestButton;
+@synthesize popularButton;
+@synthesize randomButton;
+@synthesize favoritesButton;
+@synthesize seperator;
 
 - (UIImageView *)background
 {
@@ -54,6 +66,125 @@
 	return closeButton;
 }
 
+- (BGSKulerFeedController *)feed
+{
+	if (feed == nil)
+	{
+		BGSKulerFeedController *c = [[BGSKulerFeedController alloc] init];
+		[self setFeed:c];
+		[c release];
+	}
+	return feed;
+}
+
+- (BGSSectionButton *)newestButton
+{
+	if (newestButton == nil)
+	{
+		BGSSectionButton *b = [[BGSSectionButton alloc] initWithFrame:CGRectMake(14.0f, 
+																				 0.0f, 
+																				 70.0f, 
+																				 40.0f)];
+		[b setTitle:@"newest" forState:UIControlStateNormal];
+		[b addTarget:self action:@selector(changeSection:) forControlEvents:UIControlEventTouchDown];
+		[self setNewestButton:b];
+		[b release];
+	}
+	return newestButton;
+}
+
+- (BGSSectionButton *)popularButton
+{
+	if (popularButton == nil)
+	{
+		BGSSectionButton *b = [[BGSSectionButton alloc] initWithFrame:CGRectMake(floor(self.newestButton.frame.origin.x+self.newestButton.frame.size.width+14.0f), 
+																				 self.newestButton.frame.origin.y, 
+																				 120.0f, 
+																				 40.0f)];
+		[b setTitle:@"most popular" forState:UIControlStateNormal];
+		[b addTarget:self action:@selector(changeSection:) forControlEvents:UIControlEventTouchDown];
+		[self setPopularButton:b];
+		[b release];
+	}
+	return popularButton;
+}
+
+- (BGSSectionButton *)randomButton
+{
+	if (randomButton == nil)
+	{
+		BGSSectionButton *b = [[BGSSectionButton alloc] initWithFrame:CGRectMake(floor(self.popularButton.frame.origin.x+self.popularButton.frame.size.width+14.0f), 
+																				 self.popularButton.frame.origin.y, 
+																				 80.0f, 
+																				 40.0f)];
+		[b setTitle:@"random" forState:UIControlStateNormal];
+		[b addTarget:self action:@selector(changeSection:) forControlEvents:UIControlEventTouchDown];
+		[self setRandomButton:b];
+		[b release];
+	}
+	return randomButton;
+}
+
+- (BGSSectionButton *)favoritesButton
+{
+	if (favoritesButton == nil)
+	{
+		BGSSectionButton *b = [[BGSSectionButton alloc] initWithFrame:CGRectMake(floor(self.randomButton.frame.origin.x+self.randomButton.frame.size.width+14.0f), 
+																				 self.randomButton.frame.origin.y, 
+																				 80.0f, 
+																				 40.0f)];
+		[b setTitle:@"favorites" forState:UIControlStateNormal];
+		[b addTarget:self action:@selector(changeSection:) forControlEvents:UIControlEventTouchDown];
+		[self setFavoritesButton:b];
+		[b release];
+	}
+	return favoritesButton;
+}
+
+- (void)changeSection:(id)sender
+{
+	if (![sender isSelected])
+	{
+		[self.newestButton setSelected:NO];
+		[self.popularButton setSelected:NO];
+		[self.randomButton setSelected:NO];
+		[self.favoritesButton setSelected:NO];
+		
+		[sender setSelected:YES];
+		
+		if (sender == self.newestButton)
+			self.selectedEntries = [self.feed newestEntries];
+		else if (sender == self.popularButton)
+			self.selectedEntries = [self.feed popularEntries];
+		else if (sender == self.randomButton)
+			self.selectedEntries = [self.feed randomEntries];
+		else if (sender == self.favoritesButton)
+			self.selectedEntries = [self.feed favoriteEntries];
+		
+		[self.tableView reloadData];
+		if ([self.selectedEntries count] > 0)
+		{
+			NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
+			[self.tableView scrollToRowAtIndexPath:ip atScrollPosition:UITableViewScrollPositionTop animated:YES];			
+		}
+	}
+}
+
+- (BGSSwatchColor *)seperator
+{
+	if (seperator == nil)
+	{
+		BGSSwatchColor *c = [[BGSSwatchColor alloc] initWithFrame:CGRectMake(0.0f, 
+																			 40.0f, 
+																			 480.0f, 
+																			 1.0f) 
+														 andColor:CC_LIST_SEPERATOR];
+		[self setSeperator:c];
+		[c release];
+	}
+	return seperator;
+}
+
 - (void)close:(id)sender
 {
 	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -65,9 +196,9 @@
 	if (tableView == nil)
 	{
 		UITableView *table = [[UITableView alloc] initWithFrame:CGRectMake(0.0f, 
-																		   40.0f, 
+																		   41.0f, 
 																		   480.0f, 
-																		   280.0f) 
+																		   279.0f) 
 														  style:UITableViewStylePlain];
 		[table setBackgroundColor:[UIColor clearColor]];
 		[table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -79,10 +210,9 @@
 }
 
 - (void)loadView 
-{
-	BGSKulerFeedController *feed = [[BGSKulerFeedController alloc] init];
-	self.currentEntries = feed.newestEntries;
-	[feed release];
+{	
+	self.selectedEntries = [self.feed newestEntries];
+	[self.newestButton setSelected:YES];
 	
 	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
 	
@@ -96,6 +226,11 @@
 	[self.view addSubview:self.background];
 	[self.view addSubview:self.tableView];
 	[self.view addSubview:self.closeButton];
+	[self.view addSubview:self.newestButton];
+	[self.view addSubview:self.popularButton];
+	[self.view addSubview:self.randomButton];
+	[self.view addSubview:self.favoritesButton];
+	[self.view addSubview:self.seperator];
 }
 
 
@@ -175,7 +310,7 @@
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)section 
 {
-    return [self.currentEntries count];
+    return [self.selectedEntries count];
 }
 
 
@@ -190,7 +325,7 @@
         cell = [[[BGSEntryViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
 	
-	NSDictionary *entry = [self.currentEntries objectAtIndex:ip.row];
+	NSDictionary *entry = [self.selectedEntries objectAtIndex:ip.row];
 	[cell setEntry:entry];
 	
     return cell;
@@ -250,9 +385,15 @@
 
 - (void)dealloc 
 {
-	[currentEntries release];
+	[selectedEntries release];
 	[background release];
 	[tableView release];
+	[feed release];
+	[newestButton release];
+	[popularButton release];
+	[randomButton release];
+	[favoritesButton release];
+	[seperator release];
     [super dealloc];
 }
 
