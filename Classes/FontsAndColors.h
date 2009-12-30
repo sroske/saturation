@@ -27,6 +27,7 @@
 #define CC_BACKGROUND			CC_FROM_RGB(0x070c0c)
 #define CC_LIST_SEPERATOR		CC_FROM_RGB(0xb9bbbd)
 #define CC_LIST_BACKGROUND		CC_FROM_RGB(0x303535)
+#define CC_LOADING				CC_FROM_RGB(0x797979)
 #define CC_CLEAR				[UIColor clearColor]
 
 #define CF_DETAIL_TITLE			CF_FROM_NAME(@"HelveticaNeue", 48.0f)
@@ -35,4 +36,5 @@
 #define CF_DETAIL_COLOR_DATA	CF_FROM_NAME(@"HelveticaNeue", 14.0f)
 #define CF_DETAIL_EMAIL			CF_FROM_NAME(@"HelveticaNeue", 16.0f)
 #define CF_LIST_TITLE			CF_FROM_NAME(@"HelveticaNeue", 16.0f)
+#define CF_LOADING				CF_FROM_NAME(@"HelveticaNeue", 16.0f)
 #define CF_LIST_SECTION_BUTTON	CF_FROM_NAME(@"HelveticaNeue", 18.0f)

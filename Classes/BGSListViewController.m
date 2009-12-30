@@ -23,6 +23,8 @@
 @synthesize background;
 @synthesize closeButton;
 @synthesize tableView;
+@synthesize headerView;
+@synthesize footerView;
 @synthesize feed;
 @synthesize newestButton;
 @synthesize popularButton;
@@ -146,11 +148,7 @@
 {
 	if (![sender isSelected])
 	{
-		[self.newestButton setSelected:NO];
-		[self.popularButton setSelected:NO];
-		[self.randomButton setSelected:NO];
-		[self.favoritesButton setSelected:NO];
-		
+		[lastSelectedButton setSelected:NO];
 		[sender setSelected:YES];
 		
 		if (sender == self.newestButton)
@@ -162,12 +160,28 @@
 		else if (sender == self.favoritesButton)
 			self.selectedEntries = [self.feed favoriteEntries];
 		
+		if (sender == self.favoritesButton)
+		{
+			[self.tableView setTableHeaderView:nil];
+			[self.tableView setTableFooterView:nil];
+		}
+		else 
+		{
+			[self.tableView setTableHeaderView:self.headerView];
+			[self.tableView setTableFooterView:self.footerView];
+		}
+		
 		[self.tableView reloadData];
 		if ([self.selectedEntries count] > 0)
 		{
 			NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
-			[self.tableView scrollToRowAtIndexPath:ip atScrollPosition:UITableViewScrollPositionTop animated:YES];			
+			[self.tableView scrollToRowAtIndexPath:ip 
+								  atScrollPosition:UITableViewScrollPositionTop 
+										  animated:NO];
+										  //animated:(lastSelectedButton != self.favoritesButton)];
 		}
+		
+		lastSelectedButton = sender;
 	}
 }
 
@@ -205,15 +219,41 @@
 		[table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[table setDataSource:self];
 		[table setDelegate:self];
+		[table setContentOffset:CGPointMake(0.0f, 44.0f)];
 		[self setTableView:table];
 	}
 	return tableView; 
+}
+
+- (BGSLoadingView *)headerView
+{
+	if (headerView == nil)
+	{
+		BGSLoadingView *h = [[BGSLoadingView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 480.0f, 44.0f)];
+		[h.titleLabel setText:@"loading new swatches"];
+		[self setHeaderView:h];
+		[h release];
+	}
+	return headerView;
+}
+
+- (BGSLoadingView *)footerView
+{
+	if (footerView == nil)
+	{
+		BGSLoadingView *f = [[BGSLoadingView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 480.0f, 44.0f)];
+		[f.titleLabel setText:@"loading additional swatches"];
+		[self setFooterView:f];
+		[f release];
+	}
+	return footerView;
 }
 
 - (void)loadView 
 {	
 	self.selectedEntries = [self.feed newestEntries];
 	[self.newestButton setSelected:YES];
+	lastSelectedButton = self.newestButton;
 	
 	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
 	
@@ -226,6 +266,8 @@
 	
 	[self.view addSubview:self.background];
 	[self.view addSubview:self.tableView];
+	[self.tableView setTableHeaderView:self.headerView];
+	[self.tableView setTableFooterView:self.footerView];
 	[self.view addSubview:self.closeButton];
 	[self.view addSubview:self.newestButton];
 	[self.view addSubview:self.popularButton];
@@ -298,6 +340,22 @@
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+}
+
+- (void)dealloc 
+{
+	[selectedEntries release];
+	[background release];
+	[tableView release];
+	[headerView release];
+	[footerView release];
+	[feed release];
+	[newestButton release];
+	[popularButton release];
+	[randomButton release];
+	[favoritesButton release];
+	[seperator release];
+    [super dealloc];
 }
 
 #pragma mark Table view methods
@@ -379,19 +437,15 @@
 }
 */
 
+#pragma mark -
+#pragma mark scrollview delegate
 
-- (void)dealloc 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-	[selectedEntries release];
-	[background release];
-	[tableView release];
-	[feed release];
-	[newestButton release];
-	[popularButton release];
-	[randomButton release];
-	[favoritesButton release];
-	[seperator release];
-    [super dealloc];
+	if (scrollView.contentOffset.y < self.headerView.frame.size.height)
+	{
+		NSLog(@"refresh this list");
+	}
 }
 
 @end
