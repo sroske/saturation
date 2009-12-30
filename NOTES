@@ -1,26 +1,10 @@
 detail and lists use modal popup
 have light overlay on that modal reveal
 
-Need:
-
-animated state for rows and email links
-animation states
-
-
-list views
-selecting tab will snap new item to white, old item will fade to grey
-
-
-slide on color string
-
-add background to 5 point color strip
-
-change font to helvetica nueue light.
-
-
-1. setup different lists, pulling from the web services
-2. setup loading/paging/refreshing stuff
-3. zoom/etc. on the visualization
-4. dropping cmyk, adding visualization selection
-5. favorites
-6. email schemex
+1. setup loading/paging/refreshing stuff
+2. zoom/etc. on the visualization
+3. dropping cmyk, adding visualization selection
+4. favorites
+5. email using mail composer
+6. change fonts to helvetica nueue light
+7. slide the strip on detail like a scrollview

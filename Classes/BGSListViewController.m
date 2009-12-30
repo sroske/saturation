@@ -12,6 +12,7 @@
 @interface BGSListViewController (Private)
 
 - (void)changeSection:(id)sender;
+- (CAGradientLayer *)shadowAsInverse:(BOOL)inverse;
 
 @end
 
@@ -191,16 +192,16 @@
 	[ad hideModalView];
 }
 
-- (UITableView *)tableView
+- (BGSTableView *)tableView
 {
 	if (tableView == nil)
 	{
-		UITableView *table = [[UITableView alloc] initWithFrame:CGRectMake(0.0f, 
-																		   41.0f, 
-																		   480.0f, 
-																		   279.0f) 
-														  style:UITableViewStylePlain];
-		[table setBackgroundColor:[UIColor clearColor]];
+		BGSTableView *table = [[BGSTableView alloc] initWithFrame:CGRectMake(0.0f, 
+																			 41.0f, 
+																			 480.0f, 
+																			 279.0f) 
+															style:UITableViewStylePlain];
+		[table setBackgroundColor:CC_LIST_BACKGROUND];
 		[table setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[table setDataSource:self];
 		[table setDelegate:self];
@@ -299,7 +300,6 @@
 	// e.g. self.myOutlet = nil;
 }
 
-
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tv {
@@ -393,7 +393,6 @@
 	[seperator release];
     [super dealloc];
 }
-
 
 @end
 

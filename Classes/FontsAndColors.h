@@ -26,6 +26,7 @@
 #define CC_SECTION_BUTTON		CC_FROM_RGB(0x878686)
 #define CC_BACKGROUND			CC_FROM_RGB(0x070c0c)
 #define CC_LIST_SEPERATOR		CC_FROM_RGB(0xb9bbbd)
+#define CC_LIST_BACKGROUND		CC_FROM_RGB(0x303535)
 #define CC_CLEAR				[UIColor clearColor]
 
 #define CF_DETAIL_TITLE			CF_FROM_NAME(@"HelveticaNeue", 48.0f)

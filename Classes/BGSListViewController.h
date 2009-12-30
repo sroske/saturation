@@ -7,18 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "FontsAndColors.h"
 #import "BGSEntryViewCell.h"
 #import "BGSSectionButton.h"
 #import "BGSSwatchColor.h"
 #import "BGSKulerFeedController.h"
+#import "BGSTableView.h"
 
 @interface BGSListViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> 
 {
 	NSArray *selectedEntries;
 	UIImageView *background;
 	UIButton *closeButton;
-	UITableView *tableView;
+	BGSTableView *tableView;
 	BGSKulerFeedController *feed;
 	BGSSectionButton *newestButton;
 	BGSSectionButton *popularButton;
@@ -30,7 +32,7 @@
 @property (nonatomic, retain) NSArray *selectedEntries;
 @property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) UIButton *closeButton;
-@property (nonatomic, retain) UITableView *tableView;
+@property (nonatomic, retain) BGSTableView *tableView;
 @property (nonatomic, retain) BGSKulerFeedController *feed;
 @property (nonatomic, retain) BGSSectionButton *newestButton;
 @property (nonatomic, retain) BGSSectionButton *popularButton;
