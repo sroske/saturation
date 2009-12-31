@@ -9,18 +9,24 @@
 #import <Foundation/Foundation.h>
 #import "BGSKulerOperation.h"
 
+#define FEED_BASE_URL			@"http://kuler-api.adobe.com/feeds/rss/get.cfm?listType=%@&itemsPerPage=%i&startIndex=%i&key=%@"
 #define FEED_API_KEY			@"B90C327DD1FB1BDA94CEC6A1AF6D84D4"
-#define FEED_BASE_URL			@"http://kuler-api.adobe.com/feeds/rss/get.cfm?listType=%@&key=%@"
-
-#define FEED_TYPE_POPULAR		@"popular"
-#define FEED_TYPE_RANDOM		@"random"
-#define FEED_TYPE_NEWEST		@"recent"
-#define FEED_TYPE_FAVORITES		@"favorites"
-
-#define FEED_SCOPE_FULL			@"full"
-#define FEED_SCOPE_PARTIAL		@"partial"
-
+#define FEED_PER_PAGE			30
 #define FEED_MAX_OPERATIONS		2
+
+enum feedTypes 
+{
+	kKulerFeedTypeNewest = 1000, 
+	kKulerFeedTypePopular,
+	kKulerFeedTypeRandom,
+	kKulerFeedTypeFavorites
+};
+
+enum scopes 
+{
+	kKulerFeedScopeFull = 2000, 
+	kKulerFeedScopePartial
+};
 
 @interface BGSKulerFeedController : NSObject 
 {
@@ -38,7 +44,10 @@
 @property (nonatomic, retain) NSArray *favoriteEntries;
 
 - (void)refreshNewestEntries;
+- (void)pageNewestEntries;
 - (void)refreshPopularEntries;
+- (void)pagePopularEntries;
 - (void)refreshRandomEntries;
+- (void)pageRandomEntries;
 
 @end

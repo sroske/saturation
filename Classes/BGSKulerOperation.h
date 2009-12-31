@@ -12,14 +12,14 @@
 @interface BGSKulerOperation : NSOperation 
 {
 	BGSKulerParser *parser;
-	NSString *scope;
-	NSString *feedType;
+	int scope;
+	int feedType;
 }
 
 @property (nonatomic, retain) BGSKulerParser *parser;
-@property (nonatomic, retain) NSString *scope;
-@property (nonatomic, retain) NSString *feedType;
+@property (nonatomic, assign) int scope;
+@property (nonatomic, assign) int feedType;
 
-- (id)initWithURL:(NSURL *)u scope:(NSString *)s andFeedType:(NSString *)ft;
+- (id)initWithURL:(NSURL *)u scope:(int)s andFeedType:(int)ft;
 
 @end

@@ -14,6 +14,8 @@
 - (void)changeSection:(id)sender;
 - (CAGradientLayer *)shadowAsInverse:(BOOL)inverse;
 
+- (NSArray *)selectedEntries;
+
 -(void)fetchStarted:(NSNotification *)notice;
 -(void)fetchCompleted:(NSNotification *)notice;
 
@@ -22,7 +24,6 @@
 
 @implementation BGSListViewController
 
-@synthesize selectedEntries;
 @synthesize background;
 @synthesize closeButton;
 @synthesize tableView;
@@ -155,13 +156,13 @@
 		[sender setSelected:YES];
 		
 		if (sender == self.newestButton)
-			self.selectedEntries = [self.feed newestEntries];
+			currentSection = kKulerFeedTypeNewest;
 		else if (sender == self.popularButton)
-			self.selectedEntries = [self.feed popularEntries];
+			currentSection = kKulerFeedTypePopular;
 		else if (sender == self.randomButton)
-			self.selectedEntries = [self.feed randomEntries];
+			currentSection = kKulerFeedTypeRandom;
 		else if (sender == self.favoritesButton)
-			self.selectedEntries = [self.feed favoriteEntries];
+			currentSection = kKulerFeedTypeFavorites;
 		
 		if (sender == self.favoritesButton)
 		{
@@ -185,6 +186,10 @@
 		}
 		
 		lastSelectedButton = sender;
+		
+		[self.feed.queue cancelAllOperations];
+		currentlyRefreshing = NO;
+		currentlyPaging = NO;
 	}
 }
 
@@ -257,13 +262,14 @@
 	if (self = [super init])
 	{
 		currentlyRefreshing = NO;
+		currentlyPaging = NO;
 		[[NSNotificationCenter defaultCenter] addObserver:self 
 												 selector:@selector(fetchStarted:) 
-													 name:@"kuler.fetch.started" 
+													 name:@"kuler.feed.update.started" 
 												   object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self 
 												 selector:@selector(fetchCompleted:) 
-													 name:@"kuler.fetch.completed" 
+													 name:@"kuler.feed.update.completed" 
 												   object:nil];
 	}
 	return self;
@@ -271,20 +277,66 @@
 
 -(void)fetchStarted:(NSNotification *)notice
 {
-	currentlyRefreshing = YES;
-	NSLog(@"fetchStarted: %@", [notice userInfo]);
+	NSLog(@"fetchStarted - url: %@, scope: %@, feedType: %@", 
+		  [[notice userInfo] objectForKey:@"url"],
+		  [[notice userInfo] objectForKey:@"scope"], 
+		  [[notice userInfo] objectForKey:@"feedType"]);
+	
+	int scope = [[[notice userInfo] objectForKey:@"scope"] intValue];
+	if (scope == kKulerFeedScopeFull)
+	{
+		currentlyRefreshing = YES;
+		currentlyPaging = NO;
+	}
+	else
+	{
+		currentlyPaging = YES;
+		currentlyRefreshing = NO;
+	}
 }
 -(void)fetchCompleted:(NSNotification *)notice
 {
-	currentlyRefreshing = NO;
-	NSLog(@"fetchCompleted: %@", [notice userInfo]);
-	[self.tableView reloadData];
-	[self.tableView setContentOffset:CGPointMake(0.0f, 44.0f)];
+	NSLog(@"fetchCompleted - scope: %@, feedType: %@", 
+		  [[notice userInfo] objectForKey:@"scope"], 
+		  [[notice userInfo] objectForKey:@"feedType"]);
+	
+	int scope = [[[notice userInfo] objectForKey:@"scope"] intValue];
+	if (scope == kKulerFeedScopeFull)
+	{
+		currentlyRefreshing = NO;
+		[self.tableView reloadData];
+		[self.tableView setContentOffset:CGPointMake(0.0f, 44.0f)];
+	}	
+	else
+	{
+		currentlyPaging = NO;
+		[self.tableView reloadData];
+	}
+}
+
+- (NSArray *)selectedEntries
+{
+	NSArray *entries = [NSArray array];
+	switch (currentSection) {
+		case kKulerFeedTypeNewest:
+			entries = [self.feed newestEntries];
+			break;
+		case kKulerFeedTypePopular:
+			entries = [self.feed popularEntries];
+			break;
+		case kKulerFeedTypeRandom:
+			entries = [self.feed randomEntries];
+			break;
+		default:
+			entries = [self.feed favoriteEntries];
+			break;
+	}
+	return entries;
 }
 
 - (void)loadView 
 {	
-	self.selectedEntries = [self.feed newestEntries];
+	currentSection = kKulerFeedTypeNewest;
 	[self.newestButton setSelected:YES];
 	lastSelectedButton = self.newestButton;
 	
@@ -378,7 +430,6 @@
 - (void)dealloc 
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[selectedEntries release];
 	[background release];
 	[tableView release];
 	[headerView release];
@@ -402,7 +453,7 @@
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)section 
 {
-    return [self.selectedEntries count];
+    return [[self selectedEntries] count];
 }
 
 
@@ -417,7 +468,7 @@
         cell = [[[BGSEntryViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
 	
-	NSDictionary *entry = [self.selectedEntries objectAtIndex:ip.row];
+	NSDictionary *entry = [[self selectedEntries] objectAtIndex:ip.row];
 	[cell setEntry:entry];
 	
     return cell;
@@ -426,7 +477,7 @@
 
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)ip 
 {
-	NSDictionary *entry = [self.selectedEntries objectAtIndex:ip.row];
+	NSDictionary *entry = [[self selectedEntries] objectAtIndex:ip.row];
 	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
 	[ad changeEntry:entry];
 }
@@ -478,7 +529,31 @@
 {
 	if (scrollView.contentOffset.y < self.headerView.frame.size.height && !currentlyRefreshing)
 	{
-		[self.feed refreshNewestEntries];
+		switch (currentSection) {
+			case kKulerFeedTypeNewest:
+				[self.feed refreshNewestEntries];
+				break;
+			case kKulerFeedTypePopular:
+				[self.feed refreshPopularEntries];
+				break;
+			case kKulerFeedTypeRandom:
+				[self.feed refreshRandomEntries];
+				break;
+		}
+	}
+	else if (scrollView.contentOffset.y > (44.0f+self.selectedEntries.count*44.0f-279.0f) && !currentlyPaging)
+	{
+		switch (currentSection) {
+			case kKulerFeedTypeNewest:
+				[self.feed pageNewestEntries];
+				break;
+			case kKulerFeedTypePopular:
+				[self.feed pagePopularEntries];
+				break;
+			case kKulerFeedTypeRandom:
+				[self.feed pageRandomEntries];
+				break;
+		}
 	}
 }
 

@@ -18,7 +18,7 @@
 
 @interface BGSListViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> 
 {
-	NSArray *selectedEntries;
+	int currentSection;
 	UIImageView *background;
 	UIButton *closeButton;
 	BGSTableView *tableView;
@@ -32,9 +32,9 @@
 	BGSSectionButton *lastSelectedButton;
 	BGSSwatchColor *seperator;
 	BOOL currentlyRefreshing;
+	BOOL currentlyPaging;
 }
 
-@property (nonatomic, retain) NSArray *selectedEntries;
 @property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) UIButton *closeButton;
 @property (nonatomic, retain) BGSTableView *tableView;

@@ -15,7 +15,7 @@
 @synthesize scope;
 @synthesize feedType;
 
-- (id)initWithURL:(NSURL *)u scope:(NSString *)s andFeedType:(NSString *)ft;
+- (id)initWithURL:(NSURL *)u scope:(int)s andFeedType:(int)ft;
 {
 	if (self = [super init])
 	{
@@ -32,33 +32,43 @@
 - (void)dealloc
 {
 	[parser release];
-	[scope release];
-	[feedType release];
 	[super dealloc];
 }
 
 - (void)main 
 {
-	if (self.parser.url == nil || self.scope == nil || self.feedType == nil) return;
+	if (self.parser.url == nil) return;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"kuler.fetch.started" 
 														object:self
-													  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"scope", self.scope, 
-																@"feedType", self.feedType, nil]];
+													  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:self.parser.url, @"url",
+																[NSNumber numberWithInt:self.scope], @"scope", 
+																[NSNumber numberWithInt:self.feedType], @"feedType", nil]];
 	
-    if (self.isCancelled) return;
+    if (self.isCancelled)
+	{
+		NSLog(@"cancelled before fetch, exiting");
+		return;
+	}
+	
 	[self.parser fetch];
 	
-    if (self.isCancelled) return;
+    if (self.isCancelled)
+	{
+		NSLog(@"cancelled before parse, exiting");
+		return;
+	}
+	
 	[self.parser parse];
 	
-	if (self.isCancelled) return;
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"kuler.fetch.completed" 
-														object:self
-													  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:self.parser.entries, @"entries", 
-																self.scope, @"scope", 
-																self.feedType, @"feedType", nil]];
+	if (!self.isCancelled)
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"kuler.fetch.completed" 
+															object:self
+														  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:self.parser.entries, @"entries", 
+																	[NSNumber numberWithInt:self.scope], @"scope", 
+																	[NSNumber numberWithInt:self.feedType], @"feedType", nil]];		
+	}
 }
 
 @end
