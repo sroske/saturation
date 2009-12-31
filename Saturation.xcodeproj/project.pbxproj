@@ -17,6 +17,7 @@
 		A90374A410EBE3CD00D515F5 /* BGSTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A90374A310EBE3CD00D515F5 /* BGSTableView.m */; };
 		A903750A10EC0CE600D515F5 /* BGSLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = A903750910EC0CE600D515F5 /* BGSLoadingView.m */; };
 		A90375B010EC28EE00D515F5 /* BGSKulerOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = A90375AF10EC28EE00D515F5 /* BGSKulerOperation.m */; };
+		A903798010ED61C000D515F5 /* BGSCircleScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A903797F10ED61C000D515F5 /* BGSCircleScrollView.m */; };
 		A911891A10DDD9C7003AA0EB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A911891910DDD9C7003AA0EB /* icon.png */; };
 		A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893110DDDD12003AA0EB /* list-background-normal.png */; };
 		A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893210DDDD12003AA0EB /* list-background-selected.png */; };
@@ -72,6 +73,8 @@
 		A903750910EC0CE600D515F5 /* BGSLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSLoadingView.m; sourceTree = "<group>"; };
 		A90375AE10EC28EE00D515F5 /* BGSKulerOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerOperation.h; sourceTree = "<group>"; };
 		A90375AF10EC28EE00D515F5 /* BGSKulerOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerOperation.m; sourceTree = "<group>"; };
+		A903797E10ED61C000D515F5 /* BGSCircleScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSCircleScrollView.h; sourceTree = "<group>"; };
+		A903797F10ED61C000D515F5 /* BGSCircleScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSCircleScrollView.m; sourceTree = "<group>"; };
 		A911891910DDD9C7003AA0EB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		A911893110DDDD12003AA0EB /* list-background-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-normal.png"; sourceTree = "<group>"; };
 		A911893210DDDD12003AA0EB /* list-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-selected.png"; sourceTree = "<group>"; };
@@ -240,6 +243,8 @@
 				A903757F10EC1A3800D515F5 /* List View */,
 				A9A0F80410D8910100823BC9 /* BGSCircleView.h */,
 				A9A0F80510D8910100823BC9 /* BGSCircleView.m */,
+				A903797E10ED61C000D515F5 /* BGSCircleScrollView.h */,
+				A903797F10ED61C000D515F5 /* BGSCircleScrollView.m */,
 				A9EFAE6A10DD2508005CCAA3 /* BGSSwatchColor.h */,
 				A9EFAE6B10DD2508005CCAA3 /* BGSSwatchColor.m */,
 				A9EFAE9F10DD2D59005CCAA3 /* BGSSwatchStrip.h */,
@@ -381,6 +386,7 @@
 				A90374A410EBE3CD00D515F5 /* BGSTableView.m in Sources */,
 				A903750A10EC0CE600D515F5 /* BGSLoadingView.m in Sources */,
 				A90375B010EC28EE00D515F5 /* BGSKulerOperation.m in Sources */,
+				A903798010ED61C000D515F5 /* BGSCircleScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

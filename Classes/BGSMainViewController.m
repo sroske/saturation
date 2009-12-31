@@ -21,6 +21,8 @@
 - (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
 - (void)logoFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
 
+- (void)zoomToPoint:(CGPoint)point;
+
 @end
 
 
@@ -30,6 +32,7 @@
 @synthesize logo;
 @synthesize kulerLogo;
 @synthesize circleView;
+@synthesize scrollView;
 @synthesize entry;
 @synthesize settingsButton;
 @synthesize infoButton;
@@ -100,6 +103,18 @@
 	return circleView;
 }
 
+- (BGSCircleScrollView *)scrollView
+{
+	if (scrollView == nil)
+	{
+		BGSCircleScrollView *v = [[BGSCircleScrollView alloc] initWithFrame:self.view.bounds];
+		[v setDelegate:self];
+		[self setScrollView:v];
+		[v release];
+	}
+	return scrollView;
+}
+
 - (void)setEntry:(NSDictionary *)newEntry
 {
 	if (newEntry != entry)
@@ -112,7 +127,10 @@
 	{
 		[self.circleView removeFromSuperview];
 		self.circleView = nil;
-		[self.view insertSubview:self.circleView atIndex:1];
+		[self.scrollView setZoomScale:1.0f animated:NO];
+		[self.scrollView setContentOffset:CGPointMake(0.0f, 0.0f)];
+		[self.scrollView addSubview:self.circleView];
+		//[self.view insertSubview:self.circleView atIndex:1];
 		[self loadCircles];
 		[self fadeInCircles];
 	}
@@ -194,7 +212,10 @@
 	
 	[self.view addSubview:self.background];
 	
-	[self.view addSubview:self.circleView];
+	[self.view addSubview:self.scrollView];
+	[self.scrollView addSubview:self.circleView];
+	[self.scrollView setContentSize:self.view.bounds.size];
+	
 	[self.view addSubview:self.logo];
 	[self.view addSubview:self.kulerLogo];
 	
@@ -311,6 +332,7 @@
 	[logo release];
 	[kulerLogo release];
 	[circleView release];
+	[scrollView release];
 	[entry release];
     [super dealloc];
 }
@@ -386,6 +408,12 @@
 	[circles release];
 }
 
+- (void)zoomToPoint:(CGPoint)point
+{
+	// TODO
+}
+
+#pragma mark -
 #pragma mark Touch Events
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -416,6 +444,36 @@
 		}
 	}
 	[super touchesMoved:touches withEvent:event];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	UITouch *touch = [touches anyObject];
+	if ([touch tapCount] > 1)
+	{
+		CGPoint point = [touch locationInView:self.view];
+		[self zoomToPoint:point];
+	}
+}
+
+#pragma mark -
+#pragma mark ScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+	return self.circleView;
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale
+{
+	if (scale == 1.0f)
+		[self.scrollView setContentOffset:CGPointMake(0.0f, 0.0f)];
+//	NSLog(@"- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view %@ atScale:(float)scale %f", view, scale);
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+//	NSLog(@"- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView");
 }
 
 @end
