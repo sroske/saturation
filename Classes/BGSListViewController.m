@@ -14,6 +14,9 @@
 - (void)changeSection:(id)sender;
 - (CAGradientLayer *)shadowAsInverse:(BOOL)inverse;
 
+-(void)fetchStarted:(NSNotification *)notice;
+-(void)fetchCompleted:(NSNotification *)notice;
+
 @end
 
 
@@ -249,6 +252,36 @@
 	return footerView;
 }
 
+- (id)init
+{
+	if (self = [super init])
+	{
+		currentlyRefreshing = NO;
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(fetchStarted:) 
+													 name:@"kuler.fetch.started" 
+												   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(fetchCompleted:) 
+													 name:@"kuler.fetch.completed" 
+												   object:nil];
+	}
+	return self;
+}
+
+-(void)fetchStarted:(NSNotification *)notice
+{
+	currentlyRefreshing = YES;
+	NSLog(@"fetchStarted: %@", [notice userInfo]);
+}
+-(void)fetchCompleted:(NSNotification *)notice
+{
+	currentlyRefreshing = NO;
+	NSLog(@"fetchCompleted: %@", [notice userInfo]);
+	[self.tableView reloadData];
+	[self.tableView setContentOffset:CGPointMake(0.0f, 44.0f)];
+}
+
 - (void)loadView 
 {	
 	self.selectedEntries = [self.feed newestEntries];
@@ -344,6 +377,7 @@
 
 - (void)dealloc 
 {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[selectedEntries release];
 	[background release];
 	[tableView release];
@@ -442,9 +476,9 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-	if (scrollView.contentOffset.y < self.headerView.frame.size.height)
+	if (scrollView.contentOffset.y < self.headerView.frame.size.height && !currentlyRefreshing)
 	{
-		NSLog(@"refresh this list");
+		[self.feed refreshNewestEntries];
 	}
 }
 

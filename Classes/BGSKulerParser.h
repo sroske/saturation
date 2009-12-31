@@ -6,10 +6,11 @@
 //  Copyright 2009 Bitgun. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 @interface BGSKulerParser : NSObject 
 {
+	NSURL *url;
 	NSXMLParser *xml;
 	NSString *element;
 	NSMutableArray *entries;
@@ -17,12 +18,15 @@
 	NSMutableDictionary *swatch;
 }
 
+@property (nonatomic, retain) NSURL *url;
 @property (nonatomic, retain) NSXMLParser *xml;
 @property (nonatomic, copy) NSString *element;
 @property (nonatomic, retain) NSMutableArray *entries;
 @property (nonatomic, retain) NSMutableDictionary *entry;
 @property (nonatomic, retain) NSMutableDictionary *swatch;
 
-- (NSArray *)fetchEntriesFromURL:(NSString *)url;
+- (id)initWithURL:(NSURL *)u;
+- (void)fetch;
+- (void)parse;
 
 @end

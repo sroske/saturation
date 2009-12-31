@@ -10,7 +10,7 @@
 
 @interface BGSKulerFeedController (Private)
 
-- (NSString *)urlForType:(NSString *)type;
+- (NSURL *)urlForType:(NSString *)type;
 - (NSString *)pathForFile:(NSString *)filename;
 
 @end
@@ -18,38 +18,33 @@
 
 @implementation BGSKulerFeedController
 
-@synthesize parser;
+@synthesize queue;
 @synthesize newestEntries;
 @synthesize popularEntries;
 @synthesize randomEntries;
 @synthesize favoriteEntries;
 
-- (BGSKulerParser *)parser
+- (NSOperationQueue *)queue
 {
-	if (parser == nil)
+	if (queue == nil)
 	{
-		BGSKulerParser *p = [[BGSKulerParser alloc] init];
-		[self setParser:p];
-		[p release];
+		NSOperationQueue *q = [[NSOperationQueue alloc] init];
+		[q setMaxConcurrentOperationCount:FEED_MAX_OPERATIONS];
+		[self setQueue:q];
+		[q release];
 	}
-	return parser;
+	return queue;
 }
 
 - (NSArray *)newestEntries
 {
 	if (newestEntries == nil)
 	{
-		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFile:@"newest.plist"]];
+		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFile:[NSString stringWithFormat:@"%@.plist", FEED_TYPE_NEWEST]]];
 		if (saved != nil)
-		{
 			[self setNewestEntries:saved];
-		}
 		else
-		{
-			NSString *url = [self urlForType:FEED_TYPE_NEWEST];
-			NSLog(@"newest not found, fetching from '%@'", url);
-			[self setNewestEntries:[self.parser fetchEntriesFromURL:url]];
-		}	
+			[self refreshNewestEntries];
 		[saved release];
 	}
 	return newestEntries;
@@ -61,23 +56,30 @@
 		[newestEntries release];
 		newestEntries = [newNewestEntries retain];
 	}
-	[newestEntries writeToFile:[self pathForFile:@"newest.plist"] atomically:YES];
+	[newestEntries writeToFile:[self pathForFile:[NSString stringWithFormat:@"%@.plist", FEED_TYPE_NEWEST]] atomically:YES];
+}
+- (void)refreshNewestEntries
+{	
+	[self.queue cancelAllOperations];
+	BGSKulerOperation *op = [[BGSKulerOperation alloc] initWithURL:[self urlForType:FEED_TYPE_NEWEST] 
+															 scope:FEED_SCOPE_FULL
+													   andFeedType:FEED_TYPE_NEWEST];
+	[self.queue addOperation:op];
+	[op release];
 }
 
 - (NSArray *)popularEntries
 {
 	if (popularEntries == nil)
 	{
-		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFile:@"popular.plist"]];
+		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFile:[NSString stringWithFormat:@"%@.plist", FEED_TYPE_POPULAR]]];
 		if (saved != nil)
 		{
 			[self setPopularEntries:saved];
 		}
 		else
 		{
-			NSString *url = [self urlForType:FEED_TYPE_POPULAR];
-			NSLog(@"popular not found, fetching '%@'", url);
-			[self setPopularEntries:[self.parser fetchEntriesFromURL:url]];
+			[self refreshPopularEntries];
 		}	
 		[saved release];
 	}
@@ -90,23 +92,30 @@
 		[popularEntries release];
 		popularEntries = [newPopularEntries retain];
 	}
-	[popularEntries writeToFile:[self pathForFile:@"popular.plist"] atomically:YES];
+	[popularEntries writeToFile:[self pathForFile:[NSString stringWithFormat:@"%@.plist", FEED_TYPE_POPULAR]] atomically:YES];
+}
+- (void)refreshPopularEntries
+{
+	[self.queue cancelAllOperations];
+	BGSKulerOperation *op = [[BGSKulerOperation alloc] initWithURL:[self urlForType:FEED_TYPE_POPULAR] 
+															 scope:FEED_SCOPE_FULL
+													   andFeedType:FEED_TYPE_POPULAR];
+	[self.queue addOperation:op];
+	[op release];
 }
 
 - (NSArray *)randomEntries
 {
 	if (randomEntries == nil)
 	{
-		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFile:@"random.plist"]];
+		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFile:[NSString stringWithFormat:@"%@.plist", FEED_TYPE_RANDOM]]];
 		if (saved != nil)
 		{
 			[self setRandomEntries:saved];
 		}
 		else
 		{
-			NSString *url = [self urlForType:FEED_TYPE_RANDOM];
-			NSLog(@"random not found, fetching '%@'", url);
-			[self setRandomEntries:[self.parser fetchEntriesFromURL:url]];
+			[self refreshRandomEntries];
 		}	
 		[saved release];
 	}
@@ -119,14 +128,23 @@
 		[randomEntries release];
 		randomEntries = [newRandomEntries retain];
 	}
-	[randomEntries writeToFile:[self pathForFile:@"random.plist"] atomically:YES];
+	[randomEntries writeToFile:[self pathForFile:[NSString stringWithFormat:@"%@.plist", FEED_TYPE_RANDOM]] atomically:YES];
+}
+- (void)refreshRandomEntries
+{
+	[self.queue cancelAllOperations];
+	BGSKulerOperation *op = [[BGSKulerOperation alloc] initWithURL:[self urlForType:FEED_TYPE_RANDOM] 
+															 scope:FEED_SCOPE_FULL
+													   andFeedType:FEED_TYPE_RANDOM];
+	[self.queue addOperation:op];
+	[op release];
 }
 
 - (NSArray *)favoriteEntries
 {
 	if (favoriteEntries == nil)
 	{
-		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFile:@"favorites.plist"]];
+		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFile:[NSString stringWithFormat:@"%@.plist", FEED_TYPE_FAVORITES]]];
 		[self setFavoriteEntries:saved];
 		[saved release];
 	}
@@ -139,21 +157,46 @@
 		[favoriteEntries release];
 		favoriteEntries = [newFavoriteEntries retain];
 	}
-	[favoriteEntries writeToFile:[self pathForFile:@"favorites.plist"] atomically:YES];
+	[favoriteEntries writeToFile:[self pathForFile:[NSString stringWithFormat:@"%@.plist", FEED_TYPE_FAVORITES]] atomically:YES];
+}
+
+-(void)fetchCompleted:(NSNotification *)notice
+{
+	NSDictionary *data = [notice userInfo];
+	if ([[data objectForKey:@"scope"] isEqualToString:FEED_SCOPE_FULL])
+	{
+		if ([[data objectForKey:@"feedType"] isEqualToString:FEED_TYPE_NEWEST])
+		{
+			[self setNewestEntries:[data objectForKey:@"entries"]];
+		}
+		else if ([[data objectForKey:@"feedType"] isEqualToString:FEED_TYPE_POPULAR])
+		{
+			[self setPopularEntries:[data objectForKey:@"entries"]];
+		}
+		else if ([[data objectForKey:@"feedType"] isEqualToString:FEED_TYPE_RANDOM])
+		{
+			[self setRandomEntries:[data objectForKey:@"entries"]];
+		}
+	}
 }
 
 - (id)init
 {
 	if (self = [super init])
 	{
-		// nothing
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(fetchCompleted:) 
+													 name:@"kuler.fetch.completed" 
+												   object:nil];
 	}
 	return self;
 }
 
 - (void)dealloc
 {
-	[parser release];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[queue cancelAllOperations];
+	[queue release];
 	[newestEntries release];
 	[popularEntries release];
 	[randomEntries release];
@@ -161,9 +204,9 @@
 	[super dealloc];
 }
 
-- (NSString *)urlForType:(NSString *)type
+- (NSURL *)urlForType:(NSString *)type
 {
-	return [NSString stringWithFormat:FEED_BASE_URL, type, FEED_API_KEY, nil];
+	return [NSURL URLWithString:[NSString stringWithFormat:FEED_BASE_URL, type, FEED_API_KEY, nil]];
 }
 
 - (NSString *)pathForFile:(NSString *)filename

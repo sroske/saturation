@@ -31,6 +31,7 @@
 	BGSSectionButton *favoritesButton;
 	BGSSectionButton *lastSelectedButton;
 	BGSSwatchColor *seperator;
+	BOOL currentlyRefreshing;
 }
 
 @property (nonatomic, retain) NSArray *selectedEntries;

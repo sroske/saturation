@@ -17,6 +17,7 @@
 
 @implementation BGSKulerParser
 
+@synthesize url;
 @synthesize xml;
 @synthesize element;
 @synthesize entries;
@@ -45,19 +46,29 @@
 	return entry;
 }
 
-- (NSArray *)fetchEntriesFromURL:(NSString *)url
+- (id)initWithURL:(NSURL *)u
+{	
+	if (self = [super init])
+	{
+		self.url = u;
+	}
+	return self;
+}
+
+- (void)fetch
 {
-	NSXMLParser *p = [[NSXMLParser alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
+	NSXMLParser *p = [[NSXMLParser alloc] initWithContentsOfURL:self.url];
 	[p setDelegate:self];
 	[p setShouldProcessNamespaces:NO];
 	[p setShouldReportNamespacePrefixes:NO];
 	[p setShouldResolveExternalEntities:NO];
 	[self setXml:p];
 	[p release];
-	
+}
+
+- (void)parse
+{
 	[self.xml parse];
-	
-	return [[self.entries copy] autorelease];
 }
 
 - (void)parserDidStartDocument:(NSXMLParser *)parser 
@@ -126,6 +137,7 @@
 
 - (void)dealloc
 {
+	[url release];
 	[xml release];
 	[element release];
 	[entries release];

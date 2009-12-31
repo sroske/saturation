@@ -16,6 +16,7 @@
 		A903738510EA75AC00D515F5 /* BGSSectionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A903738410EA75AC00D515F5 /* BGSSectionButton.m */; };
 		A90374A410EBE3CD00D515F5 /* BGSTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A90374A310EBE3CD00D515F5 /* BGSTableView.m */; };
 		A903750A10EC0CE600D515F5 /* BGSLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = A903750910EC0CE600D515F5 /* BGSLoadingView.m */; };
+		A90375B010EC28EE00D515F5 /* BGSKulerOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = A90375AF10EC28EE00D515F5 /* BGSKulerOperation.m */; };
 		A911891A10DDD9C7003AA0EB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A911891910DDD9C7003AA0EB /* icon.png */; };
 		A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893110DDDD12003AA0EB /* list-background-normal.png */; };
 		A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893210DDDD12003AA0EB /* list-background-selected.png */; };
@@ -69,6 +70,8 @@
 		A90374A310EBE3CD00D515F5 /* BGSTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSTableView.m; sourceTree = "<group>"; };
 		A903750810EC0CE600D515F5 /* BGSLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSLoadingView.h; sourceTree = "<group>"; };
 		A903750910EC0CE600D515F5 /* BGSLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSLoadingView.m; sourceTree = "<group>"; };
+		A90375AE10EC28EE00D515F5 /* BGSKulerOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerOperation.h; sourceTree = "<group>"; };
+		A90375AF10EC28EE00D515F5 /* BGSKulerOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerOperation.m; sourceTree = "<group>"; };
 		A911891910DDD9C7003AA0EB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		A911893110DDDD12003AA0EB /* list-background-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-normal.png"; sourceTree = "<group>"; };
 		A911893210DDDD12003AA0EB /* list-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-selected.png"; sourceTree = "<group>"; };
@@ -138,7 +141,7 @@
 			children = (
 				A9A0F86E10D8952E00823BC9 /* Controllers */,
 				A9A0F86D10D8952A00823BC9 /* Views */,
-				A9A0F86C10D8952400823BC9 /* Helpers */,
+				A9A0F86C10D8952400823BC9 /* Kuler Feeds */,
 				1D3623240D0F684500981E51 /* SaturationAppDelegate.h */,
 				1D3623250D0F684500981E51 /* SaturationAppDelegate.m */,
 				A9BCCE9F10DC910200742013 /* FontsAndColors.h */,
@@ -201,28 +204,9 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A9A0F86C10D8952400823BC9 /* Helpers */ = {
+		A903757F10EC1A3800D515F5 /* List View */ = {
 			isa = PBXGroup;
 			children = (
-				A9A0F86910D8941A00823BC9 /* BGSKulerParser.h */,
-				A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */,
-				A903733010EA66AD00D515F5 /* BGSKulerFeedController.h */,
-				A903733110EA66AD00D515F5 /* BGSKulerFeedController.m */,
-			);
-			name = Helpers;
-			sourceTree = "<group>";
-		};
-		A9A0F86D10D8952A00823BC9 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				A9A0F80410D8910100823BC9 /* BGSCircleView.h */,
-				A9A0F80510D8910100823BC9 /* BGSCircleView.m */,
-				A9EFAE6A10DD2508005CCAA3 /* BGSSwatchColor.h */,
-				A9EFAE6B10DD2508005CCAA3 /* BGSSwatchColor.m */,
-				A9EFAE9F10DD2D59005CCAA3 /* BGSSwatchStrip.h */,
-				A9EFAEA010DD2D59005CCAA3 /* BGSSwatchStrip.m */,
-				A9EFB0AA10DD8D79005CCAA3 /* BGSEmailCTAView.h */,
-				A9EFB0AB10DD8D79005CCAA3 /* BGSEmailCTAView.m */,
 				A9EFB18510DDA7F5005CCAA3 /* BGSFavoriteView.h */,
 				A9EFB18610DDA7F5005CCAA3 /* BGSFavoriteView.m */,
 				A94EABE410E09886002CD007 /* BGSEntryViewCell.h */,
@@ -233,6 +217,35 @@
 				A90374A310EBE3CD00D515F5 /* BGSTableView.m */,
 				A903750810EC0CE600D515F5 /* BGSLoadingView.h */,
 				A903750910EC0CE600D515F5 /* BGSLoadingView.m */,
+			);
+			name = "List View";
+			sourceTree = "<group>";
+		};
+		A9A0F86C10D8952400823BC9 /* Kuler Feeds */ = {
+			isa = PBXGroup;
+			children = (
+				A9A0F86910D8941A00823BC9 /* BGSKulerParser.h */,
+				A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */,
+				A903733010EA66AD00D515F5 /* BGSKulerFeedController.h */,
+				A903733110EA66AD00D515F5 /* BGSKulerFeedController.m */,
+				A90375AE10EC28EE00D515F5 /* BGSKulerOperation.h */,
+				A90375AF10EC28EE00D515F5 /* BGSKulerOperation.m */,
+			);
+			name = "Kuler Feeds";
+			sourceTree = "<group>";
+		};
+		A9A0F86D10D8952A00823BC9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A903757F10EC1A3800D515F5 /* List View */,
+				A9A0F80410D8910100823BC9 /* BGSCircleView.h */,
+				A9A0F80510D8910100823BC9 /* BGSCircleView.m */,
+				A9EFAE6A10DD2508005CCAA3 /* BGSSwatchColor.h */,
+				A9EFAE6B10DD2508005CCAA3 /* BGSSwatchColor.m */,
+				A9EFAE9F10DD2D59005CCAA3 /* BGSSwatchStrip.h */,
+				A9EFAEA010DD2D59005CCAA3 /* BGSSwatchStrip.m */,
+				A9EFB0AA10DD8D79005CCAA3 /* BGSEmailCTAView.h */,
+				A9EFB0AB10DD8D79005CCAA3 /* BGSEmailCTAView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -367,6 +380,7 @@
 				A903738510EA75AC00D515F5 /* BGSSectionButton.m in Sources */,
 				A90374A410EBE3CD00D515F5 /* BGSTableView.m in Sources */,
 				A903750A10EC0CE600D515F5 /* BGSLoadingView.m in Sources */,
+				A90375B010EC28EE00D515F5 /* BGSKulerOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
