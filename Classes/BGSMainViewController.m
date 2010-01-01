@@ -192,8 +192,7 @@
 {
 	if (self = [super init])
 	{
-		isZooming = NO;
-		hasAnimated = NO;
+		isFadingIn = isZooming = hasAnimated = NO;
 		[self setEntry:entryData];
 	}
 	return self;
@@ -283,6 +282,8 @@
 
 - (void)fadeInCircles
 {
+	isFadingIn = YES;
+	
 	CGFloat delay = 0.3;
 	NSArray *circles = [initialCircles shuffledArray];
 	for (BGSCircleView *c in circles)
@@ -312,8 +313,8 @@
 {
 	NSLog(@"Circles Faded");
 	[initialCircles release];
+	isFadingIn = NO;
 }
-
 
 - (void)logoFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
@@ -396,6 +397,13 @@
 								 original.size.height/2)];
     
     [UIView commitAnimations];
+	
+	CABasicAnimation *theAnimation = [CABasicAnimation animationWithKeyPath:@"percent"];
+	theAnimation.duration = 1.0;
+	
+	theAnimation.fromValue = [NSNumber numberWithFloat:0.0f];	
+	theAnimation.toValue = [NSNumber numberWithFloat:1.0f];
+	[circle1.layer addAnimation:theAnimation forKey:@"percent"];
 }
 
 - (void)shrinkComplete:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
@@ -516,7 +524,7 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if (isZooming) return;
+	if (isZooming || isFadingIn) return;
 	
 	for (UITouch *touch in touches)
 	{
@@ -535,7 +543,7 @@
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if (isZooming) return;
+	if (isZooming || isFadingIn) return;
 	
 	for (UITouch *touch in touches)
 	{
@@ -555,7 +563,7 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if (isZooming) return;
+	if (isZooming || isFadingIn) return;
 	
 	UITouch *touch = [touches anyObject];
 	if ([touch tapCount] > 1)
@@ -612,7 +620,7 @@
 	[self.circleView removeFromSuperview];
 	[self.scrollView removeFromSuperview];
 	self.scrollView = nil;
-	[self.view addSubview:self.scrollView];
+	[self.view insertSubview:self.scrollView atIndex:1];
 	[self.scrollView addSubview:self.circleView];
 	[self.scrollView setContentSize:self.view.bounds.size];
 	

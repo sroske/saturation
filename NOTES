@@ -1,10 +1,12 @@
-detail and lists use modal popup
-have light overlay on that modal reveal
+TODO LIST
 
-1. setup loading/paging/refreshing stuff
-2. zoom/etc. on the visualization
-3. dropping cmyk, adding visualization selection
-4. favorites
-5. email using mail composer
-6. change fonts to helvetica nueue light
-7. slide the strip on detail like a scrollview
+1. dropping cmyk, adding visualization selection
+2. favorites
+3. email using mail composer
+4. change fonts to helvetica nueue light
+
+EXTRAS
+
+1. slide the strip on detail like a scrollview
+2. have light overlay on that modal reveal
+

@@ -22,8 +22,6 @@
 		[color release];
 		color = [nc retain];
 	}
-	
-	[self.layer setBackgroundColor:color];
 	[self setNeedsDisplay];
 }
 
@@ -33,7 +31,7 @@
 	{
 		self.animating = NO;
 		self.backgroundColor = [UIColor clearColor];
-		self.color = [UIColor colorWithRed:0.3f green:0.2f blue:0.4f alpha:1.0];
+		self.color = [UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:1.0];
     }
     return self;
 }
@@ -52,7 +50,6 @@
 	CGContextFillPath(context);
 	//CGContextClosePath(context);
 }
-
 
 - (void)dealloc 
 {
