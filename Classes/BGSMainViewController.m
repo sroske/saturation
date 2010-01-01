@@ -192,6 +192,7 @@
 {
 	if (self = [super init])
 	{
+		isZooming = NO;
 		hasAnimated = NO;
 		[self setEntry:entryData];
 	}
@@ -410,7 +411,53 @@
 
 - (void)zoomToPoint:(CGPoint)point
 {
-	// TODO
+	isZooming = YES;
+	
+	CGRect zoomRect = CGRectMake(point.x-fmodf(point.x, CUTOFF_PX),
+								 point.y-fmodf(point.y, CUTOFF_PX), 
+								 CUTOFF_PX*COLS, 
+								 CUTOFF_PX*ROWS);
+	
+	// find all circles that intersect with this rect
+	// create a new rect taking into account all these circles
+
+	CGRect fullRect = zoomRect;
+	BOOL correctRatio = NO;
+	int attempts = 0;
+	do
+	{
+		for (UIView *v in self.circleView.subviews)
+		{
+			if ([v isKindOfClass:[BGSCircleView class]])
+			{
+				BGSCircleView *cv = (BGSCircleView *)v;
+				NSLog(@"cv.frame: %@", NSStringFromCGRect(cv.frame));
+				NSLog(@"fullRect: %@", NSStringFromCGRect(fullRect));
+				NSLog(@"interset? %i", CGRectIntersectsRect(cv.frame, fullRect));
+				if (CGRectIntersectsRect(cv.frame, fullRect))
+					fullRect = CGRectUnion(cv.frame, fullRect);
+			}
+		}
+		NSLog(@"fullRect: %@", NSStringFromCGRect(fullRect));
+		NSLog(@"correct aspect? %i", (fullRect.size.width/COLS == fullRect.size.height/ROWS));
+		if (fullRect.size.width/COLS == fullRect.size.height/ROWS)
+		{
+			correctRatio = YES;
+		}
+		else
+		{
+			fullRect = CGRectIntersection(self.circleView.frame, CGRectMake(fullRect.origin.x, 
+																			fullRect.origin.y, 
+																			fullRect.size.height*(COLS/ROWS), 
+																			fullRect.size.height));
+			NSLog(@"calculated fullRect: %@", NSStringFromCGRect(fullRect));
+		}
+		attempts++;
+	} 
+	while (!correctRatio && attempts < 4);
+	
+	[self.scrollView zoomToRect:fullRect animated:YES];
+	lastZoomedRect = fullRect;
 }
 
 #pragma mark -
@@ -418,12 +465,17 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	if (isZooming) return;
+	
 	for (UITouch *touch in touches)
 	{
+		CGPoint point = [touch locationInView:self.view];
 		if ([[touch view] isKindOfClass:[BGSCircleView class]])
 		{
 			BGSCircleView *v = (BGSCircleView *)[touch view];
-			if (!v.animating)
+			if (v.frame.size.width <= CUTOFF_PX*2)
+				[self zoomToPoint:point];
+			else if (!v.animating)
 				[self dupeCircle:(BGSCircleView *)[touch view]];
 		}		
 	}
@@ -432,6 +484,8 @@
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	if (isZooming) return;
+	
 	for (UITouch *touch in touches)
 	{
 		CGPoint point = [touch locationInView:self.view];
@@ -439,7 +493,9 @@
 		if ([v isKindOfClass:[BGSCircleView class]])
 		{
 			BGSCircleView *cv = (BGSCircleView *)v;
-			if (!cv.animating)
+			if (cv.frame.size.width <= CUTOFF_PX*2)
+				[self zoomToPoint:point];
+			else if (!cv.animating)
 				[self dupeCircle:cv];
 		}
 	}
@@ -448,12 +504,15 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	if (isZooming) return;
+	
 	UITouch *touch = [touches anyObject];
 	if ([touch tapCount] > 1)
 	{
 		CGPoint point = [touch locationInView:self.view];
 		[self zoomToPoint:point];
 	}
+	[super touchesEnded:touches withEvent:event];
 }
 
 #pragma mark -
@@ -466,14 +525,41 @@
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale
 {
-	if (scale == 1.0f)
-		[self.scrollView setContentOffset:CGPointMake(0.0f, 0.0f)];
-//	NSLog(@"- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view %@ atScale:(float)scale %f", view, scale);
-}
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-//	NSLog(@"- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView");
+	for (UIView *v in self.circleView.subviews)
+	{
+		if ([v isKindOfClass:[BGSCircleView class]])
+		{
+			BGSCircleView *cv = (BGSCircleView *)v;
+			if (!CGRectContainsRect(lastZoomedRect, cv.frame))
+				[cv removeFromSuperview];
+		}
+	}
+	for (UIView *v in self.circleView.subviews)
+	{
+		if ([v isKindOfClass:[BGSCircleView class]])
+		{
+			BGSCircleView *cv = (BGSCircleView *)v;
+			cv.frame = CGRectMake((cv.frame.origin.x-lastZoomedRect.origin.x)*scale, 
+								  (cv.frame.origin.y-lastZoomedRect.origin.y)*scale, 
+								  cv.frame.size.width*scale, 
+								  cv.frame.size.height*scale);
+			[cv setNeedsDisplay];
+		}
+	}
+	
+	[self.scrollView setZoomScale:1.0f animated:NO];
+	[self.scrollView setContentOffset:CGPointMake(0.0f, 0.0f)];
+	
+	self.circleView.frame = self.view.bounds;
+	
+	[self.circleView removeFromSuperview];
+	[self.scrollView removeFromSuperview];
+	self.scrollView = nil;
+	[self.view addSubview:self.scrollView];
+	[self.scrollView addSubview:self.circleView];
+	[self.scrollView setContentSize:self.view.bounds.size];
+	
+	isZooming = NO;
 }
 
 @end

@@ -15,6 +15,7 @@
 #define ROWS		2
 #define COLS		3
 #define PADDING		1
+#define CUTOFF_PX	5
 
 @interface BGSMainViewController : UIViewController <UIScrollViewDelegate>
 {
@@ -27,6 +28,8 @@
 	UIButton *settingsButton;
 	UIButton *infoButton;
 	BOOL hasAnimated;
+	BOOL isZooming;
+	CGRect lastZoomedRect;
 	NSMutableArray *initialCircles;
 }
 
