@@ -94,6 +94,7 @@
 	{
 		NSLog(@"creating a new circleview");
 		UIView *v = [[UIView alloc] initWithFrame:self.view.bounds];
+		[v setContentMode:UIViewContentModeRedraw];
 		[v setAutoresizesSubviews:YES];
 		[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
 		[v sizeToFit];
@@ -130,7 +131,6 @@
 		[self.scrollView setZoomScale:1.0f animated:NO];
 		[self.scrollView setContentOffset:CGPointMake(0.0f, 0.0f)];
 		[self.scrollView addSubview:self.circleView];
-		//[self.view insertSubview:self.circleView atIndex:1];
 		[self loadCircles];
 		[self fadeInCircles];
 	}
@@ -417,47 +417,98 @@
 								 point.y-fmodf(point.y, CUTOFF_PX), 
 								 CUTOFF_PX*COLS, 
 								 CUTOFF_PX*ROWS);
+	//zoomRect = CGRectOffset(zoomRect, -CUTOFF_PX*COLS/2, -CUTOFF_PX*ROWS/2);
 	
 	// find all circles that intersect with this rect
 	// create a new rect taking into account all these circles
 
 	CGRect fullRect = zoomRect;
+	NSLog(@"starting with fullRect: %@", NSStringFromCGRect(fullRect));
 	BOOL correctRatio = NO;
-	int attempts = 0;
-	do
+	while (!correctRatio)
 	{
 		for (UIView *v in self.circleView.subviews)
 		{
 			if ([v isKindOfClass:[BGSCircleView class]])
 			{
 				BGSCircleView *cv = (BGSCircleView *)v;
-				NSLog(@"cv.frame: %@", NSStringFromCGRect(cv.frame));
-				NSLog(@"fullRect: %@", NSStringFromCGRect(fullRect));
-				NSLog(@"interset? %i", CGRectIntersectsRect(cv.frame, fullRect));
 				if (CGRectIntersectsRect(cv.frame, fullRect))
 					fullRect = CGRectUnion(cv.frame, fullRect);
 			}
 		}
-		NSLog(@"fullRect: %@", NSStringFromCGRect(fullRect));
-		NSLog(@"correct aspect? %i", (fullRect.size.width/COLS == fullRect.size.height/ROWS));
+		fullRect = CGRectIntegral(fullRect);
+		NSLog(@"integral fullRect: %@", NSStringFromCGRect(fullRect));
 		if (fullRect.size.width/COLS == fullRect.size.height/ROWS)
 		{
 			correctRatio = YES;
 		}
 		else
 		{
-			fullRect = CGRectIntersection(self.circleView.frame, CGRectMake(fullRect.origin.x, 
-																			fullRect.origin.y, 
-																			fullRect.size.height*(COLS/ROWS), 
-																			fullRect.size.height));
-			NSLog(@"calculated fullRect: %@", NSStringFromCGRect(fullRect));
+			NSLog(@"incorrect aspect ratio");
+			
+			// see if this should be the left or right side
+			if (CGRectGetMaxX(fullRect) == CGRectGetMaxX(self.circleView.frame))
+			{
+				NSLog(@"up against the right edge!");
+				if (CGRectGetMinX(fullRect) == CGRectGetMinX(self.circleView.frame))
+				{
+					NSLog(@"also up against the left edge!");
+					NSLog(@"add to the top or bottom");
+					if (CGRectGetMaxY(fullRect) == CGRectGetMaxY(self.circleView.frame))
+					{
+						NSLog(@"up against the bottom edge!");
+						if (CGRectGetMinY(fullRect) == CGRectGetMinY(self.circleView.frame))
+						{
+							NSLog(@"also up against the top edge!");
+							NSLog(@"EPIC FAILURE");
+						}
+						else 
+						{
+							NSLog(@"add to the top");
+							fullRect = CGRectIntersection(self.circleView.frame, CGRectMake(fullRect.origin.x, 
+																							fullRect.origin.y-CUTOFF_PX*2, 
+																							fullRect.size.width, 
+																							fullRect.size.height+CUTOFF_PX*2));
+						}
+					}
+					else 
+					{
+						NSLog(@"add to the bottom");
+						fullRect = CGRectIntersection(self.circleView.frame, CGRectMake(fullRect.origin.x, 
+																						fullRect.origin.y, 
+																						fullRect.size.width, 
+																						fullRect.size.height+CUTOFF_PX*2));
+					}
+				}
+				else 
+				{
+					NSLog(@"add to the left");
+					fullRect = CGRectIntersection(self.circleView.frame, CGRectMake(fullRect.origin.x-CUTOFF_PX*2, 
+																					fullRect.origin.y, 
+																					fullRect.size.width+CUTOFF_PX*2, 
+																					fullRect.size.height));
+				}
+			}
+			else
+			{
+				NSLog(@"add to the right");
+				fullRect = CGRectIntersection(self.circleView.frame, CGRectMake(fullRect.origin.x, 
+																				fullRect.origin.y, 
+																				fullRect.size.width+CUTOFF_PX*2, 
+																				fullRect.size.height));
+			}
+			
+			NSLog(@"new fullRect: %@", NSStringFromCGRect(fullRect));
 		}
-		attempts++;
-	} 
-	while (!correctRatio && attempts < 4);
+		
+		NSLog(@"-----------------");
+	}
 	
 	[self.scrollView zoomToRect:fullRect animated:YES];
 	lastZoomedRect = fullRect;
+	
+	if (CGRectEqualToRect(fullRect, self.circleView.bounds))
+		isZooming = NO;
 }
 
 #pragma mark -
@@ -525,6 +576,12 @@
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale
 {
+	NSLog(@"scale: %f", scale);
+	if (!isZooming)
+	{
+		[self.scrollView setZoomScale:1.0f animated:YES];
+		return;
+	}
 	for (UIView *v in self.circleView.subviews)
 	{
 		if ([v isKindOfClass:[BGSCircleView class]])
