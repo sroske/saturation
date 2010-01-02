@@ -26,7 +26,7 @@
 	
 	UILabel *hexheaderLabel;
 	UILabel *rgbHeaderLabel;
-	UILabel *cmykHeaderLabel;
+	UILabel *visualizerHeaderLabel;
 	
 	NSMutableArray *colorIcons;
 	NSMutableArray *hexContentLabels;
@@ -57,7 +57,7 @@
 
 @property (nonatomic, retain) UILabel *hexheaderLabel;
 @property (nonatomic, retain) UILabel *rgbHeaderLabel;
-@property (nonatomic, retain) UILabel *cmykHeaderLabel;
+@property (nonatomic, retain) UILabel *visualizerHeaderLabel;
 
 @property (nonatomic, retain) NSMutableArray *colorIcons;
 @property (nonatomic, retain) NSMutableArray *hexContentLabels;

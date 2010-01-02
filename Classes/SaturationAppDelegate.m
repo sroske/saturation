@@ -41,8 +41,14 @@
 	if (welcomeController == nil)
 	{
 		BGSKulerFeedController *feed = [[BGSKulerFeedController alloc] init];
-		int i = arc4random()%[feed.popularEntries count];
-		BGSWelcomeViewController *c = [[BGSWelcomeViewController alloc] initWithEntry:[feed.popularEntries objectAtIndex:i]];
+		NSArray *entries = feed.popularEntries;
+		NSDictionary *entry = [NSDictionary dictionary];
+		if ([entries count] > 0)
+		{
+			int i = arc4random()%[entries count];
+			entry = [entries objectAtIndex:i];
+		}
+		BGSWelcomeViewController *c = [[BGSWelcomeViewController alloc] initWithEntry:entry];
 		[self setWelcomeController:c];
 		[c release];
 		[feed release];

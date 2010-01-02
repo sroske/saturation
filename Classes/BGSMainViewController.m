@@ -342,9 +342,14 @@
 - (UIColor *)randomColor
 {
 	NSArray *swatches = [self.entry objectForKey:@"swatches"];
-	int i = arc4random()%[swatches count];
-	NSDictionary *swatch = [swatches objectAtIndex:i];
-	return CC_FROM_SWATCH(swatch);
+	UIColor *color = CC_WHITE;
+	if ([swatches count] > 0)
+	{
+		int i = arc4random()%[swatches count];
+		NSDictionary *swatch = [swatches objectAtIndex:i];
+		color = CC_FROM_SWATCH(swatch);		
+	}
+	return color;
 }
 
 - (void)dupeCircle:(BGSCircleView *)circle1

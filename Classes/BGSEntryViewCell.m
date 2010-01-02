@@ -75,10 +75,16 @@
 	{
 		BGSFavoriteView *v = [[BGSFavoriteView alloc] initWithFrame:CGRectZero];
 		[v setHasBackground:NO];
+		[v.iconButton addTarget:self action:@selector(bringToFront:) forControlEvents:UIControlEventTouchDown];
 		[self setFavoriteView:v];
 		[v release];
 	}
 	return favoriteView;
+}
+
+- (void)bringToFront:(id)sender
+{
+	[self.superview bringSubviewToFront:self];
 }
 
 - (BGSSwatchStrip *)colorStrip
@@ -115,9 +121,9 @@
 		
 		[self setBackgroundView:self.backgroundImage];
 		[self setSelectedBackgroundView:self.selectedBackgroundImage];
-		
-		[self addSubview:self.favoriteView];
+				
 		[self addSubview:self.colorStrip];
+		[self addSubview:self.favoriteView];
 		[self addSubview:self.nameLabel];
     }
     return self;
@@ -126,7 +132,6 @@
 - (void)layoutSubviews
 {
 	[super layoutSubviews];
-	
 	self.favoriteView.frame = CGRectMake(10.0f, 
 										 floor(self.bounds.size.height/2-24.0f), 
 										 48.0f, 
@@ -155,12 +160,7 @@
 
 - (void)showActivationState:(BOOL)activeState animated:(BOOL)animated
 {
-	/*
-	if (activeState)
-		[self.questionLabel setTextColor:CC_SELECTED_TEXT_COLOR];
-	else 
-		[self.questionLabel setTextColor:CC_DARK_BLUE];
-	 */
+	[self.favoriteView.iconButton setHighlighted:NO];
 }
 
 - (void)dealloc 
@@ -174,5 +174,29 @@
     [super dealloc];
 }
 
+
+#pragma mark -
+#pragma mark Touch Events
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event 
+{
+	[self.superview bringSubviewToFront:self];
+	[self.favoriteView.iconButton setShowsTouchWhenHighlighted:NO];
+	[self.favoriteView.iconButton setHighlighted:NO];
+	[super touchesBegan:touches withEvent:event];
+	[self performSelector:@selector(resetAccessory) withObject:nil afterDelay:0.25];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event 
+{
+	[self.favoriteView.iconButton setShowsTouchWhenHighlighted:NO];
+	[super touchesEnded:touches withEvent:event];
+	[self performSelector:@selector(resetAccessory) withObject:nil afterDelay:0.25];
+}
+
+- (void)resetAccessory
+{
+	[self.favoriteView.iconButton setShowsTouchWhenHighlighted:YES];
+}
 
 @end

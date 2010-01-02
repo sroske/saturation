@@ -29,7 +29,7 @@
 
 @synthesize hexheaderLabel;
 @synthesize rgbHeaderLabel;
-@synthesize cmykHeaderLabel;
+@synthesize visualizerHeaderLabel;
 
 @synthesize colorIcons;
 @synthesize hexContentLabels;
@@ -180,22 +180,22 @@
 	return rgbHeaderLabel;
 }
 
-- (UILabel *)cmykHeaderLabel
+- (UILabel *)visualizerHeaderLabel
 {
-	if (cmykHeaderLabel == nil)
+	if (visualizerHeaderLabel == nil)
 	{
 		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(298.0f, 
 																 120.0f, 
-																 100.0f, 
+																 160.0f, 
 																 30.0f)];
 		[lbl setFont:CF_DETAIL_COLOR_TYPE];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
-		[lbl setText:@"cmyk:"];
-		[self setCmykHeaderLabel:lbl];
+		[lbl setText:@"visualizers:"];
+		[self setVisualizerHeaderLabel:lbl];
 		[lbl release];
 	}
-	return cmykHeaderLabel;
+	return visualizerHeaderLabel;
 }
 
 - (NSMutableArray *)colorIcons
@@ -381,7 +381,7 @@
 	
 	[self.view addSubview:self.hexheaderLabel];
 	[self.view addSubview:self.rgbHeaderLabel];
-	[self.view addSubview:self.cmykHeaderLabel];
+	[self.view addSubview:self.visualizerHeaderLabel];
 	
 	[self setupColorRows];
 	
@@ -590,7 +590,7 @@
 	
 	[hexheaderLabel release];
 	[rgbHeaderLabel release];
-	[cmykHeaderLabel release];
+	[visualizerHeaderLabel release];
 	
 	[colorIcons release];
 	[hexContentLabels release];
