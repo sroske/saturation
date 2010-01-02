@@ -70,9 +70,6 @@
 									  self.overlay.frame.size.width, 
 									  self.overlay.frame.size.height)];
 	
-	NSLog(@"self.frame: %@", NSStringFromCGRect(self.frame));
-	NSLog(@"self.overlay.frame: %@", NSStringFromCGRect(self.overlay.frame));
-	
 	[UIView beginAnimations:@"move" context:nil];
 	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
     [UIView setAnimationDuration:duration];
