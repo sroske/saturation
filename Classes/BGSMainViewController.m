@@ -349,72 +349,51 @@
 
 - (void)dupeCircle:(BGSCircleView *)circle1
 {
-	CGRect smallerRect = CGRectMake(circle1.frame.origin.x+PADDING, 
-									circle1.frame.origin.y+PADDING, 
-									circle1.frame.size.width-PADDING*2, 
-									circle1.frame.size.height-PADDING*2);
-	[circle1 setNewColor:[self randomColor]];
-	BGSCircleView *circle2 = [[BGSCircleView alloc] initWithFrame:smallerRect];
-	[circle2 setColor:circle1.color];
-	[circle2 setNewColor:[self randomColor]];
-	[self.circleView addSubview:circle2];
-	
-	BGSCircleView *circle3 = [[BGSCircleView alloc] initWithFrame:smallerRect];
-	[circle3 setColor:circle1.color];
-	[circle3 setNewColor:[self randomColor]];
-	[self.circleView addSubview:circle3];
-	
-	BGSCircleView *circle4 = [[BGSCircleView alloc] initWithFrame:smallerRect];
-	[circle4 setColor:circle1.color];
-	[circle4 setNewColor:[self randomColor]];
-	[self.circleView addSubview:circle4];
-	
 	CGRect original = circle1.frame;
 	
-	circle1.animating = circle2.animating = circle3.animating = circle4.animating = YES;
+	[circle1 setNewColor:[self randomColor]];
+	[circle1 setNewFrame:CGRectMake(original.origin.x, 
+									original.origin.y, 
+									original.size.width/2, 
+									original.size.height/2)];
 	
-	[UIView beginAnimations:@"shrink" context:[[NSArray arrayWithObjects:circle1, circle2, circle3, circle4, nil] retain]];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(shrinkComplete:finished:context:)];
-	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-    [UIView setAnimationDuration:0.5f];
-    
-	[circle1 setFrame:CGRectMake(original.origin.x, 
-								 original.origin.y, 
-								 original.size.width/2, 
-								 original.size.height/2)];
-	[circle2 setFrame:CGRectMake(original.origin.x+original.size.width/2, 
-								 original.origin.y, 
-								 original.size.width/2, 
-								 original.size.height/2)];
-	[circle3 setFrame:CGRectMake(original.origin.x, 
-								 original.origin.y+original.size.height/2, 
-								 original.size.width/2, 
-								 original.size.height/2)];
-	[circle4 setFrame:CGRectMake(original.origin.x+original.size.width/2, 
-								 original.origin.y+original.size.height/2, 
-								 original.size.width/2, 
-								 original.size.height/2)];
-    
-    [UIView commitAnimations];
+	BGSCircleView *circle2 = [[BGSCircleView alloc] initWithFrame:original];
 	
-	CABasicAnimation *theAnimation = [CABasicAnimation animationWithKeyPath:@"percent"];
-	theAnimation.duration = 1.0;
+	[circle2 setColor:circle1.color];
+	[circle2 setNewColor:[self randomColor]];
+	[circle2 setNewFrame:CGRectMake(original.origin.x+original.size.width/2, 
+									original.origin.y, 
+									original.size.width/2, 
+									original.size.height/2)];
 	
-	theAnimation.fromValue = [NSNumber numberWithFloat:0.0f];	
-	theAnimation.toValue = [NSNumber numberWithFloat:1.0f];
-	[circle1.layer addAnimation:theAnimation forKey:@"percent"];
-}
-
-- (void)shrinkComplete:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
-{
-	NSArray *circles = (NSArray *)context;
-	for (BGSCircleView *circle in circles)
-	{
-		[circle setColor:circle.newColor];
-		circle.animating = NO;
-	}
-	[circles release];
+	[self.circleView addSubview:circle2];
+	
+	BGSCircleView *circle3 = [[BGSCircleView alloc] initWithFrame:original];
+	
+	[circle3 setColor:circle1.color];
+	[circle3 setNewColor:[self randomColor]];
+	[circle3 setNewFrame:CGRectMake(original.origin.x, 
+									original.origin.y+original.size.height/2, 
+									original.size.width/2, 
+									original.size.height/2)];
+	
+	[self.circleView addSubview:circle3];
+	
+	BGSCircleView *circle4 = [[BGSCircleView alloc] initWithFrame:original];
+	
+	[circle4 setColor:circle1.color];
+	[circle4 setNewColor:[self randomColor]];
+	[circle4 setNewFrame:CGRectMake(original.origin.x+original.size.width/2, 
+									original.origin.y+original.size.height/2, 
+									original.size.width/2, 
+									original.size.height/2)];
+	
+	[self.circleView addSubview:circle4];
+	
+	[circle1 animateWithDuration:0.5f andDelay:0.0f];
+	[circle2 animateWithDuration:0.5f andDelay:0.0f];
+	[circle3 animateWithDuration:0.5f andDelay:0.0f];
+	[circle4 animateWithDuration:0.5f andDelay:0.0f];
 }
 
 - (void)zoomToPoint:(CGPoint)point
