@@ -34,7 +34,9 @@ enum scopes
 	NSArray *newestEntries;
 	NSArray *popularEntries;
 	NSArray *randomEntries;
+	
 	NSArray *favoriteEntries;
+	NSMutableArray *favoriteLookup;
 }
 
 @property (nonatomic, retain) NSOperationQueue *queue;
@@ -42,6 +44,7 @@ enum scopes
 @property (nonatomic, retain) NSArray *popularEntries;
 @property (nonatomic, retain) NSArray *randomEntries;
 @property (nonatomic, retain) NSArray *favoriteEntries;
+@property (nonatomic, retain) NSMutableArray *favoriteLookup;
 
 - (void)refreshNewestEntries;
 - (void)pageNewestEntries;
@@ -49,5 +52,9 @@ enum scopes
 - (void)pagePopularEntries;
 - (void)refreshRandomEntries;
 - (void)pageRandomEntries;
+
+- (void)addToFavorites:(NSDictionary *)entry;
+- (void)removeFromFavorites:(NSDictionary *)entry;
+- (BOOL)isFavorite:(NSDictionary *)entry;
 
 @end

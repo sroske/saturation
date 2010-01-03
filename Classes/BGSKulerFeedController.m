@@ -26,6 +26,7 @@
 @synthesize popularEntries;
 @synthesize randomEntries;
 @synthesize favoriteEntries;
+@synthesize favoriteLookup;
 
 - (NSOperationQueue *)queue
 {
@@ -64,6 +65,7 @@
 	[popularEntries release];
 	[randomEntries release];
 	[favoriteEntries release];
+	[favoriteLookup release];
 	[super dealloc];
 }
 
@@ -316,11 +318,24 @@
 #pragma mark -
 #pragma mark Favorite
 
+- (NSMutableArray *)favoriteLookup
+{
+	if (favoriteLookup == nil)
+	{
+		NSMutableArray *a = [[NSMutableArray alloc] init];
+		[self setFavoriteLookup:a];
+		[a release];
+	}
+	return favoriteLookup;
+}
+
 - (NSArray *)favoriteEntries
 {
 	if (favoriteEntries == nil)
 	{
 		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFeedType:kKulerFeedTypeFavorites]];
+		if (saved == nil)
+			saved = [NSArray array];
 		[self setFavoriteEntries:saved];
 		[saved release];
 	}
@@ -334,7 +349,37 @@
 		[favoriteEntries release];
 		favoriteEntries = [newFavoriteEntries retain];
 	}
+	
+	self.favoriteLookup = nil;
+	for (NSDictionary *entry in favoriteEntries)
+		[self.favoriteLookup addObject:[entry objectForKey:@"themeID"]];
+	
 	[favoriteEntries writeToFile:[self pathForFeedType:kKulerFeedTypeFavorites] atomically:YES];
+}
+
+- (void)addToFavorites:(NSDictionary *)entry
+{
+	if ([self isFavorite:entry]) return;
+	
+	[self setFavoriteEntries:[self.favoriteEntries arrayByAddingObject:entry]];
+}
+
+- (void)removeFromFavorites:(NSDictionary *)entry
+{
+	NSMutableArray *a = [self.favoriteEntries mutableCopy];
+	[a removeObject:entry];
+	[self setFavoriteEntries:a];
+}
+
+- (BOOL)isFavorite:(NSDictionary *)entry
+{
+	BOOL found = NO;
+	for (NSDictionary *favoriteEntry in self.favoriteEntries)
+	{
+		if ([[favoriteEntry objectForKey:@"themeID"] isEqualToString:[entry objectForKey:@"themeID"]])
+			found = YES;
+	}
+	return found;
 }
 
 

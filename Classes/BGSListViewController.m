@@ -466,12 +466,34 @@
     if (cell == nil) 
 	{
         cell = [[[BGSEntryViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		[cell.favoriteView.iconButton addTarget:self action:@selector(toggleFavorite:) forControlEvents:UIControlEventTouchDown];
     }
 	
 	NSDictionary *entry = [[self selectedEntries] objectAtIndex:ip.row];
 	[cell setEntry:entry];
+	[cell.favoriteView setIsFavorite:[self.feed isFavorite:entry]];
+	[cell.favoriteView.iconButton setTag:ip.row];
 	
     return cell;
+}
+
+- (void)toggleFavorite:(id)sender
+{
+	BGSEntryViewCell *cell = (BGSEntryViewCell *)[[sender superview] superview];
+	NSIndexPath *ip = [self.tableView indexPathForCell:cell];
+	NSDictionary *entry = [[self selectedEntries] objectAtIndex:ip.row];
+	if (cell.favoriteView.isFavorite)
+	{
+		[self.feed removeFromFavorites:entry];
+		[cell.favoriteView setIsFavorite:NO];
+		if (currentSection == kKulerFeedTypeFavorites)
+			[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:ip] withRowAnimation:UITableViewRowAnimationLeft];
+	}
+	else
+	{
+		[self.feed addToFavorites:entry];
+		[cell.favoriteView setIsFavorite:YES];
+	}
 }
 
 

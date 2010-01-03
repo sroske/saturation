@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "FontsAndColors.h"
+#import "BGSFavoriteView.h"
 #import "BGSEntryViewCell.h"
 #import "BGSSectionButton.h"
 #import "BGSSwatchColor.h"

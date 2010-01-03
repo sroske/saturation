@@ -13,6 +13,7 @@
 
 - (void)close:(id)sender;
 - (void)setupColorRows;
+- (void)toggleFavorite:(id)sender;
 
 @end
 
@@ -22,6 +23,7 @@
 @synthesize background;
 
 @synthesize entry;
+@synthesize feed;
 @synthesize titleLabel;
 @synthesize authorLabel;
 @synthesize closeButton;
@@ -49,6 +51,17 @@
 
 @synthesize favoriteButton;
 @synthesize emailButton;
+
+- (BGSKulerFeedController *)feed
+{
+	if (feed == nil)
+	{
+		BGSKulerFeedController *f = [[BGSKulerFeedController alloc] init];
+		[self setFeed:f];
+		[f release];
+	}
+	return feed;
+}
 
 - (UIImageView *)background
 {
@@ -330,10 +343,26 @@
 																			   268.0f, 
 																			   48.0f, 
 																			   48.0f)];
+		[e setIsFavorite:[self.feed isFavorite:self.entry]];
+		[e.iconButton addTarget:self action:@selector(toggleFavorite:) forControlEvents:UIControlEventTouchDown];
 		[self setFavoriteButton:e];
 		[e release];
 	}
 	return favoriteButton;
+}
+
+- (void)toggleFavorite:(id)sender
+{
+	if (self.favoriteButton.isFavorite)
+	{
+		[self.feed removeFromFavorites:self.entry];
+		[self.favoriteButton setIsFavorite:NO];
+	}
+	else
+	{
+		[self.feed addToFavorites:self.entry];
+		[self.favoriteButton setIsFavorite:YES];
+	}
 }
 
 - (BGSEmailCTAView *)emailButton
@@ -584,6 +613,7 @@
 	[background release];
 	
 	[entry release];
+	[feed release];
 	[titleLabel release];
 	[authorLabel release];
 	[colorStrip release];

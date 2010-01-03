@@ -81,16 +81,10 @@
 	{
 		UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
 		[btn setShowsTouchWhenHighlighted:YES];
-		[btn addTarget:self action:@selector(toggleFavorite:) forControlEvents:UIControlEventTouchUpInside];
 		[self setIconButton:btn];
 		[btn release];
 	}
 	return iconButton;
-}
-
-- (void)toggleFavorite:(id)sender
-{
-	self.isFavorite = !self.isFavorite;
 }
 
 - (id)initWithFrame:(CGRect)frame 

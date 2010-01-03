@@ -1,12 +1,11 @@
 TODO LIST
 
-1. dropping cmyk, adding visualization selection
-2. favorites
-3. email using mail composer
-4. change fonts to helvetica nueue light
+1. set up favorites
+2. dropping cmyk, adding visualization selection
+3. remove zoom from circles, have circles reverse animation after timer
+4. Add square visualizer
+5. email using mail composer
+6. change fonts to helvetica nueue light
+7. slide the strip on detail like a scrollview
 
-EXTRAS
-
-1. slide the strip on detail like a scrollview
-2. have light overlay on that modal reveal
-
+"/Users/sroske/Library/Application Support/iPhone Simulator/User/Applications/0387B639-720E-4544-A63D-5D829847C128"
