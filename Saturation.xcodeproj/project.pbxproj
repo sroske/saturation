@@ -27,6 +27,7 @@
 		A9A0F80610D8910100823BC9 /* BGSCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F80510D8910100823BC9 /* BGSCircleView.m */; };
 		A9A0F80B10D8912D00823BC9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */; };
 		A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */; };
+		A9E7736310F13D3400B3437A /* BGSCircleVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E7736210F13D3400B3437A /* BGSCircleVisualizer.m */; };
 		A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */; };
 		A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACD510DC9FE4005CCAA3 /* button-close.png */; };
 		A9EFACF610DCA0ED005CCAA3 /* NOTES in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACF510DCA0ED005CCAA3 /* NOTES */; };
@@ -90,6 +91,8 @@
 		A9A0F86910D8941A00823BC9 /* BGSKulerParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerParser.h; sourceTree = "<group>"; };
 		A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerParser.m; sourceTree = "<group>"; };
 		A9BCCE9F10DC910200742013 /* FontsAndColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontsAndColors.h; sourceTree = "<group>"; };
+		A9E7736110F13D3400B3437A /* BGSCircleVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSCircleVisualizer.h; sourceTree = "<group>"; };
+		A9E7736210F13D3400B3437A /* BGSCircleVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSCircleVisualizer.m; sourceTree = "<group>"; };
 		A9EFACCB10DC9A8B005CCAA3 /* BGSDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSDetailViewController.h; sourceTree = "<group>"; };
 		A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSDetailViewController.m; sourceTree = "<group>"; };
 		A9EFACD510DC9FE4005CCAA3 /* button-close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-close.png"; sourceTree = "<group>"; };
@@ -142,6 +145,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A9E7736010F13CED00B3437A /* Visualizers */,
 				A9A0F86E10D8952E00823BC9 /* Controllers */,
 				A9A0F86D10D8952A00823BC9 /* Views */,
 				A9A0F86C10D8952400823BC9 /* Kuler Feeds */,
@@ -210,8 +214,6 @@
 		A903757F10EC1A3800D515F5 /* List View */ = {
 			isa = PBXGroup;
 			children = (
-				A9EFB18510DDA7F5005CCAA3 /* BGSFavoriteView.h */,
-				A9EFB18610DDA7F5005CCAA3 /* BGSFavoriteView.m */,
 				A94EABE410E09886002CD007 /* BGSEntryViewCell.h */,
 				A94EABE510E09886002CD007 /* BGSEntryViewCell.m */,
 				A903738310EA75AC00D515F5 /* BGSSectionButton.h */,
@@ -241,14 +243,12 @@
 			isa = PBXGroup;
 			children = (
 				A903757F10EC1A3800D515F5 /* List View */,
-				A9A0F80410D8910100823BC9 /* BGSCircleView.h */,
-				A9A0F80510D8910100823BC9 /* BGSCircleView.m */,
-				A903797E10ED61C000D515F5 /* BGSCircleScrollView.h */,
-				A903797F10ED61C000D515F5 /* BGSCircleScrollView.m */,
 				A9EFAE6A10DD2508005CCAA3 /* BGSSwatchColor.h */,
 				A9EFAE6B10DD2508005CCAA3 /* BGSSwatchColor.m */,
 				A9EFAE9F10DD2D59005CCAA3 /* BGSSwatchStrip.h */,
 				A9EFAEA010DD2D59005CCAA3 /* BGSSwatchStrip.m */,
+				A9EFB18510DDA7F5005CCAA3 /* BGSFavoriteView.h */,
+				A9EFB18610DDA7F5005CCAA3 /* BGSFavoriteView.m */,
 				A9EFB0AA10DD8D79005CCAA3 /* BGSEmailCTAView.h */,
 				A9EFB0AB10DD8D79005CCAA3 /* BGSEmailCTAView.m */,
 			);
@@ -268,6 +268,19 @@
 				A911893610DDDD30003AA0EB /* BGSListViewController.m */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		A9E7736010F13CED00B3437A /* Visualizers */ = {
+			isa = PBXGroup;
+			children = (
+				A9E7736110F13D3400B3437A /* BGSCircleVisualizer.h */,
+				A9E7736210F13D3400B3437A /* BGSCircleVisualizer.m */,
+				A9A0F80410D8910100823BC9 /* BGSCircleView.h */,
+				A9A0F80510D8910100823BC9 /* BGSCircleView.m */,
+				A903797E10ED61C000D515F5 /* BGSCircleScrollView.h */,
+				A903797F10ED61C000D515F5 /* BGSCircleScrollView.m */,
+			);
+			name = Visualizers;
 			sourceTree = "<group>";
 		};
 		A9EFACD410DC9FE4005CCAA3 /* Images */ = {
@@ -387,6 +400,7 @@
 				A903750A10EC0CE600D515F5 /* BGSLoadingView.m in Sources */,
 				A90375B010EC28EE00D515F5 /* BGSKulerOperation.m in Sources */,
 				A903798010ED61C000D515F5 /* BGSCircleScrollView.m in Sources */,
+				A9E7736310F13D3400B3437A /* BGSCircleVisualizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

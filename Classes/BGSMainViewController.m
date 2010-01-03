@@ -21,8 +21,6 @@
 - (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
 - (void)logoFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
 
-- (void)zoomToPoint:(CGPoint)point;
-
 @end
 
 
@@ -32,7 +30,6 @@
 @synthesize logo;
 @synthesize kulerLogo;
 @synthesize circleView;
-@synthesize scrollView;
 @synthesize entry;
 @synthesize settingsButton;
 @synthesize infoButton;
@@ -92,9 +89,7 @@
 {
 	if (circleView == nil)
 	{
-		NSLog(@"creating a new circleview");
 		UIView *v = [[UIView alloc] initWithFrame:self.view.bounds];
-		[v setContentMode:UIViewContentModeRedraw];
 		[v setAutoresizesSubviews:YES];
 		[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
 		[v sizeToFit];
@@ -102,18 +97,6 @@
 		[v release];
 	}
 	return circleView;
-}
-
-- (BGSCircleScrollView *)scrollView
-{
-	if (scrollView == nil)
-	{
-		BGSCircleScrollView *v = [[BGSCircleScrollView alloc] initWithFrame:self.view.bounds];
-		[v setDelegate:self];
-		[self setScrollView:v];
-		[v release];
-	}
-	return scrollView;
 }
 
 - (void)setEntry:(NSDictionary *)newEntry
@@ -128,9 +111,7 @@
 	{
 		[self.circleView removeFromSuperview];
 		self.circleView = nil;
-		[self.scrollView setZoomScale:1.0f animated:NO];
-		[self.scrollView setContentOffset:CGPointMake(0.0f, 0.0f)];
-		[self.scrollView addSubview:self.circleView];
+		[self.view insertSubview:self.circleView atIndex:1];
 		[self loadCircles];
 		[self fadeInCircles];
 	}
@@ -192,7 +173,7 @@
 {
 	if (self = [super init])
 	{
-		isFadingIn = isZooming = hasAnimated = NO;
+		isFadingIn = hasAnimated = NO;
 		[self setEntry:entryData];
 	}
 	return self;
@@ -212,9 +193,7 @@
 	
 	[self.view addSubview:self.background];
 	
-	[self.view addSubview:self.scrollView];
-	[self.scrollView addSubview:self.circleView];
-	[self.scrollView setContentSize:self.view.bounds.size];
+	[self.view addSubview:self.circleView];
 	
 	[self.view addSubview:self.logo];
 	[self.view addSubview:self.kulerLogo];
@@ -334,7 +313,6 @@
 	[logo release];
 	[kulerLogo release];
 	[circleView release];
-	[scrollView release];
 	[entry release];
     [super dealloc];
 }
@@ -401,124 +379,19 @@
 	[circle4 animateWithDuration:0.5f andDelay:0.0f];
 }
 
-- (void)zoomToPoint:(CGPoint)point
-{
-	isZooming = YES;
-	
-	CGRect zoomRect = CGRectMake(point.x-fmodf(point.x, CUTOFF_PX),
-								 point.y-fmodf(point.y, CUTOFF_PX), 
-								 CUTOFF_PX*COLS, 
-								 CUTOFF_PX*ROWS);
-	//zoomRect = CGRectOffset(zoomRect, -CUTOFF_PX*COLS/2, -CUTOFF_PX*ROWS/2);
-	
-	// find all circles that intersect with this rect
-	// create a new rect taking into account all these circles
-
-	CGRect fullRect = zoomRect;
-	NSLog(@"starting with fullRect: %@", NSStringFromCGRect(fullRect));
-	BOOL correctRatio = NO;
-	while (!correctRatio)
-	{
-		for (UIView *v in self.circleView.subviews)
-		{
-			if ([v isKindOfClass:[BGSCircleView class]])
-			{
-				BGSCircleView *cv = (BGSCircleView *)v;
-				if (CGRectIntersectsRect(cv.frame, fullRect))
-					fullRect = CGRectUnion(cv.frame, fullRect);
-			}
-		}
-		fullRect = CGRectIntegral(fullRect);
-		NSLog(@"integral fullRect: %@", NSStringFromCGRect(fullRect));
-		if (fullRect.size.width/COLS == fullRect.size.height/ROWS)
-		{
-			correctRatio = YES;
-		}
-		else
-		{
-			NSLog(@"incorrect aspect ratio");
-			
-			// see if this should be the left or right side
-			if (CGRectGetMaxX(fullRect) == CGRectGetMaxX(self.circleView.frame))
-			{
-				NSLog(@"up against the right edge!");
-				if (CGRectGetMinX(fullRect) == CGRectGetMinX(self.circleView.frame))
-				{
-					NSLog(@"also up against the left edge!");
-					NSLog(@"add to the top or bottom");
-					if (CGRectGetMaxY(fullRect) == CGRectGetMaxY(self.circleView.frame))
-					{
-						NSLog(@"up against the bottom edge!");
-						if (CGRectGetMinY(fullRect) == CGRectGetMinY(self.circleView.frame))
-						{
-							NSLog(@"also up against the top edge!");
-							NSLog(@"EPIC FAILURE");
-						}
-						else 
-						{
-							NSLog(@"add to the top");
-							fullRect = CGRectIntersection(self.circleView.frame, CGRectMake(fullRect.origin.x, 
-																							fullRect.origin.y-CUTOFF_PX*2, 
-																							fullRect.size.width, 
-																							fullRect.size.height+CUTOFF_PX*2));
-						}
-					}
-					else 
-					{
-						NSLog(@"add to the bottom");
-						fullRect = CGRectIntersection(self.circleView.frame, CGRectMake(fullRect.origin.x, 
-																						fullRect.origin.y, 
-																						fullRect.size.width, 
-																						fullRect.size.height+CUTOFF_PX*2));
-					}
-				}
-				else 
-				{
-					NSLog(@"add to the left");
-					fullRect = CGRectIntersection(self.circleView.frame, CGRectMake(fullRect.origin.x-CUTOFF_PX*2, 
-																					fullRect.origin.y, 
-																					fullRect.size.width+CUTOFF_PX*2, 
-																					fullRect.size.height));
-				}
-			}
-			else
-			{
-				NSLog(@"add to the right");
-				fullRect = CGRectIntersection(self.circleView.frame, CGRectMake(fullRect.origin.x, 
-																				fullRect.origin.y, 
-																				fullRect.size.width+CUTOFF_PX*2, 
-																				fullRect.size.height));
-			}
-			
-			NSLog(@"new fullRect: %@", NSStringFromCGRect(fullRect));
-		}
-		
-		NSLog(@"-----------------");
-	}
-	
-	[self.scrollView zoomToRect:fullRect animated:YES];
-	lastZoomedRect = fullRect;
-	
-	if (CGRectEqualToRect(fullRect, self.circleView.bounds))
-		isZooming = NO;
-}
-
 #pragma mark -
 #pragma mark Touch Events
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if (isZooming || isFadingIn) return;
+	if (isFadingIn) return;
 	
 	for (UITouch *touch in touches)
 	{
-		CGPoint point = [touch locationInView:self.view];
 		if ([[touch view] isKindOfClass:[BGSCircleView class]])
 		{
 			BGSCircleView *v = (BGSCircleView *)[touch view];
-			if (v.frame.size.width <= CUTOFF_PX*2)
-				[self zoomToPoint:point];
-			else if (!v.animating)
+			if (!v.animating)
 				[self dupeCircle:(BGSCircleView *)[touch view]];
 		}		
 	}
@@ -527,7 +400,7 @@
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if (isZooming || isFadingIn) return;
+	if (isFadingIn) return;
 	
 	for (UITouch *touch in touches)
 	{
@@ -536,9 +409,7 @@
 		if ([v isKindOfClass:[BGSCircleView class]])
 		{
 			BGSCircleView *cv = (BGSCircleView *)v;
-			if (cv.frame.size.width <= CUTOFF_PX*2)
-				[self zoomToPoint:point];
-			else if (!cv.animating)
+			if (!cv.animating)
 				[self dupeCircle:cv];
 		}
 	}
@@ -547,68 +418,7 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if (isZooming || isFadingIn) return;
-	
-	UITouch *touch = [touches anyObject];
-	if ([touch tapCount] > 1)
-	{
-		CGPoint point = [touch locationInView:self.view];
-		[self zoomToPoint:point];
-	}
 	[super touchesEnded:touches withEvent:event];
-}
-
-#pragma mark -
-#pragma mark ScrollViewDelegate
-
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
-{
-	return self.circleView;
-}
-
-- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale
-{
-	NSLog(@"scale: %f", scale);
-	if (!isZooming)
-	{
-		[self.scrollView setZoomScale:1.0f animated:YES];
-		return;
-	}
-	for (UIView *v in self.circleView.subviews)
-	{
-		if ([v isKindOfClass:[BGSCircleView class]])
-		{
-			BGSCircleView *cv = (BGSCircleView *)v;
-			if (!CGRectContainsRect(lastZoomedRect, cv.frame))
-				[cv removeFromSuperview];
-		}
-	}
-	for (UIView *v in self.circleView.subviews)
-	{
-		if ([v isKindOfClass:[BGSCircleView class]])
-		{
-			BGSCircleView *cv = (BGSCircleView *)v;
-			cv.frame = CGRectMake((cv.frame.origin.x-lastZoomedRect.origin.x)*scale, 
-								  (cv.frame.origin.y-lastZoomedRect.origin.y)*scale, 
-								  cv.frame.size.width*scale, 
-								  cv.frame.size.height*scale);
-			[cv setNeedsDisplay];
-		}
-	}
-	
-	[self.scrollView setZoomScale:1.0f animated:NO];
-	[self.scrollView setContentOffset:CGPointMake(0.0f, 0.0f)];
-	
-	self.circleView.frame = self.view.bounds;
-	
-	[self.circleView removeFromSuperview];
-	[self.scrollView removeFromSuperview];
-	self.scrollView = nil;
-	[self.view insertSubview:self.scrollView atIndex:1];
-	[self.scrollView addSubview:self.circleView];
-	[self.scrollView setContentSize:self.view.bounds.size];
-	
-	isZooming = NO;
 }
 
 @end
