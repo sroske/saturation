@@ -8,35 +8,28 @@
 
 #import <UIKit/UIKit.h>
 #import "FontsAndColors.h"
-#import "BGSCircleView.h"
-#import "NSArray-Shuffle.h"
+#import "BGSVisualizer.h"
+#import "BGSCircleVisualizer.h"
 
-#define ROWS		2
-#define COLS		3
-
-@interface BGSMainViewController : UIViewController <UIScrollViewDelegate>
+@interface BGSMainViewController : UIViewController
 {
+	NSDictionary *entry;
 	UIImageView *logo;
 	UIImageView *kulerLogo;
 	UIImageView *background;
-	
-	UIView *circleView;
-	NSDictionary *entry;
-	BOOL isFadingIn;
-	NSMutableArray *initialCircles;
-	
 	UIButton *settingsButton;
 	UIButton *infoButton;
 	BOOL hasAnimated;
+	BGSCircleVisualizer *visualizer;
 }
 
+@property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) UIImageView *logo;
 @property (nonatomic, retain) UIImageView *kulerLogo;
 @property (nonatomic, retain) UIImageView *background;
-@property (nonatomic, retain) UIView *circleView;
-@property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) UIButton *settingsButton;
 @property (nonatomic, retain) UIButton *infoButton;
+@property (nonatomic, retain) BGSCircleVisualizer *visualizer;
 
 - (id)initWithEntry:(NSDictionary *)entryData;
 

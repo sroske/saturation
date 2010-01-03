@@ -4,7 +4,7 @@
 //  Stolen from http://iphonedevelopment.blogspot.com/2008/10/shuffling-arrays.html
 //
 
-#import "NSArray-Shuffle.h"
+#import "NSArray+Shuffle.h"
 
 @implementation NSArray(Shuffle)
 -(NSArray *)shuffledArray
