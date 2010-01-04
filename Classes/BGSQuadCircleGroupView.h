@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "FontsAndColors.h"
-#import "BGSQuadCircleView.h"
 
 #define QUAD_CIRCLE_GROUP_ROWS		2
 #define QUAD_CIRCLE_GROUP_COLS		2
@@ -19,22 +19,18 @@
 {
 	NSDictionary *entry;
 	UIColor *primaryColor;
-	BGSQuadCircleView *circle;
-	BGSQuadCircleGroupView *parent;
-	NSMutableArray *children;
 	BOOL isAnimating;
 	BOOL hasSplit;
 }
 
 @property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) UIColor *primaryColor;
-@property (nonatomic, retain) BGSQuadCircleView *circle;
-@property (nonatomic, assign) BGSQuadCircleGroupView *parent;
-@property (nonatomic, retain) NSMutableArray *children;
 @property (nonatomic, assign) BOOL isAnimating;
 @property (nonatomic, assign) BOOL hasSplit;
 
-- (id)initWithFrame:(CGRect)frame andEntry:(NSDictionary *)entryData;
+- (id)initWithFrame:(CGRect)frame andPrimaryColor:(UIColor *)color andEntry:(NSDictionary *)entryData;
+
 - (void)split;
+- (void)combine;
 
 @end

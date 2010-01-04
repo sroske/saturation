@@ -10,6 +10,7 @@
 
 @interface BGSQuadCircleVisualizer (Private)
 
+- (UIColor *)randomColor;
 - (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
 
 @end
@@ -33,6 +34,7 @@
 																									  row*(self.bounds.size.height/QUAD_CIRCLE_ROWS), 
 																									  self.bounds.size.width/QUAD_CIRCLE_COLS, 
 																									  self.bounds.size.height/QUAD_CIRCLE_ROWS)
+																		   andPrimaryColor:[self randomColor]
 																				  andEntry:self.entry];
 			[circle setHidden:YES];
 			[a addObject:circle];
@@ -50,7 +52,7 @@
 	{
 		isFadingIn = hasAnimated = NO;
 		[self setEntry:entryData];
-		for (BGSQuadCircleView *c in self.circles)
+		for (BGSQuadCircleGroupView *c in self.circles)
 			[self addSubview:c];
     }
     return self;
@@ -66,7 +68,7 @@
 			
 			CGFloat delay = 0.3;
 			NSArray *shuffled = [self.circles shuffledArray];
-			for (BGSQuadCircleView *c in shuffled)
+			for (BGSQuadCircleGroupView *c in shuffled)
 			{
 				[c setHidden:NO];
 				[c setAlpha:0.0f];
@@ -90,7 +92,7 @@
 		}
 		else 
 		{
-			for (BGSQuadCircleView *c in self.circles)
+			for (BGSQuadCircleGroupView *c in self.circles)
 				[c setHidden:NO];
 			isFadingIn = NO;
 			hasAnimated = YES;
@@ -116,6 +118,18 @@
     [super dealloc];
 }
 
+- (UIColor *)randomColor
+{
+	NSArray *swatches = [self.entry objectForKey:@"swatches"];
+	UIColor *c = CC_WHITE;
+	if ([swatches count] > 0)
+	{
+		int i = arc4random()%[swatches count];
+		NSDictionary *swatch = [swatches objectAtIndex:i];
+		c = CC_FROM_SWATCH(swatch);		
+	}
+	return c;
+}
 
 #pragma mark -
 #pragma mark Touch Events

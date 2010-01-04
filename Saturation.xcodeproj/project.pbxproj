@@ -28,7 +28,6 @@
 		A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */; };
 		A9E7736310F13D3400B3437A /* BGSCircleVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E7736210F13D3400B3437A /* BGSCircleVisualizer.m */; };
 		A9E774AC10F1548400B3437A /* BGSQuadCircleVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E774AB10F1548400B3437A /* BGSQuadCircleVisualizer.m */; };
-		A9E774AF10F1549400B3437A /* BGSQuadCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E774AE10F1549400B3437A /* BGSQuadCircleView.m */; };
 		A9E7757310F17DE400B3437A /* BGSQuadCircleGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E7757210F17DE400B3437A /* BGSQuadCircleGroupView.m */; };
 		A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */; };
 		A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACD510DC9FE4005CCAA3 /* button-close.png */; };
@@ -96,8 +95,6 @@
 		A9E773B910F146BD00B3437A /* BGSVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSVisualizer.h; sourceTree = "<group>"; };
 		A9E774AA10F1548400B3437A /* BGSQuadCircleVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSQuadCircleVisualizer.h; sourceTree = "<group>"; };
 		A9E774AB10F1548400B3437A /* BGSQuadCircleVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSQuadCircleVisualizer.m; sourceTree = "<group>"; };
-		A9E774AD10F1549400B3437A /* BGSQuadCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSQuadCircleView.h; sourceTree = "<group>"; };
-		A9E774AE10F1549400B3437A /* BGSQuadCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSQuadCircleView.m; sourceTree = "<group>"; };
 		A9E7757110F17DE400B3437A /* BGSQuadCircleGroupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSQuadCircleGroupView.h; sourceTree = "<group>"; };
 		A9E7757210F17DE400B3437A /* BGSQuadCircleGroupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSQuadCircleGroupView.m; sourceTree = "<group>"; };
 		A9EFACCB10DC9A8B005CCAA3 /* BGSDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSDetailViewController.h; sourceTree = "<group>"; };
@@ -321,8 +318,6 @@
 				A9E774AB10F1548400B3437A /* BGSQuadCircleVisualizer.m */,
 				A9E7757110F17DE400B3437A /* BGSQuadCircleGroupView.h */,
 				A9E7757210F17DE400B3437A /* BGSQuadCircleGroupView.m */,
-				A9E774AD10F1549400B3437A /* BGSQuadCircleView.h */,
-				A9E774AE10F1549400B3437A /* BGSQuadCircleView.m */,
 			);
 			name = "Quad Square";
 			sourceTree = "<group>";
@@ -445,7 +440,6 @@
 				A90375B010EC28EE00D515F5 /* BGSKulerOperation.m in Sources */,
 				A9E7736310F13D3400B3437A /* BGSCircleVisualizer.m in Sources */,
 				A9E774AC10F1548400B3437A /* BGSQuadCircleVisualizer.m in Sources */,
-				A9E774AF10F1549400B3437A /* BGSQuadCircleView.m in Sources */,
 				A9E7757310F17DE400B3437A /* BGSQuadCircleGroupView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
