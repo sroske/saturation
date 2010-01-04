@@ -114,11 +114,11 @@
 	return settingsButton;
 }
 
-- (BGSCircleVisualizer *)visualizer
+- (BGSQuadCircleVisualizer *)visualizer
 {
 	if (visualizer == nil)
 	{
-		BGSCircleVisualizer *v = [[BGSCircleVisualizer alloc] initWithFrame:self.view.bounds andEntry:self.entry];
+		BGSQuadCircleVisualizer *v = [[BGSQuadCircleVisualizer alloc] initWithFrame:self.view.bounds andEntry:self.entry];
 		[self setVisualizer:v];
 		[v release];
 	}
@@ -189,7 +189,6 @@
 
 - (void)viewWillAppear:(BOOL)animated 
 {
-	NSLog(@"viewWillAppear: %i", animated);
 	if (!hasAnimated)
 	{
 		[visualizer viewWillAppear:YES];

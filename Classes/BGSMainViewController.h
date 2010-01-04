@@ -10,6 +10,7 @@
 #import "FontsAndColors.h"
 #import "BGSVisualizer.h"
 #import "BGSCircleVisualizer.h"
+#import "BGSQuadCircleVisualizer.h"
 
 @interface BGSMainViewController : UIViewController
 {
@@ -20,7 +21,7 @@
 	UIButton *settingsButton;
 	UIButton *infoButton;
 	BOOL hasAnimated;
-	BGSCircleVisualizer *visualizer;
+	BGSQuadCircleVisualizer *visualizer;
 }
 
 @property (nonatomic, retain) NSDictionary *entry;
@@ -29,7 +30,7 @@
 @property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) UIButton *settingsButton;
 @property (nonatomic, retain) UIButton *infoButton;
-@property (nonatomic, retain) BGSCircleVisualizer *visualizer;
+@property (nonatomic, retain) BGSQuadCircleVisualizer *visualizer;
 
 - (id)initWithEntry:(NSDictionary *)entryData;
 
