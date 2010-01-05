@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "FontsAndColors.h"
+#import "BGSQuadCircleOverlayView.h"
 
 #define QUAD_CIRCLE_GROUP_ROWS		2
 #define QUAD_CIRCLE_GROUP_COLS		2

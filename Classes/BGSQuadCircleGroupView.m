@@ -35,7 +35,6 @@
 		[self setBackgroundColor:CC_CLEAR];
 		[self setEntry:entryData];
 		[self setPrimaryColor:color];
-		//[self.layer setBackgroundColor:self.primaryColor.CGColor];
     }
     return self;
 }
@@ -86,6 +85,12 @@
 	
 	self.hasSplit = self.isAnimating = YES;
 	
+	[UIView beginAnimations:@"split" context:nil];
+	[UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(splitCompleted:finished:context:)];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+	[UIView setAnimationDuration:0.4];
+	
 	for (int i = 0; i < QUAD_CIRCLE_GROUP_ROWS*QUAD_CIRCLE_GROUP_COLS; i++)
 	{
 		int row = i/QUAD_CIRCLE_GROUP_COLS;
@@ -96,49 +101,59 @@
 		[group setParent:self];
 		[group setIsAnimating:YES];
 		[self addSubview:group];
-		
-		//[group.layer setBackgroundColor:self.primaryColor.CGColor];
 
-		[UIView beginAnimations:@"split" context:nil];
-		if (i == 0)
-		{
-			[UIView setAnimationDelegate:self];
-			[UIView setAnimationDidStopSelector:@selector(splitCompleted:finished:context:)];			
-		}
-		[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-		[UIView setAnimationDuration:0.4];
-		
 		[group setFrame:CGRectMake(col*(self.bounds.size.width/QUAD_CIRCLE_GROUP_COLS), 
 								   row*(self.bounds.size.height/QUAD_CIRCLE_GROUP_ROWS), 
 								   self.bounds.size.width/QUAD_CIRCLE_GROUP_COLS, 
 								   self.bounds.size.height/QUAD_CIRCLE_GROUP_ROWS)];
-		
-		[UIView commitAnimations];
-		
-		[UIView beginAnimations:@"color" context:nil];
-		[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
-		[UIView setAnimationDelay:0.3];
-		[UIView setAnimationDuration:0.6];
-		
-		/*UIColor *newColor = [self randomColor];
-		[group setPrimaryColor:newColor];
-		[group.layer setBackgroundColor:newColor.CGColor];*/
-		
-		[UIView commitAnimations];
-		
 		[group release];
 	}
+	
+	[UIView commitAnimations];
 
 	[self setNeedsDisplay];
 }
 
 - (void)splitCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
-	self.isAnimating = NO;
-	for (BGSQuadCircleGroupView *group in self.subviews)
-		[group setIsAnimating:NO];
+	[UIView beginAnimations:@"color" context:nil];
+	[UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(colorChangeCompleted:finished:context:)];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+	[UIView setAnimationDuration:0.3];
 	
-	[self performSelector:@selector(getReadyForCombine) withObject:nil afterDelay:4.0];
+	for (BGSQuadCircleGroupView *group in self.subviews)
+	{
+		BGSQuadCircleOverlayView *overlay = [[BGSQuadCircleOverlayView alloc] initWithFrame:group.frame andColor:self.primaryColor];
+		[self addSubview:overlay];
+		
+		[group setPrimaryColor:[self randomColor]];
+		[group setNeedsDisplay];
+		
+		[overlay setAlpha:0.0];
+	}
+	
+	[UIView commitAnimations];
+}
+
+- (void)colorChangeCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+{
+	self.isAnimating = NO;
+	for (UIView *v in self.subviews)
+	{
+		if ([v isKindOfClass:[BGSQuadCircleGroupView class]])
+		{
+			BGSQuadCircleGroupView *group = (BGSQuadCircleGroupView *)v;
+			[group setIsAnimating:NO];
+		}
+		else 
+		{
+			[v removeFromSuperview];
+			[v release];
+		}
+	}
+	
+	[self performSelector:@selector(getReadyForCombine) withObject:nil afterDelay:4.0];	
 }
 
 - (void)getReadyForCombine
@@ -163,24 +178,50 @@
 	if (childrenAreSplit) return;
 	
 	self.isAnimating = YES;
-	
-	for (int i = 0; i < [self.subviews count]; i++)
-	{
-		BGSQuadCircleGroupView *group = (BGSQuadCircleGroupView *)[self.subviews objectAtIndex:i];
 
-		[UIView beginAnimations:@"combine" context:nil];
-		if (i == 0)
-		{
-			[UIView setAnimationDelegate:self];
-			[UIView setAnimationDidStopSelector:@selector(combineCompleted:finished:context:)];			
-		}
-		[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-		[UIView setAnimationDuration:0.4];
+	[UIView beginAnimations:@"color" context:nil];
+	[UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(colorRevertCompleted:finished:context:)];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+	[UIView setAnimationDuration:0.3];
+	
+	for (BGSQuadCircleGroupView *group in self.subviews)
+	{
+		BGSQuadCircleOverlayView *overlay = [[BGSQuadCircleOverlayView alloc] initWithFrame:group.frame andColor:group.primaryColor];
+		[self addSubview:overlay];
 		
-		[group setFrame:self.bounds];
+		[group setPrimaryColor:self.primaryColor];
+		[group setNeedsDisplay];
 		
-		[UIView commitAnimations];
+		[overlay setAlpha:0.0];
 	}
+	
+	[UIView commitAnimations];
+}
+
+- (void)colorRevertCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+{
+	[UIView beginAnimations:@"combine" context:nil];
+	[UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(combineCompleted:finished:context:)];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+	[UIView setAnimationDuration:0.4];
+	
+	for (UIView *v in self.subviews)
+	{
+		if ([v isKindOfClass:[BGSQuadCircleGroupView class]])
+		{
+			BGSQuadCircleGroupView *group = (BGSQuadCircleGroupView *)v;
+			[group setFrame:self.bounds];
+		}
+		else 
+		{
+			[v removeFromSuperview];
+			[v release];
+		}
+	}
+
+	[UIView commitAnimations];
 }
 
 - (void)combineCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
