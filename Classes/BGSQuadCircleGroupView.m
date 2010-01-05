@@ -10,8 +10,10 @@
 
 @interface BGSQuadCircleGroupView (Private)
 
+- (void)getReadyForCombine;
 - (UIColor *)randomColor;
 - (void)splitCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
+- (void)combineCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
 
 @end
 
@@ -19,17 +21,21 @@
 
 @synthesize entry;
 @synthesize primaryColor;
+@synthesize parent;
 @synthesize isAnimating;
 @synthesize hasSplit;
+@synthesize readyForCombine;
 
 - (id)initWithFrame:(CGRect)frame andPrimaryColor:(UIColor *)color andEntry:(NSDictionary *)entryData
 {
     if (self = [super initWithFrame:frame]) 
 	{
-		isAnimating = hasSplit = NO;
+		self.hasSplit = self.readyForCombine = NO;
+		self.isAnimating = YES;
 		[self setBackgroundColor:CC_CLEAR];
 		[self setEntry:entryData];
 		[self setPrimaryColor:color];
+		//[self.layer setBackgroundColor:self.primaryColor.CGColor];
     }
     return self;
 }
@@ -92,13 +98,17 @@
 		BGSQuadCircleGroupView *group = [[BGSQuadCircleGroupView alloc] initWithFrame:self.bounds
 																	  andPrimaryColor:self.primaryColor 
 																			 andEntry:self.entry];
+		[group setParent:self];
 		[self addSubview:group];
 		
 		//[group.layer setBackgroundColor:self.primaryColor.CGColor];
 
-		[UIView beginAnimations:@"move" context:nil];
-		[UIView setAnimationDelegate:self];
-		[UIView setAnimationDidStopSelector:@selector(splitCompleted:finished:context:)];
+		[UIView beginAnimations:@"split" context:nil];
+		if (i == 0)
+		{
+			[UIView setAnimationDelegate:self];
+			[UIView setAnimationDidStopSelector:@selector(splitCompleted:finished:context:)];			
+		}
 		[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
 		[UIView setAnimationDuration:0.4];
 		
@@ -109,15 +119,14 @@
 		
 		[UIView commitAnimations];
 		
-		[UIView beginAnimations:@"move" context:nil];
+		[UIView beginAnimations:@"color" context:nil];
 		[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
 		[UIView setAnimationDelay:0.3];
 		[UIView setAnimationDuration:0.6];
 		
-		UIColor *newColor = [self randomColor];
-		
-		//[group setPrimaryColor:newColor];
-		//[group.layer setBackgroundColor:newColor.CGColor];
+		/*UIColor *newColor = [self randomColor];
+		[group setPrimaryColor:newColor];
+		[group.layer setBackgroundColor:newColor.CGColor];*/
 		
 		[UIView commitAnimations];
 		
@@ -130,11 +139,62 @@
 - (void)splitCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
 	self.isAnimating = NO;
+	for (BGSQuadCircleGroupView *group in self.subviews)
+		[group setIsAnimating:NO];
+	
+	[self performSelector:@selector(getReadyForCombine) withObject:nil afterDelay:2.0];
+}
+
+- (void)getReadyForCombine
+{
+	self.readyForCombine = YES;
 }
 
 - (void)combine
 {
-	// TODO
+	if (!self.readyForCombine || !self.hasSplit || self.isAnimating) return;
+	
+	// if any children are split, just send this message down the line
+	BOOL childrenAreSplit = NO;
+	for (int i = 0; i < [self.subviews count]; i++)
+	{
+		BGSQuadCircleGroupView *group = (BGSQuadCircleGroupView *)[self.subviews objectAtIndex:i];
+		if (group.hasSplit)
+		{
+			[group combine];
+			childrenAreSplit = YES;
+		}
+	}
+	if (childrenAreSplit) return;
+	
+	self.isAnimating = YES;
+	
+	for (int i = 0; i < [self.subviews count]; i++)
+	{
+		BGSQuadCircleGroupView *group = (BGSQuadCircleGroupView *)[self.subviews objectAtIndex:i];
+
+		[UIView beginAnimations:@"combine" context:nil];
+		if (i == 0)
+		{
+			[UIView setAnimationDelegate:self];
+			[UIView setAnimationDidStopSelector:@selector(combineCompleted:finished:context:)];			
+		}
+		[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+		[UIView setAnimationDuration:0.4];
+		
+		[group setFrame:CGRectInset(self.bounds, 1.0f, 1.0f)];
+		
+		[UIView commitAnimations];
+	}
+}
+
+- (void)combineCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+{
+	self.isAnimating = self.hasSplit = NO;
+	for (BGSQuadCircleGroupView *group in self.subviews)
+		[group removeFromSuperview];
+
+	[self setNeedsDisplay];
 }
 
 @end

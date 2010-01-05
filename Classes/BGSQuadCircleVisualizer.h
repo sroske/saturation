@@ -21,10 +21,12 @@
 	NSArray *circles;
 	BOOL isFadingIn;
 	BOOL hasAnimated;
+	NSTimer *timer;
 }
 
 @property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) NSArray *circles;
+@property (nonatomic, retain) NSTimer *timer;
 
 - (id)initWithFrame:(CGRect)frame andEntry:(NSDictionary *)entryData;
 

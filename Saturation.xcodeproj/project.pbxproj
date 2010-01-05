@@ -307,6 +307,10 @@
 		A9E774A410F1511700B3437A /* Quad Circle */ = {
 			isa = PBXGroup;
 			children = (
+				A9E774AA10F1548400B3437A /* BGSQuadCircleVisualizer.h */,
+				A9E774AB10F1548400B3437A /* BGSQuadCircleVisualizer.m */,
+				A9E7757110F17DE400B3437A /* BGSQuadCircleGroupView.h */,
+				A9E7757210F17DE400B3437A /* BGSQuadCircleGroupView.m */,
 			);
 			name = "Quad Circle";
 			sourceTree = "<group>";
@@ -314,10 +318,6 @@
 		A9E774A710F1546D00B3437A /* Quad Square */ = {
 			isa = PBXGroup;
 			children = (
-				A9E774AA10F1548400B3437A /* BGSQuadCircleVisualizer.h */,
-				A9E774AB10F1548400B3437A /* BGSQuadCircleVisualizer.m */,
-				A9E7757110F17DE400B3437A /* BGSQuadCircleGroupView.h */,
-				A9E7757210F17DE400B3437A /* BGSQuadCircleGroupView.m */,
 			);
 			name = "Quad Square";
 			sourceTree = "<group>";

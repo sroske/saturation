@@ -10,6 +10,7 @@
 
 @interface BGSQuadCircleVisualizer (Private)
 
+- (void)combine;
 - (UIColor *)randomColor;
 - (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
 
@@ -20,6 +21,7 @@
 
 @synthesize entry;
 @synthesize circles;
+@synthesize timer;
 
 - (NSArray *)circles
 {
@@ -44,6 +46,25 @@
 		[a release];
 	}
 	return circles;
+}
+
+- (NSTimer *)timer
+{
+	if (timer == nil)
+	{
+		[self setTimer:[NSTimer scheduledTimerWithTimeInterval:1.0
+														target:self 
+													  selector:@selector(combine)
+													  userInfo:nil 
+													   repeats:YES]];
+	}
+	return timer;
+}
+
+- (void)combine
+{
+	for (BGSQuadCircleGroupView *c in self.circles)
+		[c combine];
 }
 
 - (id)initWithFrame:(CGRect)frame andEntry:(NSDictionary *)entryData 
@@ -93,28 +114,37 @@
 		else 
 		{
 			for (BGSQuadCircleGroupView *c in self.circles)
+			{
 				[c setHidden:NO];
+				[c setIsAnimating:NO];
+			}
 			isFadingIn = NO;
 			hasAnimated = YES;
 		}		
 	}
+	[self.timer fire];
 }
 
 - (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
 	isFadingIn = NO;
 	hasAnimated = YES;
+	for (BGSQuadCircleGroupView *c in self.circles)
+		[c setIsAnimating:NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-	// nothing
+	[self.timer invalidate];
+	self.timer = nil;
 }
 
 - (void)dealloc 
 {
 	[entry release];
 	[circles release];
+	[timer invalidate];
+	[timer release];
     [super dealloc];
 }
 
@@ -143,8 +173,7 @@
 		if ([[touch view] isKindOfClass:[BGSQuadCircleGroupView class]])
 		{
 			BGSQuadCircleGroupView *v = (BGSQuadCircleGroupView *)[touch view];
-			if (!v.hasSplit && !v.isAnimating)
-				[v split];
+			[v split];
 		}	
 	}
 	[super touchesBegan:touches withEvent:event];
@@ -161,8 +190,7 @@
 		if ([v isKindOfClass:[BGSQuadCircleGroupView class]])
 		{
 			BGSQuadCircleGroupView *cv = (BGSQuadCircleGroupView *)v;
-			if (!cv.hasSplit && !cv.isAnimating)
-				[cv split];
+			[cv split];
 		}
 	}
 	[super touchesMoved:touches withEvent:event];
