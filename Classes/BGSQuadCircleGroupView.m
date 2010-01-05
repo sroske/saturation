@@ -14,6 +14,7 @@
 - (UIColor *)randomColor;
 - (void)splitCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
 - (void)combineCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
+- (void)swapBack;
 
 @end
 
@@ -30,8 +31,7 @@
 {
     if (self = [super initWithFrame:frame]) 
 	{
-		self.hasSplit = self.readyForCombine = NO;
-		self.isAnimating = YES;
+		self.hasSplit = self.readyForCombine = self.isAnimating = NO;
 		[self setBackgroundColor:CC_CLEAR];
 		[self setEntry:entryData];
 		[self setPrimaryColor:color];
@@ -40,18 +40,13 @@
     return self;
 }
 
-- (void)layoutSubviews
-{
-	[super layoutSubviews];
-}
-
 - (void)drawRect:(CGRect)rect 
 {
 	[super drawRect:rect];
 	
 	CGContextRef context = UIGraphicsGetCurrentContext(); 
 	
-	if (!hasSplit)
+	if (!self.hasSplit)
 	{
 		CGContextSetFillColorWithColor(context, [self.primaryColor CGColor]);
 		CGContextAddArc(context, rect.size.width/2, rect.size.height/2, rect.size.width/2, 0, 2*M_PI, false);
@@ -99,6 +94,7 @@
 																	  andPrimaryColor:self.primaryColor 
 																			 andEntry:self.entry];
 		[group setParent:self];
+		[group setIsAnimating:YES];
 		[self addSubview:group];
 		
 		//[group.layer setBackgroundColor:self.primaryColor.CGColor];
@@ -142,7 +138,7 @@
 	for (BGSQuadCircleGroupView *group in self.subviews)
 		[group setIsAnimating:NO];
 	
-	[self performSelector:@selector(getReadyForCombine) withObject:nil afterDelay:2.0];
+	[self performSelector:@selector(getReadyForCombine) withObject:nil afterDelay:4.0];
 }
 
 - (void)getReadyForCombine
@@ -160,10 +156,9 @@
 	{
 		BGSQuadCircleGroupView *group = (BGSQuadCircleGroupView *)[self.subviews objectAtIndex:i];
 		if (group.hasSplit)
-		{
-			[group combine];
 			childrenAreSplit = YES;
-		}
+		if (group.readyForCombine)
+			[group combine];
 	}
 	if (childrenAreSplit) return;
 	
@@ -179,10 +174,10 @@
 			[UIView setAnimationDelegate:self];
 			[UIView setAnimationDidStopSelector:@selector(combineCompleted:finished:context:)];			
 		}
-		[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+		[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
 		[UIView setAnimationDuration:0.4];
 		
-		[group setFrame:CGRectInset(self.bounds, 1.0f, 1.0f)];
+		[group setFrame:self.bounds];
 		
 		[UIView commitAnimations];
 	}
@@ -190,10 +185,10 @@
 
 - (void)combineCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
-	self.isAnimating = self.hasSplit = NO;
+	self.isAnimating = self.hasSplit = self.readyForCombine = NO;
 	for (BGSQuadCircleGroupView *group in self.subviews)
 		[group removeFromSuperview];
-
+	
 	[self setNeedsDisplay];
 }
 
