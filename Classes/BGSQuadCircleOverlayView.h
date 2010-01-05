@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "FontsAndColors.h"
 
 @interface BGSQuadCircleOverlayView : UIView 
 {

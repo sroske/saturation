@@ -18,6 +18,7 @@
 {
     if (self = [super initWithFrame:frame]) 
 	{
+		[self setBackgroundColor:CC_CLEAR];
 		[self setColor:newColor];
     }
     return self;
