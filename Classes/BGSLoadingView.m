@@ -65,6 +65,7 @@
 									  240.0f, 
 									  20.0f);
 }
+
 - (void)dealloc 
 {
 	[indicator release];

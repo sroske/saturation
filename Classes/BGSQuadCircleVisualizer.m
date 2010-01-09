@@ -48,19 +48,6 @@
 	return circles;
 }
 
-- (NSTimer *)timer
-{
-	if (timer == nil)
-	{
-		[self setTimer:[NSTimer scheduledTimerWithTimeInterval:1.0
-														target:self 
-													  selector:@selector(combine)
-													  userInfo:nil 
-													   repeats:YES]];
-	}
-	return timer;
-}
-
 - (void)combine
 {
 	for (BGSQuadCircleGroupView *c in self.circles)
@@ -176,6 +163,8 @@
 			[v split];
 		}	
 	}
+	[self.timer invalidate];
+	self.timer = nil;
 	[super touchesBegan:touches withEvent:event];
 }
 
@@ -193,7 +182,18 @@
 			[cv split];
 		}
 	}
+	[self.timer invalidate];
+	self.timer = nil;
 	[super touchesMoved:touches withEvent:event];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	[self setTimer:[NSTimer scheduledTimerWithTimeInterval:1.0
+													target:self 
+												  selector:@selector(combine)
+												  userInfo:nil 
+												   repeats:YES]];
 }
 
 @end

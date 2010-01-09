@@ -16,6 +16,7 @@
 #import "BGSKulerFeedController.h"
 #import "BGSTableView.h"
 #import "BGSLoadingView.h"
+#import "BGSRefreshView.h"
 
 @interface BGSListViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> 
 {
@@ -23,7 +24,8 @@
 	UIImageView *background;
 	UIButton *closeButton;
 	BGSTableView *tableView;
-	BGSLoadingView *headerView;
+	BGSRefreshView *refreshView;
+	BGSLoadingView *loadingView;
 	BGSLoadingView *footerView;
 	BGSKulerFeedController *feed;
 	BGSSectionButton *newestButton;
@@ -39,7 +41,8 @@
 @property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) UIButton *closeButton;
 @property (nonatomic, retain) BGSTableView *tableView;
-@property (nonatomic, retain) BGSLoadingView *headerView;
+@property (nonatomic, retain) BGSRefreshView *refreshView;
+@property (nonatomic, retain) BGSLoadingView *loadingView;
 @property (nonatomic, retain) BGSLoadingView *footerView;
 @property (nonatomic, retain) BGSKulerFeedController *feed;
 @property (nonatomic, retain) BGSSectionButton *newestButton;

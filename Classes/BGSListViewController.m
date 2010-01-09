@@ -13,7 +13,7 @@
 
 - (void)changeSection:(id)sender;
 - (CAGradientLayer *)shadowAsInverse:(BOOL)inverse;
-
+- (void)fullRefreshEntries:(id)sender;
 - (NSArray *)selectedEntries;
 
 -(void)fetchStarted:(NSNotification *)notice;
@@ -27,7 +27,8 @@
 @synthesize background;
 @synthesize closeButton;
 @synthesize tableView;
-@synthesize headerView;
+@synthesize refreshView;
+@synthesize loadingView;
 @synthesize footerView;
 @synthesize feed;
 @synthesize newestButton;
@@ -171,8 +172,8 @@
 		}
 		else 
 		{
-			[self.tableView setTableHeaderView:self.headerView];
-			[self.tableView setTableFooterView:self.footerView];
+			[self.tableView setTableHeaderView:self.refreshView];
+			[self.tableView setTableFooterView:(self.selectedEntries.count > 5 ? self.footerView : nil)];
 		}
 		
 		[self.tableView reloadData];
@@ -182,7 +183,6 @@
 			[self.tableView scrollToRowAtIndexPath:ip 
 								  atScrollPosition:UITableViewScrollPositionTop 
 										  animated:NO];
-										  //animated:(lastSelectedButton != self.favoritesButton)];
 		}
 		
 		lastSelectedButton = sender;
@@ -233,16 +233,47 @@
 	return tableView; 
 }
 
-- (BGSLoadingView *)headerView
+- (BGSRefreshView *)refreshView
 {
-	if (headerView == nil)
+	if (refreshView == nil)
+	{
+		BGSRefreshView *h = [[BGSRefreshView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 480.0f, 44.0f)];
+		[h.refreshButton addTarget:self action:@selector(fullRefreshEntries:) forControlEvents:UIControlEventTouchDown];
+		[self setRefreshView:h];
+		[h release];
+	}
+	return refreshView;
+}
+
+- (void)fullRefreshEntries:(id)sender
+{
+	if (!currentlyRefreshing)
+	{
+		switch (currentSection) {
+			case kKulerFeedTypeNewest:
+				[self.feed refreshNewestEntries];
+				break;
+			case kKulerFeedTypePopular:
+				[self.feed refreshPopularEntries];
+				break;
+			case kKulerFeedTypeRandom:
+				[self.feed refreshRandomEntries];
+				break;
+		}
+		[self.tableView setTableHeaderView:self.loadingView];
+	}
+}
+
+- (BGSLoadingView *)loadingView
+{
+	if (loadingView == nil)
 	{
 		BGSLoadingView *h = [[BGSLoadingView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 480.0f, 44.0f)];
 		[h.titleLabel setText:@"loading new swatches"];
-		[self setHeaderView:h];
+		[self setLoadingView:h];
 		[h release];
 	}
-	return headerView;
+	return loadingView;
 }
 
 - (BGSLoadingView *)footerView
@@ -304,8 +335,9 @@
 	if (scope == kKulerFeedScopeFull)
 	{
 		currentlyRefreshing = NO;
-		[self.tableView reloadData];
-		[self.tableView setContentOffset:CGPointMake(0.0f, 44.0f)];
+		[self.tableView setTableHeaderView:nil];
+		[self.tableView setTableFooterView:(self.selectedEntries.count > 5 ? self.footerView : nil)];
+		[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
 	}	
 	else
 	{
@@ -351,8 +383,8 @@
 	
 	[self.view addSubview:self.background];
 	[self.view addSubview:self.tableView];
-	[self.tableView setTableHeaderView:self.headerView];
-	[self.tableView setTableFooterView:self.footerView];
+	[self.tableView setTableHeaderView:self.refreshView];
+	[self.tableView setTableFooterView:(self.selectedEntries.count > 5 ? self.footerView : nil)];
 	[self.view addSubview:self.closeButton];
 	[self.view addSubview:self.newestButton];
 	[self.view addSubview:self.popularButton];
@@ -432,7 +464,8 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[background release];
 	[tableView release];
-	[headerView release];
+	[refreshView release];
+	[loadingView release];
 	[footerView release];
 	[feed release];
 	[newestButton release];
@@ -549,21 +582,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-	if (scrollView.contentOffset.y < self.headerView.frame.size.height && !currentlyRefreshing)
-	{
-		switch (currentSection) {
-			case kKulerFeedTypeNewest:
-				[self.feed refreshNewestEntries];
-				break;
-			case kKulerFeedTypePopular:
-				[self.feed refreshPopularEntries];
-				break;
-			case kKulerFeedTypeRandom:
-				[self.feed refreshRandomEntries];
-				break;
-		}
-	}
-	else if (scrollView.contentOffset.y > (44.0f+self.selectedEntries.count*44.0f-279.0f) && !currentlyPaging)
+	if (scrollView.contentOffset.y > (44.0f+self.selectedEntries.count*44.0f-279.0f) && !currentlyPaging)
 	{
 		switch (currentSection) {
 			case kKulerFeedTypeNewest:

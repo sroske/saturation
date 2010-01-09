@@ -27,6 +27,8 @@
 		A9A0F80610D8910100823BC9 /* BGSCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F80510D8910100823BC9 /* BGSCircleView.m */; };
 		A9A0F80B10D8912D00823BC9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */; };
 		A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */; };
+		A9B4749A10F91B30003DB9B1 /* BGSRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B4749910F91B30003DB9B1 /* BGSRefreshView.m */; };
+		A9B474A710F91C7C003DB9B1 /* BGSRefreshButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B474A610F91C7C003DB9B1 /* BGSRefreshButton.m */; };
 		A9E7736310F13D3400B3437A /* BGSCircleVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E7736210F13D3400B3437A /* BGSCircleVisualizer.m */; };
 		A9E774AC10F1548400B3437A /* BGSQuadCircleVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E774AB10F1548400B3437A /* BGSQuadCircleVisualizer.m */; };
 		A9E7757310F17DE400B3437A /* BGSQuadCircleGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E7757210F17DE400B3437A /* BGSQuadCircleGroupView.m */; };
@@ -92,6 +94,10 @@
 		A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A9A0F86910D8941A00823BC9 /* BGSKulerParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerParser.h; sourceTree = "<group>"; };
 		A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerParser.m; sourceTree = "<group>"; };
+		A9B4749810F91B30003DB9B1 /* BGSRefreshView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSRefreshView.h; sourceTree = "<group>"; };
+		A9B4749910F91B30003DB9B1 /* BGSRefreshView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSRefreshView.m; sourceTree = "<group>"; };
+		A9B474A510F91C7C003DB9B1 /* BGSRefreshButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSRefreshButton.h; sourceTree = "<group>"; };
+		A9B474A610F91C7C003DB9B1 /* BGSRefreshButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSRefreshButton.m; sourceTree = "<group>"; };
 		A9BCCE9F10DC910200742013 /* FontsAndColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontsAndColors.h; sourceTree = "<group>"; };
 		A9E7736110F13D3400B3437A /* BGSCircleVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSCircleVisualizer.h; sourceTree = "<group>"; };
 		A9E7736210F13D3400B3437A /* BGSCircleVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSCircleVisualizer.m; sourceTree = "<group>"; };
@@ -226,6 +232,10 @@
 				A90374A310EBE3CD00D515F5 /* BGSTableView.m */,
 				A903750810EC0CE600D515F5 /* BGSLoadingView.h */,
 				A903750910EC0CE600D515F5 /* BGSLoadingView.m */,
+				A9B4749810F91B30003DB9B1 /* BGSRefreshView.h */,
+				A9B4749910F91B30003DB9B1 /* BGSRefreshView.m */,
+				A9B474A510F91C7C003DB9B1 /* BGSRefreshButton.h */,
+				A9B474A610F91C7C003DB9B1 /* BGSRefreshButton.m */,
 			);
 			name = "List View";
 			sourceTree = "<group>";
@@ -447,6 +457,8 @@
 				A9E774AC10F1548400B3437A /* BGSQuadCircleVisualizer.m in Sources */,
 				A9E7757310F17DE400B3437A /* BGSQuadCircleGroupView.m in Sources */,
 				A937A91210F2FB770047A005 /* BGSQuadCircleOverlayView.m in Sources */,
+				A9B4749A10F91B30003DB9B1 /* BGSRefreshView.m in Sources */,
+				A9B474A710F91C7C003DB9B1 /* BGSRefreshButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
