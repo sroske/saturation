@@ -45,6 +45,7 @@
 	BGSVisualOptionView *quadCircleOption;
 	BGSVisualOptionView *simpleCircleOption;
 	BGSVisualOptionView *quadSquareOption;
+	BGSVisualOptionView *simpleSquareOption;
 	
 	BGSFavoriteView *favoriteButton;
 	BGSEmailCTAView *emailButton;
@@ -76,6 +77,7 @@
 @property (nonatomic, retain) BGSVisualOptionView *quadCircleOption;
 @property (nonatomic, retain) BGSVisualOptionView *simpleCircleOption;
 @property (nonatomic, retain) BGSVisualOptionView *quadSquareOption;
+@property (nonatomic, retain) BGSVisualOptionView *simpleSquareOption;
 
 @property (nonatomic, retain) BGSFavoriteView *favoriteButton;
 @property (nonatomic, retain) BGSEmailCTAView *emailButton;

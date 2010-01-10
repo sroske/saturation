@@ -61,8 +61,16 @@
 	}
 	else if (self.visualizationType == kQuadSquare)
 	{
-		BGSSimpleSquareVisualizer *v = [[BGSSimpleSquareVisualizer alloc] initWithFrame:self.view.bounds 
+		BGSQuadSquareVisualizer *v = [[BGSQuadSquareVisualizer alloc] initWithFrame:self.view.bounds 
 																		   andEntry:self.entry];
+		[v setTag:kVisualizer];
+		[self.view insertSubview:v atIndex:1];
+		[v release];
+	}
+	else if (self.visualizationType == kSimpleSquare)
+	{
+		BGSSimpleSquareVisualizer *v = [[BGSSimpleSquareVisualizer alloc] initWithFrame:self.view.bounds 
+																			   andEntry:self.entry];
 		[v setTag:kVisualizer];
 		[self.view insertSubview:v atIndex:1];
 		[v release];
