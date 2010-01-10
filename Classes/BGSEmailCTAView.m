@@ -57,7 +57,7 @@
 		[lbl setFont:CF_DETAIL_EMAIL];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:[UIColor clearColor]];
-		[lbl setText:@"email this color theme"];
+		[lbl setText:@"email this theme"];
 		[self setLabel:lbl];
 		[lbl release];
 	}
