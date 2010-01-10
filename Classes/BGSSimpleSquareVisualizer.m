@@ -141,31 +141,10 @@
 {
 	if (original.frame.size.width <= CUTOFF) return;
 
-	CGSize size = CGSizeMake(original.frame.size.width/2, original.frame.size.height/2);
-	CGRect rect = CGRectMake(original.frame.origin.x+size.width, 
-							 original.frame.origin.y+size.height, 
-							 size.width, 
-							 size.height);
-	CGRect firstRect = CGRectMake(rect.origin.x-size.width, 
-								  rect.origin.y, 
-								  rect.size.width, 
-								  rect.size.height);
-	CGRect secondRect = CGRectMake(rect.origin.x-size.width, 
-								   rect.origin.y-size.height, 
-								   rect.size.width, 
-								   rect.size.height);
-	CGRect thirdRect = CGRectMake(rect.origin.x, 
-								  rect.origin.y-size.height, 
-								  rect.size.width, 
-								  rect.size.height);
-	
-	BGSSimpleSquareView *square4 = [[BGSSimpleSquareView alloc] initWithFrame:rect];
-	[square4.layer setValue:(id)[self randomColor].CGColor forKey:@"backgroundColor"];
-	[self addSubview:square4];
-	
-	BGSSimpleSquareView *square3 = [[BGSSimpleSquareView alloc] initWithFrame:rect];
-	[square3.layer setValue:(id)[self randomColor].CGColor forKey:@"backgroundColor"];
-	[self addSubview:square3];
+	CGRect rect = CGRectMake(original.frame.origin.x+original.frame.size.width/2, 
+							 original.frame.origin.y+original.frame.size.height/2, 
+							 original.frame.size.width/2, 
+							 original.frame.size.height/2);
 	
 	BGSSimpleSquareView *square2 = [[BGSSimpleSquareView alloc] initWithFrame:rect];
 	[square2.layer setValue:(id)[self randomColor].CGColor forKey:@"backgroundColor"];
@@ -175,52 +154,94 @@
 	CGColorRef originalColorRef = (CGColorRef)[original.layer valueForKey:@"backgroundColor"];
 	[square1.layer setValue:(id)originalColorRef forKey:@"backgroundColor"];
 	[self addSubview:square1];
+
+	original.animating = square1.animating = square2.animating = YES;
 	
-	// TODO animations
-	original.animating = square1.animating = square2.animating = square3.animating = square4.animating = YES;
-	
-	[UIView beginAnimations:@"first" context:[[NSArray arrayWithObjects:square2, nil] retain]];
+	[UIView beginAnimations:@"square2" context:[[NSArray arrayWithObjects:original, square1, square2, nil] retain]];
 	[UIView setAnimationDuration:0.25];
 	[UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(squareMoved:finished:context:)];
+	[UIView setAnimationDidStopSelector:@selector(square2Moved:finished:context:)];
 	
-	square2.frame = square3.frame = square4.frame = firstRect;
+	square2.frame = CGRectMake(rect.origin.x-rect.size.width, 
+							   rect.origin.y, 
+							   rect.size.width, 
+							   rect.size.height);;
 	
 	[UIView commitAnimations];
 	
-	[UIView beginAnimations:@"second" context:[[NSArray arrayWithObjects:square3, nil] retain]];
-	[UIView setAnimationDelay:0.25];
-	[UIView setAnimationDuration:0.25];
-	[UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(squareMoved:finished:context:)];
-	
-	square3.frame = square4.frame = secondRect;
-	
-	[UIView commitAnimations];
-	
-	[UIView beginAnimations:@"third" context:[[NSArray arrayWithObjects:square1, square4, original, nil] retain]];
-	[UIView setAnimationDelay:0.5];
-	[UIView setAnimationDuration:0.25];
-	[UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(squareMoved:finished:context:)];
-	
-	square4.frame = thirdRect;
-	
-	[UIView commitAnimations];
-	
-	[square4 release];
-	[square3 release];
 	[square2 release];
 	[square1 release];
 }
 
-- (void)squareMoved:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+- (void)square2Moved:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
 	NSArray *items = (NSArray *)context;
 	if (items != nil)
 	{
-		for (BGSSimpleSquareView *square in items)
-			square.animating = NO;
+		BGSSimpleSquareView *last = [items lastObject];	
+		
+		BGSSimpleSquareView *square = [[BGSSimpleSquareView alloc] initWithFrame:last.frame];
+		[square.layer setValue:(id)[self randomColor].CGColor forKey:@"backgroundColor"];
+		[self insertSubview:square belowSubview:last];
+		
+		square.animating = YES;
+		
+		[UIView beginAnimations:@"square3" context:[[items arrayByAddingObject:square] retain]];
+		[UIView setAnimationDuration:0.25];
+		[UIView setAnimationDelegate:self];
+		[UIView setAnimationDidStopSelector:@selector(square3Moved:finished:context:)];
+		
+		square.frame = CGRectMake(last.frame.origin.x, 
+								  last.frame.origin.y-last.frame.size.height, 
+								  last.frame.size.width, 
+								  last.frame.size.height);
+		
+		[UIView commitAnimations];
+		
+		[square release];
+		
+	}
+	[items release];
+}
+
+- (void)square3Moved:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+{
+	NSArray *items = (NSArray *)context;
+	if (items != nil)
+	{
+		BGSSimpleSquareView *last = [items lastObject];	
+		
+		BGSSimpleSquareView *square = [[BGSSimpleSquareView alloc] initWithFrame:last.frame];
+		[square.layer setValue:(id)[self randomColor].CGColor forKey:@"backgroundColor"];
+		[self insertSubview:square belowSubview:last];
+		
+		square.animating = YES;
+		
+		[UIView beginAnimations:@"square4" context:[[items arrayByAddingObject:square] retain]];
+		[UIView setAnimationDuration:0.25];
+		[UIView setAnimationDelegate:self];
+		[UIView setAnimationDidStopSelector:@selector(square4Moved:finished:context:)];
+		
+		square.frame = CGRectMake(last.frame.origin.x+last.frame.size.width, 
+								  last.frame.origin.y, 
+								  last.frame.size.width, 
+								  last.frame.size.height);
+		
+		[UIView commitAnimations];
+		
+		[square release];
+		
+	}
+	[items release];
+}
+
+- (void)square4Moved:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+{
+	NSArray *items = (NSArray *)context;
+	if (items != nil)
+	{	
+		for (BGSSimpleSquareView *v in items)
+			v.animating = NO;
 	}
 	[items release];
 }
