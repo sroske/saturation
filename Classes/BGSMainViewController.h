@@ -11,6 +11,7 @@
 #import "BGSVisualizer.h"
 #import "BGSCircleVisualizer.h"
 #import "BGSQuadCircleVisualizer.h"
+#import "BGSSimpleSquareVisualizer.h"
 #import "BGSQuadSquareVisualizer.h"
 
 enum 
@@ -28,7 +29,6 @@ enum
 	UIButton *infoButton;
 	BOOL hasAnimated;
 	int visualizationType;
-	UIView *visualization;
 }
 
 @property (nonatomic, retain) NSDictionary *entry;

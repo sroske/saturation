@@ -61,7 +61,7 @@
 	}
 	else if (self.visualizationType == kQuadSquare)
 	{
-		BGSQuadSquareVisualizer *v = [[BGSQuadSquareVisualizer alloc] initWithFrame:self.view.bounds 
+		BGSSimpleSquareVisualizer *v = [[BGSSimpleSquareVisualizer alloc] initWithFrame:self.view.bounds 
 																		   andEntry:self.entry];
 		[v setTag:kVisualizer];
 		[self.view insertSubview:v atIndex:1];
