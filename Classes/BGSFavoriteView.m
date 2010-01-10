@@ -96,10 +96,10 @@
 {
 	[super layoutSubviews];
 	
-	self.iconButton.frame = CGRectMake(self.bounds.origin.x, 
+	self.iconButton.frame = CGRectMake(self.bounds.origin.x+1.0f, 
 									   self.bounds.origin.y, 
-									   self.bounds.size.width, 
-									   self.bounds.size.height-2.0f);
+									   self.bounds.size.width-1.0f, 
+									   self.bounds.size.height-3.0f);
 }
 
 - (void)dealloc 

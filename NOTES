@@ -1,8 +1,6 @@
 TODO LIST
 
-1. Hit areas on all buttons
-2. email using mail composer
-
-
-4. change fonts to helvetica nueue light
-5. slide the strip on detail like a scrollview
+1. email using mail composer
+2. change fonts to helvetica nueue light
+3. slide the strip on detail like a scrollview
+4. rewrite circle visualization to use masked CALayers
