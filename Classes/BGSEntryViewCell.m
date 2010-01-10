@@ -132,7 +132,7 @@
 - (void)layoutSubviews
 {
 	[super layoutSubviews];
-	self.favoriteView.frame = CGRectMake(10.0f, 
+	self.favoriteView.frame = CGRectMake(0.0f, 
 										 floor(self.bounds.size.height/2-24.0f), 
 										 48.0f, 
 										 48.0f);

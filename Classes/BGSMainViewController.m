@@ -138,10 +138,10 @@
 		UIImage *i = [UIImage imageWithContentsOfFile:p];
 		[btn setImage:i forState:UIControlStateNormal];
 		[btn addTarget:self action:@selector(showSettings:) forControlEvents:UIControlEventTouchUpInside];
-		[btn setFrame:CGRectMake(10.0f, 
-								 self.view.bounds.size.height-i.size.height-10.0f, 
-								 i.size.width, 
-								 i.size.height)];
+		[btn setFrame:CGRectMake(-14.0f, 
+								 self.view.bounds.size.height-i.size.height*3+14.0f, 
+								 i.size.width*3, 
+								 i.size.height*3)];
 		[self setSettingsButton:btn];
 		[btn release];
 	}
@@ -164,10 +164,10 @@
 		UIImage *i = [UIImage imageWithContentsOfFile:p];
 		[btn setImage:i forState:UIControlStateNormal];
 		[btn addTarget:self action:@selector(showDetailView:) forControlEvents:UIControlEventTouchUpInside];
-		[btn setFrame:CGRectMake(self.view.bounds.size.width-i.size.width-10.0f, 
-								 self.view.bounds.size.height-i.size.height-10.0f, 
-								 i.size.width, 
-								 i.size.height)];
+		[btn setFrame:CGRectMake(self.view.bounds.size.width-i.size.width*3+14.0f, 
+								 self.view.bounds.size.height-i.size.height*3+14.0f, 
+								 i.size.width*3, 
+								 i.size.height*3)];
 		[self setInfoButton:btn];
 		[btn release];
 	}

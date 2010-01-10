@@ -64,10 +64,10 @@
 		UIImage *i = [UIImage imageWithContentsOfFile:p];
 		[btn setImage:i forState:UIControlStateNormal];
 		[btn addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
-		[btn setFrame:CGRectMake(self.view.bounds.size.width-i.size.width-10.0f, 
-								 10.0f, 
-								 i.size.width, 
-								 i.size.height)];
+		[btn setFrame:CGRectMake(self.view.bounds.size.width-40.0f, 
+								 -2.0f, 
+								 42.0f, 
+								 42.0f)];
 		[self setCloseButton:btn];
 		[btn release];
 	}

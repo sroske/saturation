@@ -56,7 +56,7 @@
 {
 	[super layoutSubviews];
 	
-	self.indicator.frame = CGRectMake(24.0f, 
+	self.indicator.frame = CGRectMake(14.0f, 
 									  self.bounds.size.height/2-self.indicator.frame.size.height/2, 
 									  self.indicator.frame.size.width, 
 									  self.indicator.frame.size.height);

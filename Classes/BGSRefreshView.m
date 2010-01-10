@@ -38,7 +38,7 @@
 {
 	[super layoutSubviews];
 
-	self.refreshButton.frame = CGRectMake(24.0f, 
+	self.refreshButton.frame = CGRectMake(14.0f, 
 										  self.bounds.size.height/2-10.0f, 
 										  180.0f, 
 										  20.0f);
