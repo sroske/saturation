@@ -10,11 +10,10 @@
 
 @interface BGSQuadSquareVisualizer (Private)
 
+- (void)loadLayers;
 - (UIColor *)randomColor;
-- (void)loadCircles;
-- (void)fadeInCircles;
-- (void)dupeCircle:(UIView *)circle1;
-- (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
+- (void)dupeLayer:(CALayer *)original;
+- (CABasicAnimation *)slideAnimFrom:(CGPoint)from to:(CGPoint)to withDelay:(float)delay;
 
 @end
 
@@ -23,50 +22,38 @@
 
 @synthesize entry;
 
-/*
 - (id)initWithFrame:(CGRect)frame andEntry:(NSDictionary *)entryData
 {
     if (self = [super initWithFrame:frame]) 
 	{
+		fadedInCount = 0;
 		isFadingIn = hasAnimated = NO;
 		[self setEntry:entryData];
-		[self loadCircles];
+		[self loadLayers];
     }
     return self;
-}
-
-- (void)layoutSubviews
-{
-	[super layoutSubviews];
-	
-	self.circleView.frame = self.bounds;
 }
 
 - (void)dealloc 
 {
 	[entry release];
-	[circleView release];
-	[initialCircles release];
     [super dealloc];
 }
 
-- (void)loadCircles
-{
-	initialCircles = [[NSMutableArray alloc] init];
-	
+- (void)loadLayers
+{	
 	for (int i = 0; i < ROWS*COLS; i++)
 	{
 		int row = i/COLS;
 		int col = i%COLS;
-		BGSCircleView *circle = [[BGSCircleView alloc] initWithFrame:CGRectMake(col*(self.bounds.size.width/COLS), 
-																				row*(self.bounds.size.height/ROWS), 
-																				self.bounds.size.width/COLS, 
-																				self.bounds.size.height/ROWS)];
-		[circle setColor:[self randomColor]];
-		[circle setHidden:YES];
-		[initialCircles addObject:circle];
-		[self.circleView addSubview:circle];
-		[circle release];
+		CALayer *square = [CALayer layer];
+		[square setFrame:CGRectMake(col*(self.bounds.size.width/COLS), 
+									row*(self.bounds.size.height/ROWS), 
+									self.bounds.size.width/COLS, 
+									self.bounds.size.height/ROWS)];
+		[square setAnchorPoint:CGPointMake(0.5f, 0.5f)];
+		[square setBackgroundColor:CC_BACKGROUND.CGColor];
+		[self.layer addSublayer:square];
 	}
 }
 
@@ -79,44 +66,43 @@
 			isFadingIn = YES;
 			
 			CGFloat delay = 0.3;
-			NSArray *circles = [initialCircles shuffledArray];
-			for (BGSCircleView *c in circles)
-			{
-				[c setHidden:NO];
-				[c setAlpha:0.0f];
-				[UIView beginAnimations:nil context:NULL];
-				[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-				[UIView setAnimationDelay:delay];
-				[UIView setAnimationDuration:0.6];
+			NSArray *squares = [self.layer.sublayers shuffledArray];
+			for (CALayer *s in squares)
+			{	
+				CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
+				animation.toValue = (id)[self randomColor].CGColor;
+				animation.fillMode = kCAFillModeForwards;
+				animation.removedOnCompletion = NO;
+				animation.beginTime = CACurrentMediaTime()+delay;
+				animation.duration = 0.6;
+				animation.delegate = self;
 				
-				if (c == [circles objectAtIndex:[circles count]-1])
-				{
-					[UIView setAnimationDelegate:self];
-					[UIView setAnimationDidStopSelector:@selector(circlesFaded:finished:context:)];
-				}
-				
-				[c setAlpha:1.0f];
-				
-				[UIView commitAnimations];
+				[s addAnimation:animation forKey:@"colorFadeIn"];
 				
 				delay += 0.4f;
 			}		
 		}
 		else 
 		{
-			for (BGSCircleView *c in initialCircles)
-				[c setHidden:NO];
-			[initialCircles release];
+			for (CALayer *s in self.layer.sublayers)
+				[s setHidden:NO];
 			isFadingIn = NO;
 			hasAnimated = YES;
 		}		
 	}
 }
 
-- (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+- (void)animationDidStop:(CABasicAnimation *)anim finished:(BOOL)flag
 {
-	isFadingIn = NO;
-	hasAnimated = YES;
+	if ([anim.keyPath isEqualToString:@"backgroundColor"])
+	{
+		fadedInCount++;
+		if (fadedInCount >= [self.layer.sublayers count])
+		{
+			isFadingIn = NO;
+			hasAnimated = YES;		
+		}	
+	}
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -137,55 +123,85 @@
 	return color;
 }
 
-- (void)dupeCircle:(BGSCircleView *)circle1
+- (void)dupeLayer:(CALayer *)original
+{	
+	if (original.frame.size.width <= CUTOFF) return;
+	
+	CGSize size = CGSizeMake(original.frame.size.width/2, original.frame.size.height/2);
+	CGRect rect = CGRectMake(original.frame.origin.x+size.width, 
+							 original.frame.origin.y+size.height, 
+							 size.width, 
+							 size.height);
+	
+	CALayer *square4 = [CALayer layer];
+	[square4 setBackgroundColor:[self randomColor].CGColor];
+	[square4 setAnchorPoint:CGPointMake(0.5f, 0.5f)];
+	[square4 setFrame:rect];
+	[self.layer addSublayer:square4];
+	
+	CALayer *square3 = [CALayer layer];
+	[square3 setBackgroundColor:[self randomColor].CGColor];
+	[square3 setAnchorPoint:CGPointMake(0.5f, 0.5f)];
+	[square3 setFrame:rect];
+	[self.layer addSublayer:square3];
+	
+	CALayer *square2 = [CALayer layer];
+	[square2 setBackgroundColor:[self randomColor].CGColor];
+	[square2 setAnchorPoint:CGPointMake(0.5f, 0.5f)];
+	[square2 setFrame:rect];
+	[self.layer addSublayer:square2];
+	
+	CALayer *square1 = [CALayer layer];
+	[square1 setBackgroundColor:(CGColorRef)[original valueForKey:@"backgroundColor"]];
+	[square1 setAnchorPoint:CGPointMake(0.5f, 0.5f)];
+	[square1 setFrame:rect];
+	[self.layer addSublayer:square1];
+	 
+	CABasicAnimation *sq2Anim1 = [self slideAnimFrom:square1.position 
+												  to:CGPointMake(square1.position.x-size.width, square1.position.y) 
+										   withDelay:0.0f];
+	[square2 addAnimation:sq2Anim1 forKey:@"sq2Anim1"];
+	
+	CABasicAnimation *sq3Anim1 = [self slideAnimFrom:square1.position 
+												  to:CGPointMake(square1.position.x-size.width, square1.position.y) 
+										   withDelay:0.0f];
+	[sq3Anim1 setRemovedOnCompletion:YES];
+	[square3 addAnimation:sq3Anim1 forKey:@"sq3Anim1"];
+	
+	CABasicAnimation *sq4Anim1 = [self slideAnimFrom:square1.position 
+												  to:CGPointMake(square1.position.x-size.width, square1.position.y) 
+										   withDelay:0.0f];
+	[sq4Anim1 setRemovedOnCompletion:YES];
+	[square4 addAnimation:sq4Anim1 forKey:@"sq4Anim1"];
+	
+	CABasicAnimation *sq3Anim2 = [self slideAnimFrom:CGPointMake(square1.position.x-size.width, square1.position.y)  
+												  to:CGPointMake(square1.position.x-size.width, square1.position.y-size.height) 
+										   withDelay:0.25f];
+	[square3 addAnimation:sq3Anim2 forKey:@"sq3Anim2"];
+	
+	CABasicAnimation *sq4Anim2 = [self slideAnimFrom:CGPointMake(square1.position.x-size.width, square1.position.y)  
+												  to:CGPointMake(square1.position.x-size.width, square1.position.y-size.height) 
+										   withDelay:0.25f];
+	[sq4Anim2 setRemovedOnCompletion:YES];
+	[square4 addAnimation:sq4Anim2 forKey:@"sq4Anim2"];
+	
+	CABasicAnimation *sq4Anim3 = [self slideAnimFrom:CGPointMake(square1.position.x-size.width, square1.position.y-size.height) 
+												  to:CGPointMake(square1.position.x, square1.position.y-size.height) 
+										   withDelay:0.50f];
+	[square4 addAnimation:sq4Anim3 forKey:@"sq4Anim3"];
+}
+
+- (CABasicAnimation *)slideAnimFrom:(CGPoint)from to:(CGPoint)to withDelay:(float)delay
 {
-	if (circle1.frame.size.width <= CUTOFF) return;
-	
-	CGRect original = circle1.frame;
-	
-	[circle1 setNewColor:[self randomColor]];
-	[circle1 setNewFrame:CGRectMake(original.origin.x, 
-									original.origin.y, 
-									original.size.width/2, 
-									original.size.height/2)];
-	
-	BGSCircleView *circle2 = [[BGSCircleView alloc] initWithFrame:original];
-	
-	[circle2 setColor:circle1.color];
-	[circle2 setNewColor:[self randomColor]];
-	[circle2 setNewFrame:CGRectMake(original.origin.x+original.size.width/2, 
-									original.origin.y, 
-									original.size.width/2, 
-									original.size.height/2)];
-	
-	[self.circleView addSubview:circle2];
-	
-	BGSCircleView *circle3 = [[BGSCircleView alloc] initWithFrame:original];
-	
-	[circle3 setColor:circle1.color];
-	[circle3 setNewColor:[self randomColor]];
-	[circle3 setNewFrame:CGRectMake(original.origin.x, 
-									original.origin.y+original.size.height/2, 
-									original.size.width/2, 
-									original.size.height/2)];
-	
-	[self.circleView addSubview:circle3];
-	
-	BGSCircleView *circle4 = [[BGSCircleView alloc] initWithFrame:original];
-	
-	[circle4 setColor:circle1.color];
-	[circle4 setNewColor:[self randomColor]];
-	[circle4 setNewFrame:CGRectMake(original.origin.x+original.size.width/2, 
-									original.origin.y+original.size.height/2, 
-									original.size.width/2, 
-									original.size.height/2)];
-	
-	[self.circleView addSubview:circle4];
-	
-	[circle1 animateWithDuration:0.5f andDelay:0.0f];
-	[circle2 animateWithDuration:0.5f andDelay:0.0f];
-	[circle3 animateWithDuration:0.5f andDelay:0.0f];
-	[circle4 animateWithDuration:0.5f andDelay:0.0f];
+	CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"position"];
+	anim.fromValue = [NSValue valueWithCGPoint:from];
+	anim.toValue = [NSValue valueWithCGPoint:to];
+	anim.fillMode = kCAFillModeForwards;
+	anim.removedOnCompletion = NO;
+	anim.duration = 0.25;
+	if (delay > 0.0f)
+		anim.beginTime = CACurrentMediaTime()+delay;
+	return anim;
 }
 
 #pragma mark -
@@ -197,12 +213,12 @@
 	
 	for (UITouch *touch in touches)
 	{
-		if ([[touch view] isKindOfClass:[BGSCircleView class]])
-		{
-			BGSCircleView *v = (BGSCircleView *)[touch view];
-			if (!v.animating)
-				[self dupeCircle:(BGSCircleView *)[touch view]];
-		}		
+		CGPoint point = [touch locationInView:self];
+		point = [self.layer convertPoint:point toLayer:self.layer.superlayer];
+		CALayer *hit = [self.layer hitTest:point];
+		NSLog(@"hit: %@", hit);
+		if (hit != nil && hit != self.layer)
+			[self dupeLayer:hit];
 	}
 }
 
@@ -213,13 +229,9 @@
 	for (UITouch *touch in touches)
 	{
 		CGPoint point = [touch locationInView:self];
-		UIView *v = [self hitTest:point withEvent:event];
-		if ([v isKindOfClass:[BGSCircleView class]])
-		{
-			BGSCircleView *cv = (BGSCircleView *)v;
-			if (!cv.animating)
-				[self dupeCircle:cv];
-		}
+		CALayer *hit = [self.layer hitTest:point];
+		if (hit != nil)
+			[self dupeLayer:hit];
 	}
 }
 
@@ -227,7 +239,5 @@
 {
 	// nothing
 }
- 
- */
 
 @end

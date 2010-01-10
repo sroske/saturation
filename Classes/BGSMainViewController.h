@@ -11,6 +11,7 @@
 #import "BGSVisualizer.h"
 #import "BGSCircleVisualizer.h"
 #import "BGSQuadCircleVisualizer.h"
+#import "BGSQuadSquareVisualizer.h"
 
 enum 
 {
@@ -38,7 +39,7 @@ enum
 @property (nonatomic, retain) UIButton *infoButton;
 @property (nonatomic, assign) int visualizationType;
 
-- (id)initWithEntry:(NSDictionary *)entryData;
+- (id)initWithEntry:(NSDictionary *)entryData andVisualizationType:(int)type;
 - (void)switchToVisualization:(int)type withEntry:(NSDictionary *)entryData;
 
 @end

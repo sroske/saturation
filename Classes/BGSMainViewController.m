@@ -59,6 +59,14 @@
 		[self.view insertSubview:v atIndex:1];
 		[v release];
 	}
+	else if (self.visualizationType == kQuadSquare)
+	{
+		BGSQuadSquareVisualizer *v = [[BGSQuadSquareVisualizer alloc] initWithFrame:self.view.bounds 
+																		   andEntry:self.entry];
+		[v setTag:kVisualizer];
+		[self.view insertSubview:v atIndex:1];
+		[v release];
+	}
 }
 
 - (UIImageView *)logo
@@ -164,13 +172,13 @@
 	[ad showDetailFor:self.entry];
 }
 
-- (id)initWithEntry:(NSDictionary *)entryData
+- (id)initWithEntry:(NSDictionary *)entryData andVisualizationType:(int)type
 {
 	if (self = [super init])
 	{
 		hasAnimated = NO;
 		self.entry = entryData;
-		self.visualizationType = kQuadCircle;
+		self.visualizationType = type;
 	}
 	return self;
 }

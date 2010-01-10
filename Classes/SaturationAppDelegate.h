@@ -13,10 +13,13 @@
 #import "BGSDetailViewController.h"
 #import "BGSListViewController.h"
 
+#define DEFAULT_VISUALIZER_TYPE kQuadSquare
+
 enum VisualizationTypes
 {
 	kQuadCircle = 10000, 
-	kSimpleCircle
+	kSimpleCircle,
+	kQuadSquare
 };
 
 @interface SaturationAppDelegate : NSObject <UIApplicationDelegate> 

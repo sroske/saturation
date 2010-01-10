@@ -59,7 +59,7 @@
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
-	self.currentVisualization = kQuadCircle;
+	self.currentVisualization = DEFAULT_VISUALIZER_TYPE;
 	[self.window addSubview:self.navController.view];
     [self.window makeKeyAndVisible];
 }

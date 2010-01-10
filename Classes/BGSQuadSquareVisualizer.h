@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "FontsAndColors.h"
 #import "BGSVisualizer.h"
-#import "BGSCircleView.h"
 #import "NSArray+Shuffle.h"
 
 #define ROWS		2
@@ -21,6 +21,7 @@
 	NSDictionary *entry;
 	BOOL isFadingIn;
 	BOOL hasAnimated;
+	int fadedInCount;
 }
 
 @property (nonatomic, retain) NSDictionary *entry;

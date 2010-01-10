@@ -11,7 +11,9 @@
 
 @interface BGSRefreshButton : UIButton 
 {
-	// nothing
+	UIImageView *icon;
 }
+
+@property (nonatomic, retain) UIImageView *icon;
 
 @end

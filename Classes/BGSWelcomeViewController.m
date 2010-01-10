@@ -7,6 +7,7 @@
 //
 
 #import "BGSWelcomeViewController.h"
+#import "SaturationAppDelegate.h"
 
 @interface BGSWelcomeViewController (Private)
 
@@ -174,7 +175,8 @@
 
 - (void)introCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
-	BGSMainViewController *controller = [[BGSMainViewController alloc] initWithEntry:self.entry];
+	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	BGSMainViewController *controller = [[BGSMainViewController alloc] initWithEntry:self.entry andVisualizationType:app.currentVisualization];
 	[self.navigationController pushViewController:controller animated:NO];
 	[controller release];
 }

@@ -269,7 +269,7 @@
 	if (loadingView == nil)
 	{
 		BGSLoadingView *h = [[BGSLoadingView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 480.0f, 44.0f)];
-		[h.titleLabel setText:@"loading new swatches"];
+		[h.titleLabel setText:@"loading new themes"];
 		[self setLoadingView:h];
 		[h release];
 	}
@@ -281,7 +281,7 @@
 	if (footerView == nil)
 	{
 		BGSLoadingView *f = [[BGSLoadingView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 480.0f, 44.0f)];
-		[f.titleLabel setText:@"loading additional swatches"];
+		[f.titleLabel setText:@"loading additional themes"];
 		[self setFooterView:f];
 		[f release];
 	}

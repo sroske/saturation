@@ -18,7 +18,7 @@
 	if (refreshButton == nil)
 	{
 		BGSRefreshButton *b = [[BGSRefreshButton alloc] initWithFrame:CGRectZero];
-		[b setTitle:@"refresh entries" forState:UIControlStateNormal];
+		[b setTitle:@"refresh themes" forState:UIControlStateNormal];
 		[self setRefreshButton:b];
 		[b release];
 	}
@@ -40,7 +40,7 @@
 
 	self.refreshButton.frame = CGRectMake(24.0f, 
 										  self.bounds.size.height/2-10.0f, 
-										  110.0f, 
+										  180.0f, 
 										  20.0f);
 }
 
