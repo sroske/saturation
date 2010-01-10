@@ -12,6 +12,11 @@
 #import "BGSCircleVisualizer.h"
 #import "BGSQuadCircleVisualizer.h"
 
+enum 
+{
+	kVisualizer = 30000
+};
+
 @interface BGSMainViewController : UIViewController
 {
 	NSDictionary *entry;
@@ -21,7 +26,8 @@
 	UIButton *settingsButton;
 	UIButton *infoButton;
 	BOOL hasAnimated;
-	BGSQuadCircleVisualizer *visualizer;
+	int visualizationType;
+	UIView *visualization;
 }
 
 @property (nonatomic, retain) NSDictionary *entry;
@@ -30,8 +36,9 @@
 @property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) UIButton *settingsButton;
 @property (nonatomic, retain) UIButton *infoButton;
-@property (nonatomic, retain) BGSQuadCircleVisualizer *visualizer;
+@property (nonatomic, assign) int visualizationType;
 
 - (id)initWithEntry:(NSDictionary *)entryData;
+- (void)switchToVisualization:(int)type withEntry:(NSDictionary *)entryData;
 
 @end

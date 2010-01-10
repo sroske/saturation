@@ -1,50 +1,35 @@
 //
-//  BGSCircleVisualizer.m
+//  BGSQuadSquareVisualizer.m
 //  Saturation
 //
-//  Created by Shawn Roske on 1/3/10.
+//  Created by Shawn Roske on 1/9/10.
 //  Copyright 2010 Bitgun. All rights reserved.
 //
 
-#import "BGSCircleVisualizer.h"
+#import "BGSQuadSquareVisualizer.h"
 
-@interface BGSCircleVisualizer (Private)
+@interface BGSQuadSquareVisualizer (Private)
 
 - (UIColor *)randomColor;
 - (void)loadCircles;
 - (void)fadeInCircles;
-- (void)dupeCircle:(BGSCircleView *)circle1;
+- (void)dupeCircle:(UIView *)circle1;
 - (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
 
 @end
 
 
-@implementation BGSCircleVisualizer
+@implementation BGSQuadSquareVisualizer
 
 @synthesize entry;
-@synthesize circleView;
 
-- (UIView *)circleView
-{
-	if (circleView == nil)
-	{
-		UIView *v = [[UIView alloc] initWithFrame:self.bounds];
-		[v setAutoresizesSubviews:YES];
-		[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-		[v sizeToFit];
-		[self setCircleView:v];
-		[v release];
-	}
-	return circleView;
-}
-
+/*
 - (id)initWithFrame:(CGRect)frame andEntry:(NSDictionary *)entryData
 {
     if (self = [super initWithFrame:frame]) 
 	{
 		isFadingIn = hasAnimated = NO;
 		[self setEntry:entryData];
-		[self addSubview:self.circleView];
 		[self loadCircles];
     }
     return self;
@@ -61,7 +46,7 @@
 {
 	[entry release];
 	[circleView release];
-	//[initialCircles release];
+	[initialCircles release];
     [super dealloc];
 }
 
@@ -130,7 +115,6 @@
 
 - (void)circlesFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
-	[initialCircles release];
 	isFadingIn = NO;
 	hasAnimated = YES;
 }
@@ -228,8 +212,8 @@
 	
 	for (UITouch *touch in touches)
 	{
-		CGPoint point = [touch locationInView:self.circleView];
-		UIView *v = [self.circleView hitTest:point withEvent:event];
+		CGPoint point = [touch locationInView:self];
+		UIView *v = [self hitTest:point withEvent:event];
 		if ([v isKindOfClass:[BGSCircleView class]])
 		{
 			BGSCircleView *cv = (BGSCircleView *)v;
@@ -243,5 +227,7 @@
 {
 	// nothing
 }
+ 
+ */
 
 @end

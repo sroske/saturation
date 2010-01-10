@@ -8,13 +8,6 @@
 
 #import "BGSFavoriteView.h"
 
-@interface BGSFavoriteView (Private)
-
-- (void)toggleFavorite:(id)sender;
-
-@end
-
-
 @implementation BGSFavoriteView
 
 @synthesize background;

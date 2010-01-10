@@ -13,16 +13,24 @@
 #import "BGSDetailViewController.h"
 #import "BGSListViewController.h"
 
+enum VisualizationTypes
+{
+	kQuadCircle = 10000, 
+	kSimpleCircle
+};
+
 @interface SaturationAppDelegate : NSObject <UIApplicationDelegate> 
 {
     UIWindow *window;
 	UINavigationController *navController;
 	BGSWelcomeViewController *welcomeController;
+	int currentVisualization;
 }
 
 @property (nonatomic, retain) UIWindow *window;
 @property (nonatomic, retain) UINavigationController *navController;
 @property (nonatomic, retain) BGSWelcomeViewController *welcomeController;
+@property (nonatomic, assign) int currentVisualization;
 
 - (void)showListView;
 - (void)showDetailFor:(NSDictionary *)entryData;

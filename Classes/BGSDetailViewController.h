@@ -13,6 +13,7 @@
 #import "BGSSwatchStrip.h"
 #import "BGSFavoriteView.h"
 #import "BGSEmailCTAView.h"
+#import "BGSVisualOptionView.h"
 #import "UIColor+CMYK.h"
 
 @interface BGSDetailViewController : UIViewController 
@@ -40,11 +41,9 @@
 	NSMutableArray *rgbBContentLabels;
 	
 	BGSSwatchColor *rgbSeperator;
-	
-	NSMutableArray *cmykCContentLabels;
-	NSMutableArray *cmykMContentLabels;
-	NSMutableArray *cmykYContentLabels;
-	NSMutableArray *cmykKContentLabels;
+
+	BGSVisualOptionView *quadCircleOption;
+	BGSVisualOptionView *simpleCircleOption;
 	
 	BGSFavoriteView *favoriteButton;
 	BGSEmailCTAView *emailButton;
@@ -73,10 +72,8 @@
 
 @property (nonatomic, retain) BGSSwatchColor *rgbSeperator;
 
-@property (nonatomic, retain) NSMutableArray *cmykCContentLabels;
-@property (nonatomic, retain) NSMutableArray *cmykMContentLabels;
-@property (nonatomic, retain) NSMutableArray *cmykYContentLabels;
-@property (nonatomic, retain) NSMutableArray *cmykKContentLabels;
+@property (nonatomic, retain) BGSVisualOptionView *quadCircleOption;
+@property (nonatomic, retain) BGSVisualOptionView *simpleCircleOption;
 
 @property (nonatomic, retain) BGSFavoriteView *favoriteButton;
 @property (nonatomic, retain) BGSEmailCTAView *emailButton;

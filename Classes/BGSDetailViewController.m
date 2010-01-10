@@ -14,6 +14,7 @@
 - (void)close:(id)sender;
 - (void)setupColorRows;
 - (void)toggleFavorite:(id)sender;
+- (void)toggleVisualization:(id)sender;
 
 @end
 
@@ -44,10 +45,8 @@
 
 @synthesize rgbSeperator;
 
-@synthesize cmykCContentLabels;
-@synthesize cmykMContentLabels;
-@synthesize cmykYContentLabels;
-@synthesize cmykKContentLabels;
+@synthesize quadCircleOption;
+@synthesize simpleCircleOption;
 
 @synthesize favoriteButton;
 @synthesize emailButton;
@@ -293,47 +292,68 @@
 	return rgbSeperator;
 }
 
-- (NSMutableArray *)cmykCContentLabels
+- (BGSVisualOptionView *)quadCircleOption
 {
-	if (cmykCContentLabels == nil)
+	if (quadCircleOption == nil)
 	{
-		NSMutableArray *a = [[NSMutableArray alloc] init];
-		[self setCmykCContentLabels:a];
-		[a release];
+		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rgbSeperator.frame)+24.0f, 
+																					   CGRectGetMinY(self.rgbSeperator.frame)-6.0f, 
+																					   48.0f, 
+																					   48.0f) 
+																	andType:kQuadCircle];
+		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
+		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+		if (app.currentVisualization == kQuadCircle)
+			[v setIsSelected:YES];
+		[self setQuadCircleOption:v];
+		[v release];
 	}
-	return cmykCContentLabels;
-}
-- (NSMutableArray *)cmykMContentLabels
-{
-	if (cmykMContentLabels == nil)
-	{
-		NSMutableArray *a = [[NSMutableArray alloc] init];
-		[self setCmykMContentLabels:a];
-		[a release];
-	}
-	return cmykMContentLabels;
-}
-- (NSMutableArray *)cmykYContentLabels
-{
-	if (cmykYContentLabels == nil)
-	{
-		NSMutableArray *a = [[NSMutableArray alloc] init];
-		[self setCmykYContentLabels:a];
-		[a release];
-	}
-	return cmykYContentLabels;
-}
-- (NSMutableArray *)cmykKContentLabels
-{
-	if (cmykKContentLabels == nil)
-	{
-		NSMutableArray *a = [[NSMutableArray alloc] init];
-		[self setCmykKContentLabels:a];
-		[a release];
-	}
-	return cmykKContentLabels;
+	return quadCircleOption;
 }
 
+- (BGSVisualOptionView *)simpleCircleOption
+{
+	if (simpleCircleOption == nil)
+	{
+		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.quadCircleOption.frame)+4.0f, 
+																					   CGRectGetMinY(self.quadCircleOption.frame), 
+																					   48.0f, 
+																					   48.0f) 
+																	andType:kSimpleCircle];
+		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
+		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+		if (app.currentVisualization == kSimpleCircle)
+			[v setIsSelected:YES];
+		[self setSimpleCircleOption:v];
+		[v release];
+	}
+	return simpleCircleOption;
+}
+
+- (void)toggleVisualization:(id)sender
+{
+	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	int type = app.currentVisualization;
+	
+	if ([sender superview] == self.quadCircleOption && app.currentVisualization != kQuadCircle)
+	{
+		type = kQuadCircle;
+		[self.quadCircleOption setIsSelected:YES];
+		[self.simpleCircleOption setIsSelected:NO];
+	}
+	else if ([sender superview] == self.simpleCircleOption && app.currentVisualization != kSimpleCircle)
+	{
+		type = kSimpleCircle;
+		[self.simpleCircleOption setIsSelected:YES];
+		[self.quadCircleOption setIsSelected:NO];
+	}
+
+	if (type != app.currentVisualization)
+	{
+		[app setCurrentVisualization:type];
+		[app changeEntry:self.entry];
+	}
+}
 
 - (BGSFavoriteView *)favoriteButton
 {
@@ -413,6 +433,9 @@
 	[self.view addSubview:self.visualizerHeaderLabel];
 	
 	[self setupColorRows];
+	
+	[self.view addSubview:self.quadCircleOption];
+	[self.view addSubview:self.simpleCircleOption];
 	
 	[self.view addSubview:self.hexSeperator];
 	[self.view addSubview:self.rgbSeperator];
@@ -505,72 +528,6 @@
 		[self.rgbBContentLabels addObject:lbl];
 		[lbl release];
 		
-		
-		p.x = 298.0f;
-		NSDictionary *cmyk = [color cmykValues];
-		
-		// cmyk C label
-		lbl = [[UILabel alloc] initWithFrame:CGRectMake(p.x, 
-														p.y-2.0f, 
-														35.0f, 
-														16.0f)];
-		[lbl setFont:CF_DETAIL_COLOR_DATA];
-		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_CLEAR];
-		v = [[cmyk objectForKey:@"c"] floatValue]*100;
-		[lbl setText:[NSString stringWithFormat:@"%i", v]];
-		[self.view addSubview:lbl];
-		[self.cmykCContentLabels addObject:lbl];
-		[lbl release];
-		
-		p.x += 46.0f;
-		
-		// cmyk M label
-		lbl = [[UILabel alloc] initWithFrame:CGRectMake(p.x, 
-														p.y-2.0f, 
-														35.0f, 
-														16.0f)];
-		[lbl setFont:CF_DETAIL_COLOR_DATA];
-		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_CLEAR];
-		v = [[cmyk objectForKey:@"m"] floatValue]*100;
-		[lbl setText:[NSString stringWithFormat:@"%i", v]];
-		[self.view addSubview:lbl];
-		[self.cmykMContentLabels addObject:lbl];
-		[lbl release];
-		
-		p.x += 46.0f;
-		
-		// cmyk Y label
-		lbl = [[UILabel alloc] initWithFrame:CGRectMake(p.x, 
-														p.y-2.0f, 
-														35.0f, 
-														16.0f)];
-		[lbl setFont:CF_DETAIL_COLOR_DATA];
-		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_CLEAR];
-		v = [[cmyk objectForKey:@"y"] floatValue]*100;
-		[lbl setText:[NSString stringWithFormat:@"%i", v]];
-		[self.view addSubview:lbl];
-		[self.cmykYContentLabels addObject:lbl];
-		[lbl release];
-		
-		p.x += 46.0f;
-		
-		// cmyk K label
-		lbl = [[UILabel alloc] initWithFrame:CGRectMake(p.x, 
-														p.y-2.0f, 
-														35.0f, 
-														16.0f)];
-		[lbl setFont:CF_DETAIL_COLOR_DATA];
-		[lbl setTextColor:CC_WHITE];
-		[lbl setBackgroundColor:CC_CLEAR];
-		v = [[cmyk objectForKey:@"k"] floatValue]*100;
-		[lbl setText:[NSString stringWithFormat:@"%i", v]];
-		[self.view addSubview:lbl];
-		[self.cmykKContentLabels addObject:lbl];
-		[lbl release];
-		
 		p.x = originX;
 		p.y += rowHeight;
 	}
@@ -632,11 +589,9 @@
 	[rgbBContentLabels release];
 	
 	[rgbSeperator release];
-	
-	[cmykCContentLabels release];
-	[cmykMContentLabels release];
-	[cmykYContentLabels release];
-	[cmykKContentLabels release];
+
+	[quadCircleOption release];
+	[simpleCircleOption release];
 	
 	[favoriteButton release];
 	[emailButton release];

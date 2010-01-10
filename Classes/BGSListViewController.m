@@ -335,9 +335,18 @@
 	if (scope == kKulerFeedScopeFull)
 	{
 		currentlyRefreshing = NO;
-		[self.tableView setTableHeaderView:nil];
+		[self.tableView setTableHeaderView:self.refreshView];
 		[self.tableView setTableFooterView:(self.selectedEntries.count > 5 ? self.footerView : nil)];
-		[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
+		
+		if (self.tableView.contentOffset.y > 0.0f)
+		{
+			[self.tableView reloadData];
+		}
+		else
+		{
+			[self.tableView setContentOffset:CGPointMake(0.0f, 44.0f)];
+			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
+		}
 	}	
 	else
 	{

@@ -13,8 +13,8 @@
 
 - (void)showSettings:(id)sender;
 - (void)showDetailView:(id)sender;
-
 - (void)logoFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
+- (void)switchToCurrentVisualization;
 
 @end
 
@@ -27,20 +27,38 @@
 @synthesize kulerLogo;
 @synthesize settingsButton;
 @synthesize infoButton;
+@synthesize visualizationType;
 
-@synthesize visualizer;
-
-- (void)setEntry:(NSDictionary *)newEntry
+- (void)switchToVisualization:(int)type withEntry:(NSDictionary *)entryData
 {
-	if (newEntry != entry)
+	[self setEntry:entryData];
+	[self setVisualizationType:type];
+
+	[self switchToCurrentVisualization];
+}
+
+- (void)switchToCurrentVisualization
+{
+	UIView *current = [self.view viewWithTag:kVisualizer];
+	if (current != nil)
+		[current removeFromSuperview];
+
+	if (self.visualizationType == kQuadCircle)
 	{
-		[entry release];
-		entry = [newEntry retain];
+		BGSQuadCircleVisualizer *v = [[BGSQuadCircleVisualizer alloc] initWithFrame:self.view.bounds 
+																		   andEntry:self.entry];
+		[v setTag:kVisualizer];
+		[self.view insertSubview:v atIndex:1];
+		[v release];
 	}
-	
-	[self.visualizer removeFromSuperview];
-	self.visualizer = nil;
-	[self.view insertSubview:self.visualizer atIndex:1];
+	else if (self.visualizationType == kSimpleCircle)
+	{
+		BGSCircleVisualizer *v = [[BGSCircleVisualizer alloc] initWithFrame:self.view.bounds 
+																   andEntry:self.entry];
+		[v setTag:kVisualizer];
+		[self.view insertSubview:v atIndex:1];
+		[v release];
+	}
 }
 
 - (UIImageView *)logo
@@ -114,17 +132,6 @@
 	return settingsButton;
 }
 
-- (BGSQuadCircleVisualizer *)visualizer
-{
-	if (visualizer == nil)
-	{
-		BGSQuadCircleVisualizer *v = [[BGSQuadCircleVisualizer alloc] initWithFrame:self.view.bounds andEntry:self.entry];
-		[self setVisualizer:v];
-		[v release];
-	}
-	return visualizer;
-}
-
 - (void)showSettings:(id)sender
 {
 	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -162,7 +169,8 @@
 	if (self = [super init])
 	{
 		hasAnimated = NO;
-		entry = [entryData retain];
+		self.entry = entryData;
+		self.visualizationType = kQuadCircle;
 	}
 	return self;
 }
@@ -180,18 +188,21 @@
 	[v release];
 	
 	[self.view addSubview:self.background];
-	[self.view addSubview:self.visualizer];
 	[self.view addSubview:self.logo];
 	[self.view addSubview:self.kulerLogo];
 	[self.view addSubview:self.settingsButton];
 	[self.view addSubview:self.infoButton];
+	
+	[self switchToCurrentVisualization];
 }
 
 - (void)viewWillAppear:(BOOL)animated 
 {
 	if (!hasAnimated)
 	{
-		[visualizer viewWillAppear:YES];
+		UIView *current = [self.view viewWithTag:kVisualizer];
+		if (current != nil)
+			[(id<BGSVisualizer>)current viewWillAppear:YES];
 		
 		[UIView beginAnimations:@"kulerLogoFade" context:self.kulerLogo];
 		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
@@ -219,7 +230,9 @@
 	}
 	else 
 	{
-		[visualizer viewWillAppear:animated];
+		UIView *current = [self.view viewWithTag:kVisualizer];
+		if (current != nil)
+			[(id<BGSVisualizer>)current viewWillAppear:animated];
 	}
 
 	
@@ -245,7 +258,6 @@
 	[background release];
 	[logo release];
 	[kulerLogo release];
-	[visualizer release];
     [super dealloc];
 }
 

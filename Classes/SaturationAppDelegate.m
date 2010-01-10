@@ -13,6 +13,7 @@
 @synthesize window;
 @synthesize navController;
 @synthesize welcomeController;
+@synthesize currentVisualization;
 
 - (UIWindow *)window
 {
@@ -58,6 +59,7 @@
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
+	self.currentVisualization = kQuadCircle;
 	[self.window addSubview:self.navController.view];
     [self.window makeKeyAndVisible];
 }
@@ -88,9 +90,8 @@
 
 - (void)changeEntry:(NSDictionary *)entryData
 {
-	// TODO
 	BGSMainViewController *c = (BGSMainViewController *)[self.navController topViewController];
-	[c setEntry:entryData];
+	[c switchToVisualization:self.currentVisualization withEntry:entryData];
 	[self hideModalView];
 }
 

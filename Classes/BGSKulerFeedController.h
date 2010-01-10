@@ -14,7 +14,7 @@
 #define FEED_PER_PAGE			30
 #define FEED_MAX_OPERATIONS		2
 
-enum feedTypes 
+enum FeedType 
 {
 	kKulerFeedTypeNewest = 1000, 
 	kKulerFeedTypePopular,
@@ -22,7 +22,7 @@ enum feedTypes
 	kKulerFeedTypeFavorites
 };
 
-enum scopes 
+enum FeedScope 
 {
 	kKulerFeedScopeFull = 2000, 
 	kKulerFeedScopePartial
