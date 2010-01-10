@@ -165,6 +165,9 @@
 		else if (sender == self.favoritesButton)
 			currentSection = kKulerFeedTypeFavorites;
 		
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+		[defaults setInteger:currentSection forKey:@"saturation.lastOpenedSection"];
+		
 		if (sender == self.favoritesButton)
 		{
 			[self.tableView setTableHeaderView:nil];
@@ -377,9 +380,26 @@
 
 - (void)loadView 
 {	
-	currentSection = kKulerFeedTypeNewest;
-	[self.newestButton setSelected:YES];
-	lastSelectedButton = self.newestButton;
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	currentSection = [defaults integerForKey:@"saturation.lastOpenedSection"];
+	switch (currentSection) {
+		case kKulerFeedTypeNewest:
+			[self.newestButton setSelected:YES];
+			lastSelectedButton = self.newestButton;
+			break;
+		case kKulerFeedTypePopular:
+			[self.popularButton setSelected:YES];
+			lastSelectedButton = self.popularButton;
+			break;
+		case kKulerFeedTypeRandom:
+			[self.randomButton setSelected:YES];
+			lastSelectedButton = self.randomButton;
+			break;
+		default:
+			[self.favoritesButton setSelected:YES];
+			lastSelectedButton = self.favoritesButton;
+			break;
+	}
 	
 	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
 	
@@ -392,8 +412,17 @@
 	
 	[self.view addSubview:self.background];
 	[self.view addSubview:self.tableView];
-	[self.tableView setTableHeaderView:self.refreshView];
-	[self.tableView setTableFooterView:(self.selectedEntries.count > 5 ? self.footerView : nil)];
+	if (currentSection == kKulerFeedTypeFavorites)
+	{
+		[self.tableView setTableHeaderView:nil];
+		[self.tableView setTableFooterView:nil];
+	}
+	else 
+	{
+		[self.tableView setTableHeaderView:self.refreshView];
+		[self.tableView setTableFooterView:(self.selectedEntries.count > 5 ? self.footerView : nil)];
+	}
+
 	[self.view addSubview:self.closeButton];
 	[self.view addSubview:self.newestButton];
 	[self.view addSubview:self.popularButton];

@@ -28,13 +28,13 @@ enum VisualizationTypes
     UIWindow *window;
 	UINavigationController *navController;
 	BGSWelcomeViewController *welcomeController;
-	int currentVisualization;
+	int visualizationType;
 }
 
 @property (nonatomic, retain) UIWindow *window;
 @property (nonatomic, retain) UINavigationController *navController;
 @property (nonatomic, retain) BGSWelcomeViewController *welcomeController;
-@property (nonatomic, assign) int currentVisualization;
+@property (nonatomic, assign) int visualizationType;
 
 - (void)showListView;
 - (void)showDetailFor:(NSDictionary *)entryData;

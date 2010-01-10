@@ -305,7 +305,7 @@
 																	andType:kQuadCircle];
 		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
 		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-		if (app.currentVisualization == kQuadCircle)
+		if (app.visualizationType == kQuadCircle)
 			[v setIsSelected:YES];
 		[self setQuadCircleOption:v];
 		[v release];
@@ -324,7 +324,7 @@
 																	andType:kSimpleCircle];
 		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
 		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-		if (app.currentVisualization == kSimpleCircle)
+		if (app.visualizationType == kSimpleCircle)
 			[v setIsSelected:YES];
 		[self setSimpleCircleOption:v];
 		[v release];
@@ -343,7 +343,7 @@
 																	andType:kQuadSquare];
 		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
 		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-		if (app.currentVisualization == kQuadSquare)
+		if (app.visualizationType == kQuadSquare)
 			[v setIsSelected:YES];
 		[self setQuadSquareOption:v];
 		[v release];
@@ -362,7 +362,7 @@
 																	andType:kSimpleSquare];
 		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
 		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-		if (app.currentVisualization == kSimpleSquare)
+		if (app.visualizationType == kSimpleSquare)
 			[v setIsSelected:YES];
 		[self setSimpleSquareOption:v];
 		[v release];
@@ -373,9 +373,9 @@
 - (void)toggleVisualization:(id)sender
 {
 	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-	int type = app.currentVisualization;
+	int type = app.visualizationType;
 	
-	if ([sender superview] == self.quadCircleOption && app.currentVisualization != kQuadCircle)
+	if ([sender superview] == self.quadCircleOption && app.visualizationType != kQuadCircle)
 	{
 		type = kQuadCircle;
 		[self.simpleSquareOption setIsSelected:NO];
@@ -383,7 +383,7 @@
 		[self.quadCircleOption setIsSelected:YES];
 		[self.simpleCircleOption setIsSelected:NO];
 	}
-	else if ([sender superview] == self.simpleCircleOption && app.currentVisualization != kSimpleCircle)
+	else if ([sender superview] == self.simpleCircleOption && app.visualizationType != kSimpleCircle)
 	{
 		type = kSimpleCircle;
 		[self.simpleSquareOption setIsSelected:NO];
@@ -391,7 +391,7 @@
 		[self.simpleCircleOption setIsSelected:YES];
 		[self.quadCircleOption setIsSelected:NO];
 	}
-	else if ([sender superview] == self.quadSquareOption && app.currentVisualization != kQuadSquare)
+	else if ([sender superview] == self.quadSquareOption && app.visualizationType != kQuadSquare)
 	{
 		type = kQuadSquare;
 		[self.simpleSquareOption setIsSelected:NO];
@@ -399,7 +399,7 @@
 		[self.simpleCircleOption setIsSelected:NO];
 		[self.quadCircleOption setIsSelected:NO];
 	}
-	else if ([sender superview] == self.simpleSquareOption && app.currentVisualization != kSimpleSquare)
+	else if ([sender superview] == self.simpleSquareOption && app.visualizationType != kSimpleSquare)
 	{
 		type = kSimpleSquare;
 		[self.simpleSquareOption setIsSelected:YES];
@@ -408,9 +408,9 @@
 		[self.quadCircleOption setIsSelected:NO];
 	}
 
-	if (type != app.currentVisualization)
+	if (type != app.visualizationType)
 	{
-		[app setCurrentVisualization:type];
+		[app setVisualizationType:type];
 		[app changeEntry:self.entry];
 	}
 }

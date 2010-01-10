@@ -176,7 +176,7 @@
 - (void)introCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
 	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-	BGSMainViewController *controller = [[BGSMainViewController alloc] initWithEntry:self.entry andVisualizationType:app.currentVisualization];
+	BGSMainViewController *controller = [[BGSMainViewController alloc] initWithEntry:self.entry andVisualizationType:app.visualizationType];
 	[self.navigationController pushViewController:controller animated:NO];
 	[controller release];
 }

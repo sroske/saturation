@@ -13,7 +13,7 @@
 @synthesize window;
 @synthesize navController;
 @synthesize welcomeController;
-@synthesize currentVisualization;
+@synthesize visualizationType;
 
 - (UIWindow *)window
 {
@@ -57,9 +57,26 @@
 	return welcomeController;
 }
 
+- (void)setVisualizationType:(int)newType
+{
+	visualizationType = newType;
+	
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	[defaults setInteger:visualizationType forKey:@"saturation.visualizationType"];
+}
+
++ (void)initialize
+{
+	NSMutableDictionary *defs = [NSMutableDictionary dictionary];
+	[defs setObject:[NSNumber numberWithInt:kSimpleCircle] forKey:@"saturation.visualizationType"];
+	[defs setObject:[NSNumber numberWithInt:kKulerFeedTypeNewest] forKey:@"saturation.lastOpenedSection"];
+	[[NSUserDefaults standardUserDefaults] registerDefaults:defs];
+}
+
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
-	self.currentVisualization = DEFAULT_VISUALIZER_TYPE;
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	self.visualizationType = [defaults integerForKey:@"saturation.visualizationType"];
 	[self.window addSubview:self.navController.view];
     [self.window makeKeyAndVisible];
 }
@@ -91,7 +108,7 @@
 - (void)changeEntry:(NSDictionary *)entryData
 {
 	BGSMainViewController *c = (BGSMainViewController *)[self.navController topViewController];
-	[c switchToVisualization:self.currentVisualization withEntry:entryData];
+	[c switchToVisualization:self.visualizationType withEntry:entryData];
 	[self hideModalView];
 }
 
