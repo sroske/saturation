@@ -92,7 +92,6 @@
 - (void)showListView
 {
 	BGSListViewController *controller = [[BGSListViewController alloc] init];
-	[self.navController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
 	[self.navController presentModalViewController:controller animated:YES];
 	[controller release];	
 }
@@ -100,9 +99,49 @@
 - (void)showDetailFor:(NSDictionary *)entryData
 {
 	BGSDetailViewController *controller = [[BGSDetailViewController alloc] initWithEntry:entryData];
-	[self.navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
 	[self.navController presentModalViewController:controller animated:YES];
 	[controller release];
+}
+
+- (void)emailFor:(NSDictionary *)entryData
+{
+	if (![MFMailComposeViewController canSendMail])
+	{
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" 
+														message:@"Mail not configured." 
+													   delegate:nil 
+											  cancelButtonTitle:@"OK" 
+											  otherButtonTitles:nil];
+		[alert show];
+		[alert release];
+		return;
+	}
+	
+	MFMailComposeViewController *mailer = [MFMailComposeViewController new];
+	[[mailer navigationBar] setTintColor:CC_BACKGROUND];
+	[[mailer navigationBar] setTranslucent:YES];
+	[mailer setSubject:@"Theme"];
+	[mailer setMessageBody:@"here is your theme data!" isHTML:NO];
+	[mailer setMailComposeDelegate:self];
+	//[self.navController dismissModalViewControllerAnimated:NO];
+	//[self.navController presentModalViewController:mailer animated:YES];
+	[self.navController pushViewController:mailer animated:YES];
+	[mailer release];
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+	[self hideModalView];
+	if (result == MFMailComposeResultFailed)
+	{
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" 
+														message:[error localizedDescription] 
+													   delegate:nil 
+											  cancelButtonTitle:@"OK" 
+											  otherButtonTitles:nil];
+		[alert show];
+		[alert release];
+	}
 }
 
 - (void)changeEntry:(NSDictionary *)entryData

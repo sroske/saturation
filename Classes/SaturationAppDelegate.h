@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
 #import "BGSKulerFeedController.h"
 #import "BGSWelcomeViewController.h"
 #import "BGSMainViewController.h"
@@ -23,7 +24,7 @@ enum VisualizationTypes
 	kSimpleSquare
 };
 
-@interface SaturationAppDelegate : NSObject <UIApplicationDelegate> 
+@interface SaturationAppDelegate : NSObject <UIApplicationDelegate, MFMailComposeViewControllerDelegate> 
 {
     UIWindow *window;
 	UINavigationController *navController;
@@ -39,6 +40,7 @@ enum VisualizationTypes
 - (void)showListView;
 - (void)showDetailFor:(NSDictionary *)entryData;
 - (void)changeEntry:(NSDictionary *)entryData;
+- (void)emailFor:(NSDictionary *)entryData;
 - (void)hideModalView;
 
 @end

@@ -12,7 +12,7 @@
 #import "BGSSwatchColor.h"
 #import "BGSSwatchStrip.h"
 #import "BGSFavoriteView.h"
-#import "BGSEmailCTAView.h"
+#import "BGSEmailButton.h"
 #import "BGSVisualOptionView.h"
 #import "UIColor+CMYK.h"
 
@@ -48,7 +48,7 @@
 	BGSVisualOptionView *simpleSquareOption;
 	
 	BGSFavoriteView *favoriteButton;
-	BGSEmailCTAView *emailButton;
+	BGSEmailButton *emailButton;
 }
 
 @property (nonatomic, retain) UIImageView *background;
@@ -80,7 +80,7 @@
 @property (nonatomic, retain) BGSVisualOptionView *simpleSquareOption;
 
 @property (nonatomic, retain) BGSFavoriteView *favoriteButton;
-@property (nonatomic, retain) BGSEmailCTAView *emailButton;
+@property (nonatomic, retain) BGSEmailButton *emailButton;
 
 - (id)initWithEntry:(NSDictionary *)entryData;
 

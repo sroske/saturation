@@ -445,18 +445,26 @@
 	}
 }
 
-- (BGSEmailCTAView *)emailButton
+- (BGSEmailButton *)emailButton
 {
 	if (emailButton == nil)
 	{
-		BGSEmailCTAView *e = [[BGSEmailCTAView alloc] initWithFrame:CGRectMake(70.0f, 
-																			   268.0f, 
-																			   401.0f, 
-																			   48.0f)];
+		BGSEmailButton *e = [[BGSEmailButton alloc] initWithFrame:CGRectMake(70.0f, 
+																			 268.0f, 
+																			 401.0f, 
+																			 48.0f)];
+		[e addTarget:self action:@selector(email:) forControlEvents:UIControlEventTouchDown];
+		[e.icon addTarget:self action:@selector(email:) forControlEvents:UIControlEventTouchDown];
 		[self setEmailButton:e];
 		[e release];
 	}
 	return emailButton;
+}
+
+- (void)email:(id)sender
+{
+	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	[app emailFor:self.entry];
 }
 
 - (id)initWithEntry:(NSDictionary *)entryData
@@ -658,7 +666,7 @@
 	[simpleSquareOption release];
 	
 	[favoriteButton release];
-	[emailButton release];
+	//[emailButton release];
 	
     [super dealloc];
 }
