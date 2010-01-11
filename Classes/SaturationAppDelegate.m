@@ -77,6 +77,9 @@
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	self.visualizationType = [defaults integerForKey:@"saturation.visualizationType"];
+	
+	[[FontManager sharedManager] loadFont:CF_NORMAL];
+	
 	[self.window addSubview:self.navController.view];
     [self.window makeKeyAndVisible];
 }
@@ -117,15 +120,29 @@
 		return;
 	}
 	
+	[self hideModalView];
+	[self performSelector:@selector(presentMailComposerFor:) withObject:entryData afterDelay:0.5];
+}
+
+- (void)presentMailComposerFor:(NSDictionary *)entryData
+{
 	MFMailComposeViewController *mailer = [MFMailComposeViewController new];
-	[[mailer navigationBar] setTintColor:CC_BACKGROUND];
-	[[mailer navigationBar] setTranslucent:YES];
-	[mailer setSubject:@"Theme"];
-	[mailer setMessageBody:@"here is your theme data!" isHTML:NO];
+	[[mailer navigationBar] setTintColor:CC_BLACK];
+	
+	NSLog(@"data: %@", entryData);
+	
+	[mailer setSubject:[NSString stringWithFormat:@"\"%@\" by: %@", 
+						[[entryData objectForKey:@"themeTitle"] lowercaseString], 
+						[[entryData objectForKey:@"authorLabel"] lowercaseString], nil]];
+	NSString *html = [NSString stringWithFormat:@"<html><style type='text/css'>body{font-family:helvetica;color:#000;background-color:#fff;}</style><body><h2>%@</h2><h4>by: %@</h4><img src='%@'/></body></html>", 
+					  [[entryData objectForKey:@"themeTitle"] lowercaseString], 
+					  [[entryData objectForKey:@"authorLabel"] lowercaseString], 
+					  [entryData objectForKey:@"themeImage"], nil];
+	[mailer setMessageBody:html isHTML:YES];
 	[mailer setMailComposeDelegate:self];
-	//[self.navController dismissModalViewControllerAnimated:NO];
-	//[self.navController presentModalViewController:mailer animated:YES];
-	[self.navController pushViewController:mailer animated:YES];
+	
+	[self.navController presentModalViewController:mailer animated:YES];
+	
 	[mailer release];
 }
 

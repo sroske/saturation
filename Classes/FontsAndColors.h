@@ -31,6 +31,8 @@
 #define	CC_REFRESH				CC_FROM_RGB(0xffffff)
 #define CC_CLEAR				[UIColor clearColor]
 
+#define CF_NORMAL				@"HelveticaNeueLTStd-Lt.otf"
+
 #define CF_DETAIL_TITLE			CF_FROM_NAME(@"HelveticaNeue", 48.0f)
 #define CF_DETAIL_AUTHOR		CF_FROM_NAME(@"HelveticaNeue", 24.0f)
 #define CF_DETAIL_COLOR_TYPE	CF_FROM_NAME(@"HelveticaNeue", 24.0f)

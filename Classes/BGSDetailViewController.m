@@ -107,15 +107,16 @@
 	[ad hideModalView];
 }
 
-- (UILabel *)titleLabel
+- (FontLabel *)titleLabel
 {
 	if (titleLabel == nil)
 	{
-		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(12.0f, 
-																 -2.0f, 
-																 480.0f-36.0f, 
-																 66.0f)];
-		[lbl setFont:CF_DETAIL_TITLE];
+		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectMake(12.0f, 
+																	 -2.0f, 
+																	 480.0f-36.0f, 
+																	 66.0f)
+												 fontName:CF_NORMAL
+												pointSize:48.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:[[self.entry objectForKey:@"themeTitle"] lowercaseString]];
@@ -125,15 +126,16 @@
 	return titleLabel;
 }
 
-- (UILabel *)authorLabel
+- (FontLabel *)authorLabel
 {
 	if (authorLabel == nil)
 	{
-		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(14.0f, 
-																 50.0f, 
-																 480.0f-36.0f, 
-																 30.0f)];
-		[lbl setFont:CF_DETAIL_AUTHOR];
+		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectMake(14.0f, 
+																	 50.0f, 
+																	 480.0f-36.0f, 
+																	 30.0f)
+												 fontName:CF_NORMAL
+												pointSize:24.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:[NSString stringWithFormat:@"by: %@", [[self.entry objectForKey:@"authorLabel"] lowercaseString]]];

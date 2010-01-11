@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FontLabel.h"
 #import "FontsAndColors.h"
 #import "BGSKulerFeedController.h"
 #import "BGSSwatchColor.h"
@@ -22,8 +23,8 @@
 	
 	NSDictionary *entry;
 	BGSKulerFeedController *feed;
-	UILabel *titleLabel;
-	UILabel *authorLabel;
+	FontLabel *titleLabel;
+	FontLabel *authorLabel;
 	UIButton *closeButton;
 	BGSSwatchStrip *colorStrip;
 	
@@ -54,8 +55,8 @@
 @property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) BGSKulerFeedController *feed;
-@property (nonatomic, retain) UILabel *titleLabel;
-@property (nonatomic, retain) UILabel *authorLabel;
+@property (nonatomic, retain) FontLabel *titleLabel;
+@property (nonatomic, retain) FontLabel *authorLabel;
 @property (nonatomic, retain) UIButton *closeButton;
 @property (nonatomic, retain) BGSSwatchStrip *colorStrip;
 

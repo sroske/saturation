@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
+#import "FontManager.h"
 #import "BGSKulerFeedController.h"
 #import "BGSWelcomeViewController.h"
 #import "BGSMainViewController.h"
