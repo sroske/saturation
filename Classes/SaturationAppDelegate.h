@@ -31,12 +31,16 @@ enum VisualizationTypes
 	UINavigationController *navController;
 	BGSWelcomeViewController *welcomeController;
 	int visualizationType;
+	NSString *bodyHTMLTemplate;
+	NSString *swatchHTMLTemplate;
 }
 
 @property (nonatomic, retain) UIWindow *window;
 @property (nonatomic, retain) UINavigationController *navController;
 @property (nonatomic, retain) BGSWelcomeViewController *welcomeController;
 @property (nonatomic, assign) int visualizationType;
+@property (nonatomic, retain) NSString *bodyHTMLTemplate;
+@property (nonatomic, retain) NSString *swatchHTMLTemplate;
 
 - (void)showListView;
 - (void)showDetailFor:(NSDictionary *)entryData;

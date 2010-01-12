@@ -529,6 +529,7 @@
 	for (NSDictionary *swatch in swatches)
 	{
 		UIColor *color = [UIColor colorFromHex:[swatch objectForKey:@"swatchHexColor"] alpha:1.0];
+		const CGFloat *components = CGColorGetComponents(color.CGColor);
 		
 		// color icon
 		BGSSwatchColor *i = [[BGSSwatchColor alloc] initWithFrame:CGRectMake(p.x, 
@@ -567,7 +568,7 @@
 									 pointSize:14.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
-		int v = [[swatch objectForKey:@"swatchChannel1"] floatValue]*255;
+		int v = components[0]*255;
 		[lbl setText:[NSString stringWithFormat:@"%i", v]];
 		[self.view addSubview:lbl];
 		[self.rgbRContentLabels addObject:lbl];
@@ -584,7 +585,7 @@
 									 pointSize:14.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
-		v = [[swatch objectForKey:@"swatchChannel2"] floatValue]*255;
+		v = components[1]*255;
 		[lbl setText:[NSString stringWithFormat:@"%i", v]];
 		[self.view addSubview:lbl];
 		[self.rgbGContentLabels addObject:lbl];
@@ -601,7 +602,7 @@
 									 pointSize:14.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
-		v = [[swatch objectForKey:@"swatchChannel3"] floatValue]*255;
+		v = components[2]*255;
 		[lbl setText:[NSString stringWithFormat:@"%i", v]];
 		[self.view addSubview:lbl];
 		[self.rgbBContentLabels addObject:lbl];

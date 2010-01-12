@@ -202,6 +202,11 @@
 	[circle2 animateWithDuration:0.5f andDelay:0.0f];
 	[circle3 animateWithDuration:0.5f andDelay:0.0f];
 	[circle4 animateWithDuration:0.5f andDelay:0.0f];
+	
+	[circle1 release];
+	[circle2 release];
+	[circle3 release];
+	[circle4 release];
 }
 
 #pragma mark -

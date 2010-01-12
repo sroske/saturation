@@ -110,7 +110,7 @@
 	}
 	else if ([elementName isEqualToString:@"item"]) 
 	{
-		[self.entries addObject:[self.entry copy]];
+		[self.entries addObject:[[self.entry copy] autorelease]];
 	}
 }
 

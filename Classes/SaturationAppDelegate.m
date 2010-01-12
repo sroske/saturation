@@ -8,12 +8,21 @@
 
 #import "SaturationAppDelegate.h"
 
+@interface SaturationAppDelegate (Private)
+
+- (NSString *)bodyHTMLFor:(NSDictionary *)entryData;
+
+@end
+
+
 @implementation SaturationAppDelegate
 
 @synthesize window;
 @synthesize navController;
 @synthesize welcomeController;
 @synthesize visualizationType;
+@synthesize bodyHTMLTemplate;
+@synthesize swatchHTMLTemplate;
 
 - (UIWindow *)window
 {
@@ -57,6 +66,30 @@
 	return welcomeController;
 }
 
+- (NSString *)bodyHTMLTemplate
+{
+	if (bodyHTMLTemplate == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"email.html"];
+		NSString *t = [[NSString alloc] initWithContentsOfFile:p];
+		[self setBodyHTMLTemplate:t];
+		[t release];
+	}
+	return bodyHTMLTemplate;
+}
+
+- (NSString *)swatchHTMLTemplate
+{
+	if (swatchHTMLTemplate == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"swatch.html"];
+		NSString *t = [[NSString alloc] initWithContentsOfFile:p];
+		[self setSwatchHTMLTemplate:t];
+		[t release];
+	}
+	return swatchHTMLTemplate;
+}
+
 - (void)setVisualizationType:(int)newType
 {
 	visualizationType = newType;
@@ -89,13 +122,14 @@
     [window release];
 	[navController release];
 	[welcomeController release];
+	[swatchHTMLTemplate release];
+	[bodyHTMLTemplate release];
     [super dealloc];
 }
 
 - (void)showListView
 {
 	BGSListViewController *controller = [[BGSListViewController alloc] init];
-	[controller setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
 	[self.navController presentModalViewController:controller animated:YES];
 	[controller release];	
 }
@@ -131,23 +165,76 @@
 	MFMailComposeViewController *mailer = [MFMailComposeViewController new];
 	[[mailer navigationBar] setTintColor:CC_BLACK];
 	
-	NSLog(@"data: %@", entryData);
-	
-	[mailer setSubject:[NSString stringWithFormat:@"[saturation] \"%@\" by: %@", 
+	[mailer setSubject:[NSString stringWithFormat:@"[saturation] \"%@\" by %@", 
 						[[entryData objectForKey:@"themeTitle"] lowercaseString], 
 						[[entryData objectForKey:@"authorLabel"] lowercaseString], nil]];
-	NSString *html = [NSString stringWithFormat:@"<html><body color='#ffffff' bgcolor='#000000'><h2><a href='http://kuler.adobe.com/#themeID/%@'>%@</a></h2><h4>by: <a href='http://kuler.adobe.com/#themes/search?term=userId%%3A%@'>%@</a></h4><img src='%@'/></body></html>", 
-					  [entryData objectForKey:@"themeID"],
-					  [[entryData objectForKey:@"themeTitle"] lowercaseString], 
-					  [entryData objectForKey:@"authorID"],
-					  [[entryData objectForKey:@"authorLabel"] lowercaseString], 
-					  [entryData objectForKey:@"themeImage"], nil];
-	[mailer setMessageBody:html isHTML:YES];
+	[mailer setMessageBody:[self bodyHTMLFor:entryData] isHTML:YES];
 	[mailer setMailComposeDelegate:self];
 	
 	[self.navController presentModalViewController:mailer animated:YES];
 	
 	[mailer release];
+}
+
+- (NSString *)bodyHTMLFor:(NSDictionary *)entryData
+{
+	NSMutableString *body = [self.bodyHTMLTemplate mutableCopy];
+	for (NSString *key in entryData)
+	{
+		NSString *formattedKey = [NSString stringWithFormat:@"{{%@}}", key];
+		NSString *value = [entryData objectForKey:key];
+		[body replaceOccurrencesOfString:formattedKey 
+							  withString:value 
+								 options:NSCaseInsensitiveSearch 
+								   range:NSMakeRange(0, [body length])];
+	}
+
+	NSString *swatchHTML = @"";
+	NSArray *swatches = [entryData objectForKey:@"swatches"];
+	for (int i = 0; i < [swatches count]; i++)
+	{
+		NSDictionary *swatch = [swatches objectAtIndex:i];
+
+		NSMutableString *swatchEntry = [self.swatchHTMLTemplate mutableCopy];
+		
+		[swatchEntry replaceOccurrencesOfString:@"{{colorNumber}}" 
+									 withString:[NSString stringWithFormat:@"%i", i+1] 
+										options:NSCaseInsensitiveSearch 
+										  range:NSMakeRange(0, [swatchEntry length])];
+		[swatchEntry replaceOccurrencesOfString:@"{{swatchHexColor}}" 
+									 withString:[swatch objectForKey:@"swatchHexColor"]
+										options:NSCaseInsensitiveSearch 
+										  range:NSMakeRange(0, [swatchEntry length])];
+		
+		UIColor *color = [UIColor colorFromHex:[swatch objectForKey:@"swatchHexColor"] alpha:1.0];
+		const CGFloat *components = CGColorGetComponents(color.CGColor);
+		int red = components[0]*255;
+		int green = components[1]*255;
+		int blue = components[1]*255;
+		[swatchEntry replaceOccurrencesOfString:@"{{swatchRedValue}}" 
+									 withString:[NSString stringWithFormat:@"%i", red] 
+										options:NSCaseInsensitiveSearch 
+										  range:NSMakeRange(0, [swatchEntry length])];
+		[swatchEntry replaceOccurrencesOfString:@"{{swatchGreenValue}}" 
+									 withString:[NSString stringWithFormat:@"%i", green] 
+										options:NSCaseInsensitiveSearch 
+										  range:NSMakeRange(0, [swatchEntry length])];
+		[swatchEntry replaceOccurrencesOfString:@"{{swatchBlueValue}}" 
+									 withString:[NSString stringWithFormat:@"%i", blue] 
+										options:NSCaseInsensitiveSearch 
+										  range:NSMakeRange(0, [swatchEntry length])];
+		
+		swatchHTML = [swatchHTML stringByAppendingString:swatchEntry];
+		
+		[swatchEntry release];
+	}
+	
+	[body replaceOccurrencesOfString:@"{{swatchHTML}}" 
+						  withString:swatchHTML 
+							 options:NSCaseInsensitiveSearch 
+							   range:NSMakeRange(0, [body length])];
+	
+	return [body autorelease];
 }
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error

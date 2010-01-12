@@ -360,7 +360,7 @@
 
 - (NSArray *)selectedEntries
 {
-	NSArray *entries = [NSArray array];
+	NSArray *entries = nil;
 	switch (currentSection) {
 		case kKulerFeedTypeNewest:
 			entries = [self.feed newestEntries];

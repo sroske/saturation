@@ -64,10 +64,10 @@
 								 self.bounds.size.height/2-self.icon.image.size.height/2, 
 								 self.icon.image.size.width, 
 								 self.icon.image.size.height);
-	self.label.frame = CGRectMake(self.titleLabel.frame.origin.x, 
-								  self.titleLabel.frame.origin.y, 
-								  self.titleLabel.frame.size.width, 
-								  self.titleLabel.frame.size.height);
+	self.label.frame = CGRectMake(self.icon.frame.origin.x+self.icon.frame.size.width+18.0f, 
+								  self.bounds.size.height/2-10.0f, 
+								  200.0f, 
+								  20.0f);
 }
 
 - (void)dealloc
