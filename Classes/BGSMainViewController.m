@@ -137,6 +137,7 @@
 		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"button-gear.png"];
 		UIImage *i = [UIImage imageWithContentsOfFile:p];
 		[btn setImage:i forState:UIControlStateNormal];
+		[btn setAlpha:0.0];
 		[btn addTarget:self action:@selector(showSettings:) forControlEvents:UIControlEventTouchUpInside];
 		[btn setFrame:CGRectMake(-14.0f, 
 								 self.view.bounds.size.height-i.size.height*3+14.0f, 
@@ -163,6 +164,7 @@
 		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"button-info.png"];
 		UIImage *i = [UIImage imageWithContentsOfFile:p];
 		[btn setImage:i forState:UIControlStateNormal];
+		[btn setAlpha:0.0];
 		[btn addTarget:self action:@selector(showDetailView:) forControlEvents:UIControlEventTouchUpInside];
 		[btn setFrame:CGRectMake(self.view.bounds.size.width-i.size.width*3+14.0f, 
 								 self.view.bounds.size.height-i.size.height*3+14.0f, 
@@ -239,6 +241,16 @@
 		[UIView setAnimationDidStopSelector:@selector(logoFaded:finished:context:)];
 		
 		[self.logo setAlpha:0.0f];
+		
+		[UIView commitAnimations];
+		
+		[UIView beginAnimations:@"buttonFadeIn" context:nil];
+		[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+		[UIView setAnimationDelay:1.0];
+		[UIView setAnimationDuration:0.6];
+		
+		[self.settingsButton setAlpha:1.0f];
+		[self.infoButton setAlpha:1.0f];
 		
 		[UIView commitAnimations];
 		

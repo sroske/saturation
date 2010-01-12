@@ -95,6 +95,7 @@
 - (void)showListView
 {
 	BGSListViewController *controller = [[BGSListViewController alloc] init];
+	[controller setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
 	[self.navController presentModalViewController:controller animated:YES];
 	[controller release];	
 }
@@ -102,6 +103,7 @@
 - (void)showDetailFor:(NSDictionary *)entryData
 {
 	BGSDetailViewController *controller = [[BGSDetailViewController alloc] initWithEntry:entryData];
+	[controller setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
 	[self.navController presentModalViewController:controller animated:YES];
 	[controller release];
 }
@@ -121,7 +123,7 @@
 	}
 	
 	[self hideModalView];
-	[self performSelector:@selector(presentMailComposerFor:) withObject:entryData afterDelay:0.5];
+	[self performSelector:@selector(presentMailComposerFor:) withObject:entryData afterDelay:0.8];
 }
 
 - (void)presentMailComposerFor:(NSDictionary *)entryData
