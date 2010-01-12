@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "FontsAndColors.h"
+#import "UIColor+ColorFromHex.h"
 
 #define COLOR_STRIP_ENTRY_WIDTH		10.0f
 #define COLOR_STRIP_ENTRY_HEIGHT	10.0f

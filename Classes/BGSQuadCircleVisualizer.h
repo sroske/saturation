@@ -11,6 +11,7 @@
 #import "BGSVisualizer.h"
 #import "BGSQuadCircleGroupView.h"
 #import "NSArray+Shuffle.h"
+#import "UIColor+ColorFromHex.h"
 
 #define QUAD_CIRCLE_ROWS		2
 #define QUAD_CIRCLE_COLS		3

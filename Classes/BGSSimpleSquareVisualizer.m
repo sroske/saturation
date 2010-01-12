@@ -132,7 +132,7 @@
 	{
 		int i = arc4random()%[swatches count];
 		NSDictionary *swatch = [swatches objectAtIndex:i];
-		color = CC_FROM_SWATCH(swatch);		
+		color = [UIColor colorFromHex:[swatch objectForKey:@"swatchHexColor"] alpha:1.0];
 	}
 	return color;
 }

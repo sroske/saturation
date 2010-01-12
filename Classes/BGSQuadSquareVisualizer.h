@@ -11,6 +11,7 @@
 #import "FontsAndColors.h"
 #import "BGSVisualizer.h"
 #import "NSArray+Shuffle.h"
+#import "UIColor+ColorFromHex.h"
 
 #define ROWS		2
 #define COLS		3

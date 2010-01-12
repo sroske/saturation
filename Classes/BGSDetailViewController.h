@@ -16,6 +16,7 @@
 #import "BGSEmailButton.h"
 #import "BGSVisualOptionView.h"
 #import "UIColor+CMYK.h"
+#import "UIColor+ColorFromHex.h"
 
 @interface BGSDetailViewController : UIViewController 
 {

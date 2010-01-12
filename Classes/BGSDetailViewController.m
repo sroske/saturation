@@ -528,7 +528,8 @@
 	NSArray *swatches = [self.entry objectForKey:@"swatches"];
 	for (NSDictionary *swatch in swatches)
 	{
-		UIColor *color = CC_FROM_SWATCH(swatch);
+		UIColor *color = [UIColor colorFromHex:[swatch objectForKey:@"swatchHexColor"] alpha:1.0];
+		
 		// color icon
 		BGSSwatchColor *i = [[BGSSwatchColor alloc] initWithFrame:CGRectMake(p.x, 
 																			 p.y+1.0f, 

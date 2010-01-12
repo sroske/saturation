@@ -12,12 +12,6 @@
 	green:((float)((rgb & 0xFF00) >> 8))/255.0 \
 	blue:((float)(rgb & 0xFF))/255.0 alpha:1.0]
 
-#define CC_FROM_SWATCH(s) [UIColor \
-	colorWithRed:[[s objectForKey:@"swatchChannel1"] floatValue] \
-	green:[[s objectForKey:@"swatchChannel2"] floatValue] \
-	blue:[[s objectForKey:@"swatchChannel3"] floatValue] \
-	alpha:1.0f]
-
 
 #define CC_BLACK				CC_FROM_RGB(0x000000)
 #define CC_WHITE				CC_FROM_RGB(0xffffff)

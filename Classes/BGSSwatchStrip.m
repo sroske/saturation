@@ -41,7 +41,8 @@
 	{
 		for (NSDictionary *swatch in self.swatches)
 		{
-			CGContextSetFillColorWithColor(context, CC_FROM_SWATCH(swatch).CGColor);
+			UIColor *color = [UIColor colorFromHex:[swatch objectForKey:@"swatchHexColor"] alpha:1.0];
+			CGContextSetFillColorWithColor(context, color.CGColor);
 			CGContextFillRect(context, CGRectMake(p.x, 
 												  p.y, 
 												  COLOR_STRIP_ENTRY_WIDTH, 
