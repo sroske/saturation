@@ -7,10 +7,14 @@
 //
 
 #import <UIKit/UIkit.h>
+#import "FontLabel.h"
 #import "FontsAndColors.h"
 
-@interface BGSSectionButton : UIButton {
-
+@interface BGSSectionButton : UIButton 
+{
+	FontLabel *label;
 }
+
+@property (nonatomic, retain) FontLabel *label;
 
 @end

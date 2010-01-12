@@ -12,6 +12,7 @@
 @implementation BGSRefreshButton
 
 @synthesize icon;
+@synthesize label;
 
 - (UIImageView *)icon
 {
@@ -30,15 +31,27 @@
 	return icon;
 }
 
+- (FontLabel *)label
+{
+	if (label == nil)
+	{
+		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectZero fontName:CF_NORMAL pointSize:16.0f];
+		[lbl setTextColor:CC_REFRESH];
+		[lbl setBackgroundColor:CC_CLEAR];
+		[self setLabel:lbl];
+		[lbl release];
+	}
+	return label;
+}
+
 - (id)initWithFrame:(CGRect)frame
 {
 	if (self = [super initWithFrame:frame])
 	{
 		[self setBackgroundColor:CC_CLEAR];
-		[self.titleLabel setFont:CF_LIST_REFRESH_BUTTON];
-		[self setTitleColor:CC_REFRESH forState:UIControlStateNormal];
 		
 		[self addSubview:self.icon];
+		[self addSubview:self.label];
 	}
 	return self;
 }
@@ -51,15 +64,16 @@
 								 self.bounds.size.height/2-self.icon.image.size.height/2, 
 								 self.icon.image.size.width, 
 								 self.icon.image.size.height);
-	self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 
-									   self.titleLabel.frame.origin.y, 
-									   self.titleLabel.frame.size.width, 
-									   self.titleLabel.frame.size.height);
+	self.label.frame = CGRectMake(self.titleLabel.frame.origin.x, 
+								  self.titleLabel.frame.origin.y, 
+								  self.titleLabel.frame.size.width, 
+								  self.titleLabel.frame.size.height);
 }
 
 - (void)dealloc
 {
 	[icon release];
+	[label release];
 	[super dealloc];
 }
 

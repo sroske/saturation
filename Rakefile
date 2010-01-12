@@ -6,7 +6,7 @@ def run(cmd)
 end
 
 current_path = File.dirname(__FILE__)
-application = ENV['APPLICATION'] || 'Saturation'
+application = ENV['APPLICATION'] || 'saturation'
 configuration = ENV['CONFIGURATION'] || 'Ad Hoc'
 version = ENV['VERSION'] || '1.0'
 mobileprovision = ENV['PROVISION'] || Dir.glob(File.join(current_path, '*.mobileprovision')).first.to_s

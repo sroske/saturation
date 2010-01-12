@@ -7,15 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FontLabel.h"
 #import "FontsAndColors.h"
 
 @interface BGSEmailButton : UIButton 
 {
 	UIImage *background;
 	UIButton *icon;
+	FontLabel *label;
 }
 
 @property (nonatomic, retain) UIImage *background;
 @property (nonatomic, retain) UIButton *icon;
+@property (nonatomic, retain) FontLabel *label;
 
 @end

@@ -18,8 +18,6 @@
 	blue:[[s objectForKey:@"swatchChannel3"] floatValue] \
 	alpha:1.0f]
 
-#define CF_FROM_NAME(n, s) [UIFont fontWithName:n size:s]
-
 
 #define CC_BLACK				CC_FROM_RGB(0x000000)
 #define CC_WHITE				CC_FROM_RGB(0xffffff)
@@ -31,14 +29,5 @@
 #define	CC_REFRESH				CC_FROM_RGB(0xffffff)
 #define CC_CLEAR				[UIColor clearColor]
 
-#define CF_NORMAL				@"HelveticaNeueLTStd-Lt.otf"
 
-#define CF_DETAIL_TITLE			CF_FROM_NAME(@"HelveticaNeue", 48.0f)
-#define CF_DETAIL_AUTHOR		CF_FROM_NAME(@"HelveticaNeue", 24.0f)
-#define CF_DETAIL_COLOR_TYPE	CF_FROM_NAME(@"HelveticaNeue", 24.0f)
-#define CF_DETAIL_COLOR_DATA	CF_FROM_NAME(@"HelveticaNeue", 14.0f)
-#define CF_DETAIL_EMAIL			CF_FROM_NAME(@"HelveticaNeue", 16.0f)
-#define CF_LIST_TITLE			CF_FROM_NAME(@"HelveticaNeue", 16.0f)
-#define CF_LOADING				CF_FROM_NAME(@"HelveticaNeue", 16.0f)
-#define CF_LIST_SECTION_BUTTON	CF_FROM_NAME(@"HelveticaNeue", 18.0f)
-#define CF_LIST_REFRESH_BUTTON	CF_FROM_NAME(@"HelveticaNeue", 16.0f)
+#define CF_NORMAL				@"HelveticaNeueLTStd-Lt.otf"

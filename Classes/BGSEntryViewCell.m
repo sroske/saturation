@@ -98,12 +98,11 @@
 	return colorStrip;
 }
 
-- (UILabel *)nameLabel
+- (FontLabel *)nameLabel
 {
 	if (nameLabel == nil)
 	{
-		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectZero];
-		[lbl setFont:CF_LIST_TITLE];
+		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectZero fontName:CF_NORMAL pointSize:16.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
 		[self setNameLabel:lbl];

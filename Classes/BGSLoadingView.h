@@ -7,15 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FontLabel.h"
 #import "FontsAndColors.h"
 
 @interface BGSLoadingView : UIView 
 {
 	UIActivityIndicatorView *indicator;
-	UILabel *titleLabel;
+	FontLabel *titleLabel;
 }
 
 @property (nonatomic, retain) UIActivityIndicatorView *indicator;
-@property (nonatomic, retain) UILabel *titleLabel;
+@property (nonatomic, retain) FontLabel *titleLabel;
 
 @end

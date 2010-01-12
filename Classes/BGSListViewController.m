@@ -93,7 +93,7 @@
 																				 0.0f, 
 																				 70.0f, 
 																				 40.0f)];
-		[b setTitle:@"newest" forState:UIControlStateNormal];
+		[b.label setText:@"newest"];
 		[b addTarget:self action:@selector(changeSection:) forControlEvents:UIControlEventTouchDown];
 		[self setNewestButton:b];
 		[b release];
@@ -109,7 +109,7 @@
 																				 self.newestButton.frame.origin.y, 
 																				 120.0f, 
 																				 40.0f)];
-		[b setTitle:@"most popular" forState:UIControlStateNormal];
+		[b.label setText:@"most popular"];
 		[b addTarget:self action:@selector(changeSection:) forControlEvents:UIControlEventTouchDown];
 		[self setPopularButton:b];
 		[b release];
@@ -125,7 +125,7 @@
 																				 self.popularButton.frame.origin.y, 
 																				 80.0f, 
 																				 40.0f)];
-		[b setTitle:@"random" forState:UIControlStateNormal];
+		[b.label setText:@"random"];
 		[b addTarget:self action:@selector(changeSection:) forControlEvents:UIControlEventTouchDown];
 		[self setRandomButton:b];
 		[b release];
@@ -141,7 +141,7 @@
 																				 self.randomButton.frame.origin.y, 
 																				 80.0f, 
 																				 40.0f)];
-		[b setTitle:@"favorites" forState:UIControlStateNormal];
+		[b.label setText:@"favorites"];
 		[b addTarget:self action:@selector(changeSection:) forControlEvents:UIControlEventTouchDown];
 		[self setFavoritesButton:b];
 		[b release];

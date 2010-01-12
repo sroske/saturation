@@ -131,11 +131,13 @@
 	
 	NSLog(@"data: %@", entryData);
 	
-	[mailer setSubject:[NSString stringWithFormat:@"\"%@\" by: %@", 
+	[mailer setSubject:[NSString stringWithFormat:@"[saturation] \"%@\" by: %@", 
 						[[entryData objectForKey:@"themeTitle"] lowercaseString], 
 						[[entryData objectForKey:@"authorLabel"] lowercaseString], nil]];
-	NSString *html = [NSString stringWithFormat:@"<html><style type='text/css'>body{font-family:helvetica;color:#000;background-color:#fff;}</style><body><h2>%@</h2><h4>by: %@</h4><img src='%@'/></body></html>", 
+	NSString *html = [NSString stringWithFormat:@"<html><body color='#ffffff' bgcolor='#000000'><h2><a href='http://kuler.adobe.com/#themeID/%@'>%@</a></h2><h4>by: <a href='http://kuler.adobe.com/#themes/search?term=userId%%3A%@'>%@</a></h4><img src='%@'/></body></html>", 
+					  [entryData objectForKey:@"themeID"],
 					  [[entryData objectForKey:@"themeTitle"] lowercaseString], 
+					  [entryData objectForKey:@"authorID"],
 					  [[entryData objectForKey:@"authorLabel"] lowercaseString], 
 					  [entryData objectForKey:@"themeImage"], nil];
 	[mailer setMessageBody:html isHTML:YES];

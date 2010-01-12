@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FontLabel.h"
 #import "FontsAndColors.h"
 #import "BGSFavoriteView.h"
 #import "BGSSwatchStrip.h"
@@ -19,7 +20,7 @@
 	NSDictionary *entry;
 	BGSFavoriteView *favoriteView;
 	BGSSwatchStrip *colorStrip;
-	UILabel *nameLabel;
+	FontLabel *nameLabel;
 }
 
 @property (nonatomic, retain) UIImageView *backgroundImage;
@@ -27,6 +28,6 @@
 @property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) BGSFavoriteView *favoriteView;
 @property (nonatomic, retain) BGSSwatchStrip *colorStrip;
-@property (nonatomic, retain) UILabel *nameLabel;
+@property (nonatomic, retain) FontLabel *nameLabel;
 
 @end

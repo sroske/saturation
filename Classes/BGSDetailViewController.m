@@ -130,7 +130,7 @@
 {
 	if (authorLabel == nil)
 	{
-		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectMake(14.0f, 
+		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectMake(13.0f, 
 																	 50.0f, 
 																	 480.0f-36.0f, 
 																	 30.0f)
@@ -160,15 +160,16 @@
 	return colorStrip;
 }
 
-- (UILabel *)hexheaderLabel
+- (FontLabel *)hexheaderLabel
 {
 	if (hexheaderLabel == nil)
 	{
-		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(14.0f, 
-																 120.0f, 
-																 100.0f, 
-																 30.0f)];
-		[lbl setFont:CF_DETAIL_COLOR_TYPE];
+		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectMake(14.0f, 
+																	 120.0f, 
+																	 100.0f, 
+																	 30.0f)
+												 fontName:CF_NORMAL
+												pointSize:24.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:@"hex:"];
@@ -178,15 +179,16 @@
 	return hexheaderLabel;
 }
 
-- (UILabel *)rgbHeaderLabel
+- (FontLabel *)rgbHeaderLabel
 {
 	if (rgbHeaderLabel == nil)
 	{
-		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(130.0f, 
-																 120.0f, 
-																 100.0f, 
-																 30.0f)];
-		[lbl setFont:CF_DETAIL_COLOR_TYPE];
+		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectMake(130.0f, 
+																	 120.0f, 
+																	 100.0f, 
+																	 30.0f)
+												 fontName:CF_NORMAL
+												pointSize:24.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:@"rgb:"];
@@ -196,15 +198,16 @@
 	return rgbHeaderLabel;
 }
 
-- (UILabel *)visualizerHeaderLabel
+- (FontLabel *)visualizerHeaderLabel
 {
 	if (visualizerHeaderLabel == nil)
 	{
-		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(298.0f, 
-																 120.0f, 
-																 160.0f, 
-																 30.0f)];
-		[lbl setFont:CF_DETAIL_COLOR_TYPE];
+		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectMake(298.0f, 
+																	 120.0f, 
+																	 160.0f, 
+																	 30.0f)
+												 fontName:CF_NORMAL
+												pointSize:24.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:@"visualizers:"];
@@ -240,7 +243,7 @@
 	if (hexSeperator == nil)
 	{
 		BGSSwatchColor *c = [[BGSSwatchColor alloc] initWithFrame:CGRectMake(104.0f, 
-																			 163.0f, 
+																			 160.0f, 
 																			 1.0f, 
 																			 91.0f) 
 														 andColor:CC_WHITE];
@@ -286,7 +289,7 @@
 	if (rgbSeperator == nil)
 	{
 		BGSSwatchColor *c = [[BGSSwatchColor alloc] initWithFrame:CGRectMake(268.0f, 
-																			 163.0f, 
+																			 160.0f, 
 																			 1.0f, 
 																			 91.0f) 
 														 andColor:CC_WHITE];
@@ -300,8 +303,8 @@
 {
 	if (quadCircleOption == nil)
 	{
-		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rgbSeperator.frame)+24.0f, 
-																					   CGRectGetMinY(self.rgbSeperator.frame)-6.0f, 
+		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rgbSeperator.frame)+22.0f, 
+																					   CGRectGetMinY(self.rgbSeperator.frame)-4.0f, 
 																					   48.0f, 
 																					   48.0f) 
 																	andType:kQuadCircle];
@@ -319,8 +322,8 @@
 {
 	if (simpleCircleOption == nil)
 	{
-		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rgbSeperator.frame)+24.0f, 
-																					   CGRectGetMinY(self.rgbSeperator.frame)-6.0f, 
+		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rgbSeperator.frame)+22.0f, 
+																					   CGRectGetMinY(self.rgbSeperator.frame)-4.0f, 
 																					   48.0f, 
 																					   48.0f) 
 																	andType:kSimpleCircle];
@@ -421,7 +424,7 @@
 {
 	if (favoriteButton == nil)
 	{
-		BGSFavoriteView *e = [[BGSFavoriteView alloc] initWithFrame:CGRectMake(14.0f, 
+		BGSFavoriteView *e = [[BGSFavoriteView alloc] initWithFrame:CGRectMake(10.0f, 
 																			   268.0f, 
 																			   48.0f, 
 																			   48.0f)];
@@ -451,12 +454,12 @@
 {
 	if (emailButton == nil)
 	{
-		BGSEmailButton *e = [[BGSEmailButton alloc] initWithFrame:CGRectMake(70.0f, 
+		BGSEmailButton *e = [[BGSEmailButton alloc] initWithFrame:CGRectMake(68.0f, 
 																			 268.0f, 
 																			 401.0f, 
 																			 48.0f)];
-		[e addTarget:self action:@selector(email:) forControlEvents:UIControlEventTouchDown];
-		[e.icon addTarget:self action:@selector(email:) forControlEvents:UIControlEventTouchDown];
+		[e addTarget:self action:@selector(email:) forControlEvents:UIControlEventTouchUpInside];
+		[e.icon addTarget:self action:@selector(email:) forControlEvents:UIControlEventTouchUpInside];
 		[self setEmailButton:e];
 		[e release];
 	}
@@ -484,7 +487,6 @@
 	
 	UIView *v = [[UIView alloc] initWithFrame:frame];
 	[v setBackgroundColor:CC_BACKGROUND];
-	//[v setBackgroundColor:CC_WHITE]; // for testing
 	[v setAutoresizesSubviews:YES];
 	[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
 	[v sizeToFit];
@@ -521,7 +523,7 @@
 	CGFloat originX = 16.0f;
 	CGFloat rowHeight = 20.0f;
 	
-	CGPoint p = CGPointMake(originX, 162.0f);
+	CGPoint p = CGPointMake(originX, 160.0f);
 	
 	NSArray *swatches = [self.entry objectForKey:@"swatches"];
 	for (NSDictionary *swatch in swatches)
@@ -529,7 +531,7 @@
 		UIColor *color = CC_FROM_SWATCH(swatch);
 		// color icon
 		BGSSwatchColor *i = [[BGSSwatchColor alloc] initWithFrame:CGRectMake(p.x, 
-																			 p.y+2.0f, 
+																			 p.y+1.0f, 
 																			 10.0f, 
 																			 10.0f) 
 														 andColor:color];
@@ -540,11 +542,12 @@
 		p.x += 16.0f;
 		
 		// hex label
-		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(p.x, 
-																 p.y-1.0f, 
-																 70.0f, 
-																 16.0f)];
-		[lbl setFont:CF_DETAIL_COLOR_DATA];
+		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectMake(p.x, 
+																	 p.y, 
+																	 70.0f, 
+																	 16.0f)
+												 fontName:CF_NORMAL
+												pointSize:14.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:[swatch objectForKey:@"swatchHexColor"]];
@@ -555,11 +558,12 @@
 		p.x = 130.0f;
 		
 		// rgb R label
-		lbl = [[UILabel alloc] initWithFrame:CGRectMake(p.x, 
-														p.y-2.0f, 
-														35.0f, 
-														16.0f)];
-		[lbl setFont:CF_DETAIL_COLOR_DATA];
+		lbl = [[FontLabel alloc] initWithFrame:CGRectMake(p.x, 
+														  p.y, 
+														  35.0f, 
+														  16.0f)
+									  fontName:CF_NORMAL
+									 pointSize:14.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
 		int v = [[swatch objectForKey:@"swatchChannel1"] floatValue]*255;
@@ -571,11 +575,12 @@
 		p.x += 46.0f;
 		
 		// rgb G label
-		lbl = [[UILabel alloc] initWithFrame:CGRectMake(p.x, 
-														p.y-2.0f, 
-														35.0f, 
-														16.0f)];
-		[lbl setFont:CF_DETAIL_COLOR_DATA];
+		lbl = [[FontLabel alloc] initWithFrame:CGRectMake(p.x, 
+														  p.y, 
+														  35.0f, 
+														  16.0f)
+									  fontName:CF_NORMAL
+									 pointSize:14.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
 		v = [[swatch objectForKey:@"swatchChannel2"] floatValue]*255;
@@ -587,11 +592,12 @@
 		p.x += 46.0f;
 		
 		// rgb B label
-		lbl = [[UILabel alloc] initWithFrame:CGRectMake(p.x, 
-														p.y-2.0f, 
-														35.0f, 
-														16.0f)];
-		[lbl setFont:CF_DETAIL_COLOR_DATA];
+		lbl = [[FontLabel alloc] initWithFrame:CGRectMake(p.x, 
+														  p.y, 
+														  35.0f, 
+														  16.0f)
+									  fontName:CF_NORMAL
+									 pointSize:14.0f];
 		[lbl setTextColor:CC_WHITE];
 		[lbl setBackgroundColor:CC_CLEAR];
 		v = [[swatch objectForKey:@"swatchChannel3"] floatValue]*255;

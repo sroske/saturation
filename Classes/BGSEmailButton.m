@@ -13,6 +13,7 @@
 
 @synthesize background;
 @synthesize icon;
+@synthesize label;
 
 - (UIImage *)background
 {
@@ -44,6 +45,20 @@
 	return icon;
 }
 
+- (FontLabel *)label
+{
+	if (label == nil)
+	{
+		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectZero fontName:CF_NORMAL pointSize:16.0f];
+		[lbl setTextColor:CC_WHITE];
+		[lbl setBackgroundColor:CC_CLEAR];
+		[lbl setText:@"email this theme"];
+		[self setLabel:lbl];
+		[lbl release];
+	}
+	return label;
+}
+
 - (id)initWithFrame:(CGRect)frame 
 {
     if (self = [super initWithFrame:frame]) 
@@ -51,11 +66,8 @@
 		[self setBackgroundColor:CC_CLEAR];
 		[self setBackgroundImage:self.background forState:UIControlStateNormal];
 		[self setBackgroundImage:self.background forState:UIControlStateHighlighted];
-		
-		[self.titleLabel setFont:CF_DETAIL_EMAIL];
-		[self setTitleColor:CC_WHITE forState:UIControlStateNormal];
-		[self setTitle:@"email this theme" forState:UIControlStateNormal];
-		
+
+		[self addSubview:self.label];
 		[self addSubview:self.icon];
     }
     return self;
@@ -70,16 +82,17 @@
 								 floor(self.bounds.size.height/2-self.icon.frame.size.height/2), 
 								 self.icon.frame.size.width, 
 								 self.icon.frame.size.height);
-	self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x-90.0f, 
-									   self.titleLabel.frame.origin.y-1.0f, 
-									   self.titleLabel.frame.size.width, 
-									   self.titleLabel.frame.size.height);
+	self.label.frame = CGRectMake(self.icon.frame.origin.x+self.icon.frame.size.width+6.0f, 
+								  self.bounds.size.height/2-10.0f, 
+								  260.0f, 
+								  20.0f);
 }
 
 - (void)dealloc 
 {
 	[background release];
 	[icon release];
+	[label release];
     [super dealloc];
 }
 

@@ -7,13 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FontLabel.h"
 #import "FontsAndColors.h"
 
 @interface BGSRefreshButton : UIButton 
 {
 	UIImageView *icon;
+	FontLabel *label;
 }
 
 @property (nonatomic, retain) UIImageView *icon;
+@property (nonatomic, retain) FontLabel *label;
 
 @end

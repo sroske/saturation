@@ -18,7 +18,7 @@
 	if (refreshButton == nil)
 	{
 		BGSRefreshButton *b = [[BGSRefreshButton alloc] initWithFrame:CGRectZero];
-		[b setTitle:@"refresh themes" forState:UIControlStateNormal];
+		[b.label setText:@"refresh themes"];
 		[self setRefreshButton:b];
 		[b release];
 	}

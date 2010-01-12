@@ -28,9 +28,9 @@
 	UIButton *closeButton;
 	BGSSwatchStrip *colorStrip;
 	
-	UILabel *hexheaderLabel;
-	UILabel *rgbHeaderLabel;
-	UILabel *visualizerHeaderLabel;
+	FontLabel *hexheaderLabel;
+	FontLabel *rgbHeaderLabel;
+	FontLabel *visualizerHeaderLabel;
 	
 	NSMutableArray *colorIcons;
 	NSMutableArray *hexContentLabels;
@@ -60,9 +60,9 @@
 @property (nonatomic, retain) UIButton *closeButton;
 @property (nonatomic, retain) BGSSwatchStrip *colorStrip;
 
-@property (nonatomic, retain) UILabel *hexheaderLabel;
-@property (nonatomic, retain) UILabel *rgbHeaderLabel;
-@property (nonatomic, retain) UILabel *visualizerHeaderLabel;
+@property (nonatomic, retain) FontLabel *hexheaderLabel;
+@property (nonatomic, retain) FontLabel *rgbHeaderLabel;
+@property (nonatomic, retain) FontLabel *visualizerHeaderLabel;
 
 @property (nonatomic, retain) NSMutableArray *colorIcons;
 @property (nonatomic, retain) NSMutableArray *hexContentLabels;

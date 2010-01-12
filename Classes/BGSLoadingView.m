@@ -26,12 +26,11 @@
 	return indicator;
 }
 
-- (UILabel *)titleLabel
+- (FontLabel *)titleLabel
 {
 	if (titleLabel == nil)
 	{
-		UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectZero];
-		[lbl setFont:CF_LOADING];
+		FontLabel *lbl = [[FontLabel alloc] initWithFrame:CGRectZero fontName:CF_NORMAL pointSize:16.0f];
 		[lbl setTextColor:CC_LOADING];
 		[lbl setBackgroundColor:CC_CLEAR];
 		[lbl setText:@"Loading..."];
