@@ -1,8 +1,7 @@
 TODO LIST
 
-1. email using mail composer
-2. change fonts to helvetica nueue light
-3. initial load/preset themes
+1. initial load/preset themes
+2. rewrite circle visualization to use masked CALayers
+3. randomise square rotate direction, add color tween
 4. slide the strip on detail like a scrollview
-5. randomise square rotate direction, add color tween
-6. rewrite circle visualization to use masked CALayers
+
