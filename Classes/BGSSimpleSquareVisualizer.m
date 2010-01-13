@@ -105,8 +105,6 @@
 		}
 		else 
 		{
-			for (BGSSimpleSquareView *v in self.subviews)
-				[v setHidden:NO];
 			isFadingIn = NO;
 			hasAnimated = YES;
 		}		

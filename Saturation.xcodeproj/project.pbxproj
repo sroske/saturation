@@ -17,6 +17,10 @@
 		A90374A410EBE3CD00D515F5 /* BGSTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A90374A310EBE3CD00D515F5 /* BGSTableView.m */; };
 		A903750A10EC0CE600D515F5 /* BGSLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = A903750910EC0CE600D515F5 /* BGSLoadingView.m */; };
 		A90375B010EC28EE00D515F5 /* BGSKulerOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = A90375AF10EC28EE00D515F5 /* BGSKulerOperation.m */; };
+		A90BECE110FD6B2200624BA1 /* BGSSimpleCircleVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90BECE010FD6B2200624BA1 /* BGSSimpleCircleVisualizer.m */; };
+		A90BECE410FD6B4E00624BA1 /* BGSSimpleCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A90BECE310FD6B4E00624BA1 /* BGSSimpleCircleView.m */; };
+		A90BED0E10FD793E00624BA1 /* mask-circle.png in Resources */ = {isa = PBXBuildFile; fileRef = A90BED0D10FD793E00624BA1 /* mask-circle.png */; };
+		A90BEDD910FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90BEDD810FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.m */; };
 		A911891A10DDD9C7003AA0EB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A911891910DDD9C7003AA0EB /* icon.png */; };
 		A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893110DDDD12003AA0EB /* list-background-normal.png */; };
 		A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893210DDDD12003AA0EB /* list-background-selected.png */; };
@@ -95,6 +99,13 @@
 		A903750910EC0CE600D515F5 /* BGSLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSLoadingView.m; sourceTree = "<group>"; };
 		A90375AE10EC28EE00D515F5 /* BGSKulerOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerOperation.h; sourceTree = "<group>"; };
 		A90375AF10EC28EE00D515F5 /* BGSKulerOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerOperation.m; sourceTree = "<group>"; };
+		A90BECDF10FD6B2200624BA1 /* BGSSimpleCircleVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleCircleVisualizer.h; sourceTree = "<group>"; };
+		A90BECE010FD6B2200624BA1 /* BGSSimpleCircleVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleCircleVisualizer.m; sourceTree = "<group>"; };
+		A90BECE210FD6B4E00624BA1 /* BGSSimpleCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleCircleView.h; sourceTree = "<group>"; };
+		A90BECE310FD6B4E00624BA1 /* BGSSimpleCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleCircleView.m; sourceTree = "<group>"; };
+		A90BED0D10FD793E00624BA1 /* mask-circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mask-circle.png"; sourceTree = "<group>"; };
+		A90BEDD710FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleCircleMaskLayer.h; sourceTree = "<group>"; };
+		A90BEDD810FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleCircleMaskLayer.m; sourceTree = "<group>"; };
 		A911891910DDD9C7003AA0EB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		A911893110DDDD12003AA0EB /* list-background-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-normal.png"; sourceTree = "<group>"; };
 		A911893210DDDD12003AA0EB /* list-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-selected.png"; sourceTree = "<group>"; };
@@ -290,6 +301,19 @@
 			name = "List View";
 			sourceTree = "<group>";
 		};
+		A90BECDD10FD6AFE00624BA1 /* Refactored Simple Circle */ = {
+			isa = PBXGroup;
+			children = (
+				A90BECDF10FD6B2200624BA1 /* BGSSimpleCircleVisualizer.h */,
+				A90BECE010FD6B2200624BA1 /* BGSSimpleCircleVisualizer.m */,
+				A90BECE210FD6B4E00624BA1 /* BGSSimpleCircleView.h */,
+				A90BECE310FD6B4E00624BA1 /* BGSSimpleCircleView.m */,
+				A90BEDD710FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.h */,
+				A90BEDD810FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.m */,
+			);
+			name = "Refactored Simple Circle";
+			sourceTree = "<group>";
+		};
 		A9A0F86C10D8952400823BC9 /* Kuler Feeds */ = {
 			isa = PBXGroup;
 			children = (
@@ -386,6 +410,7 @@
 		A9E7736010F13CED00B3437A /* Visualizers */ = {
 			isa = PBXGroup;
 			children = (
+				A90BECDD10FD6AFE00624BA1 /* Refactored Simple Circle */,
 				A9E774A110F150FE00B3437A /* Simple Circle */,
 				A9B47B1910FA218B003DB9B1 /* Simple Square */,
 				A9E774A710F1546D00B3437A /* Quad Square */,
@@ -444,6 +469,7 @@
 		A9EFACD410DC9FE4005CCAA3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A90BED0D10FD793E00624BA1 /* mask-circle.png */,
 				A9B4803710FC1A0F003DB9B1 /* background-color-strip-debug.png */,
 				A9B4803810FC1A0F003DB9B1 /* background-color-strip.png */,
 				A9B4790110F9809F003DB9B1 /* icon-refresh.png */,
@@ -536,6 +562,7 @@
 				A9B4803A10FC1A0F003DB9B1 /* background-color-strip.png in Resources */,
 				A9B4813F10FC32C0003DB9B1 /* email.html in Resources */,
 				A9B4815510FC355A003DB9B1 /* swatch.html in Resources */,
+				A90BED0E10FD793E00624BA1 /* mask-circle.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -582,6 +609,9 @@
 				A9B47F1110FADA75003DB9B1 /* ZAttributedString.m in Sources */,
 				A9B47F1210FADA75003DB9B1 /* ZFont.m in Sources */,
 				A9B480EA10FC2D65003DB9B1 /* UIColor+ColorFromHex.m in Sources */,
+				A90BECE110FD6B2200624BA1 /* BGSSimpleCircleVisualizer.m in Sources */,
+				A90BECE410FD6B4E00624BA1 /* BGSSimpleCircleView.m in Sources */,
+				A90BEDD910FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

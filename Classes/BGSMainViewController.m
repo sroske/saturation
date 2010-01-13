@@ -53,8 +53,8 @@
 	}
 	else if (self.visualizationType == kSimpleCircle)
 	{
-		BGSCircleVisualizer *v = [[BGSCircleVisualizer alloc] initWithFrame:self.view.bounds 
-																   andEntry:self.entry];
+		BGSSimpleCircleVisualizer *v = [[BGSSimpleCircleVisualizer alloc] initWithFrame:self.view.bounds 
+																			   andEntry:self.entry];
 		[v setTag:kVisualizer];
 		[self.view insertSubview:v atIndex:1];
 		[v release];

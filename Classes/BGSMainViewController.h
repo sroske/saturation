@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FontsAndColors.h"
 #import "BGSVisualizer.h"
-#import "BGSCircleVisualizer.h"
+#import "BGSSimpleCircleVisualizer.h"
 #import "BGSQuadCircleVisualizer.h"
 #import "BGSSimpleSquareVisualizer.h"
 #import "BGSQuadSquareVisualizer.h"
