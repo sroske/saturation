@@ -25,6 +25,7 @@
 		A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893110DDDD12003AA0EB /* list-background-normal.png */; };
 		A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893210DDDD12003AA0EB /* list-background-selected.png */; };
 		A911893710DDDD30003AA0EB /* BGSListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A911893610DDDD30003AA0EB /* BGSListViewController.m */; };
+		A91B97791100035F001AE43F /* BGSMailController.m in Sources */ = {isa = PBXBuildFile; fileRef = A91B97781100035F001AE43F /* BGSMailController.m */; };
 		A937A91210F2FB770047A005 /* BGSQuadCircleOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = A937A91110F2FB770047A005 /* BGSQuadCircleOverlayView.m */; };
 		A94EABE610E09886002CD007 /* BGSEntryViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A94EABE510E09886002CD007 /* BGSEntryViewCell.m */; };
 		A9A0F7FB10D8903100823BC9 /* BGSMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */; };
@@ -111,6 +112,8 @@
 		A911893210DDDD12003AA0EB /* list-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-selected.png"; sourceTree = "<group>"; };
 		A911893510DDDD30003AA0EB /* BGSListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSListViewController.h; sourceTree = "<group>"; };
 		A911893610DDDD30003AA0EB /* BGSListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSListViewController.m; sourceTree = "<group>"; };
+		A91B97771100035F001AE43F /* BGSMailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSMailController.h; sourceTree = "<group>"; };
+		A91B97781100035F001AE43F /* BGSMailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSMailController.m; sourceTree = "<group>"; };
 		A937A91010F2FB770047A005 /* BGSQuadCircleOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSQuadCircleOverlayView.h; sourceTree = "<group>"; };
 		A937A91110F2FB770047A005 /* BGSQuadCircleOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSQuadCircleOverlayView.m; sourceTree = "<group>"; };
 		A94EABE410E09886002CD007 /* BGSEntryViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSEntryViewCell.h; sourceTree = "<group>"; };
@@ -348,6 +351,8 @@
 		A9A0F86E10D8952E00823BC9 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				A91B97771100035F001AE43F /* BGSMailController.h */,
+				A91B97781100035F001AE43F /* BGSMailController.m */,
 				A9A0F7F910D8903100823BC9 /* BGSMainViewController.h */,
 				A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */,
 				A9EFACCB10DC9A8B005CCAA3 /* BGSDetailViewController.h */,
@@ -612,6 +617,7 @@
 				A90BECE110FD6B2200624BA1 /* BGSSimpleCircleVisualizer.m in Sources */,
 				A90BECE410FD6B4E00624BA1 /* BGSSimpleCircleView.m in Sources */,
 				A90BEDD910FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.m in Sources */,
+				A91B97791100035F001AE43F /* BGSMailController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

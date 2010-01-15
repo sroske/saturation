@@ -14,6 +14,7 @@
 #import "BGSMainViewController.h"
 #import "BGSDetailViewController.h"
 #import "BGSListViewController.h"
+#import "BGSMailController.h"
 
 #define DEFAULT_VISUALIZER_TYPE kSimpleCircle
 
@@ -25,22 +26,19 @@ enum VisualizationTypes
 	kSimpleSquare
 };
 
-@interface SaturationAppDelegate : NSObject <UIApplicationDelegate, MFMailComposeViewControllerDelegate> 
+@interface SaturationAppDelegate : NSObject <UIApplicationDelegate,  MFMailComposeViewControllerDelegate> 
 {
     UIWindow *window;
 	UINavigationController *navController;
 	BGSWelcomeViewController *welcomeController;
 	int visualizationType;
-	NSString *bodyHTMLTemplate;
-	NSString *swatchHTMLTemplate;
+
 }
 
 @property (nonatomic, retain) UIWindow *window;
 @property (nonatomic, retain) UINavigationController *navController;
 @property (nonatomic, retain) BGSWelcomeViewController *welcomeController;
 @property (nonatomic, assign) int visualizationType;
-@property (nonatomic, retain) NSString *bodyHTMLTemplate;
-@property (nonatomic, retain) NSString *swatchHTMLTemplate;
 
 - (void)showListView;
 - (void)showDetailFor:(NSDictionary *)entryData;
