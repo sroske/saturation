@@ -1,7 +1,8 @@
 TODO LIST
 
 1. initial load/preset themes
-DONE 2. rewrite circle visualization to use masked CALayers
+2. Rewrite square visualizer
 3. randomise square rotate direction, add color tween
-4. slide the strip on detail like a scrollview
+4. particle system visualizer?
+5. slide the strip on detail like a scrollview
 
