@@ -17,23 +17,20 @@
 		A90374A410EBE3CD00D515F5 /* BGSTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A90374A310EBE3CD00D515F5 /* BGSTableView.m */; };
 		A903750A10EC0CE600D515F5 /* BGSLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = A903750910EC0CE600D515F5 /* BGSLoadingView.m */; };
 		A90375B010EC28EE00D515F5 /* BGSKulerOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = A90375AF10EC28EE00D515F5 /* BGSKulerOperation.m */; };
-		A90BECE110FD6B2200624BA1 /* BGSSimpleCircleVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90BECE010FD6B2200624BA1 /* BGSSimpleCircleVisualizer.m */; };
-		A90BECE410FD6B4E00624BA1 /* BGSSimpleCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A90BECE310FD6B4E00624BA1 /* BGSSimpleCircleView.m */; };
-		A90BED0E10FD793E00624BA1 /* mask-circle.png in Resources */ = {isa = PBXBuildFile; fileRef = A90BED0D10FD793E00624BA1 /* mask-circle.png */; };
-		A90BEDD910FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90BEDD810FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.m */; };
 		A90DEE511100348E00AE619F /* BGSSimpleCircleScene.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DEE501100348E00AE619F /* BGSSimpleCircleScene.m */; };
 		A90DF089110165B600AE619F /* BGSSimpleCircleSprite.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DF088110165B600AE619F /* BGSSimpleCircleSprite.m */; };
-		A90DF0F3110188E500AE619F /* circle-coordinates.plist in Resources */ = {isa = PBXBuildFile; fileRef = A90DF0F1110188E500AE619F /* circle-coordinates.plist */; };
-		A90DF0F4110188E500AE619F /* circle-spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = A90DF0F2110188E500AE619F /* circle-spritesheet.png */; };
+		A90DF25A110233B100AE619F /* email.html in Resources */ = {isa = PBXBuildFile; fileRef = A90DF258110233B100AE619F /* email.html */; };
+		A90DF25B110233B100AE619F /* swatch.html in Resources */ = {isa = PBXBuildFile; fileRef = A90DF259110233B100AE619F /* swatch.html */; };
+		A90DF25E110233CF00AE619F /* UIColor+ColorFromHex.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DF25D110233CF00AE619F /* UIColor+ColorFromHex.m */; };
+		A90DF262110233FF00AE619F /* circle-coordinates.plist in Resources */ = {isa = PBXBuildFile; fileRef = A90DF260110233FF00AE619F /* circle-coordinates.plist */; };
+		A90DF263110233FF00AE619F /* circle-spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = A90DF261110233FF00AE619F /* circle-spritesheet.png */; };
 		A911891A10DDD9C7003AA0EB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A911891910DDD9C7003AA0EB /* icon.png */; };
 		A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893110DDDD12003AA0EB /* list-background-normal.png */; };
 		A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893210DDDD12003AA0EB /* list-background-selected.png */; };
 		A911893710DDDD30003AA0EB /* BGSListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A911893610DDDD30003AA0EB /* BGSListViewController.m */; };
 		A91B97791100035F001AE43F /* BGSMailController.m in Sources */ = {isa = PBXBuildFile; fileRef = A91B97781100035F001AE43F /* BGSMailController.m */; };
-		A937A91210F2FB770047A005 /* BGSQuadCircleOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = A937A91110F2FB770047A005 /* BGSQuadCircleOverlayView.m */; };
 		A94EABE610E09886002CD007 /* BGSEntryViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A94EABE510E09886002CD007 /* BGSEntryViewCell.m */; };
 		A9A0F7FB10D8903100823BC9 /* BGSMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */; };
-		A9A0F80610D8910100823BC9 /* BGSCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F80510D8910100823BC9 /* BGSCircleView.m */; };
 		A9A0F80B10D8912D00823BC9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */; };
 		A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */; };
 		A9B4749A10F91B30003DB9B1 /* BGSRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B4749910F91B30003DB9B1 /* BGSRefreshView.m */; };
@@ -53,12 +50,6 @@
 		A9B47F1710FADB13003DB9B1 /* HelveticaNeueLTStd-Lt.otf in Resources */ = {isa = PBXBuildFile; fileRef = A9B47F1610FADB13003DB9B1 /* HelveticaNeueLTStd-Lt.otf */; };
 		A9B4803910FC1A0F003DB9B1 /* background-color-strip-debug.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B4803710FC1A0F003DB9B1 /* background-color-strip-debug.png */; };
 		A9B4803A10FC1A0F003DB9B1 /* background-color-strip.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B4803810FC1A0F003DB9B1 /* background-color-strip.png */; };
-		A9B480EA10FC2D65003DB9B1 /* UIColor+ColorFromHex.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B480E910FC2D65003DB9B1 /* UIColor+ColorFromHex.m */; };
-		A9B4813F10FC32C0003DB9B1 /* email.html in Resources */ = {isa = PBXBuildFile; fileRef = A9B4813E10FC32C0003DB9B1 /* email.html */; };
-		A9B4815510FC355A003DB9B1 /* swatch.html in Resources */ = {isa = PBXBuildFile; fileRef = A9B4815410FC355A003DB9B1 /* swatch.html */; };
-		A9E7736310F13D3400B3437A /* BGSCircleVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E7736210F13D3400B3437A /* BGSCircleVisualizer.m */; };
-		A9E774AC10F1548400B3437A /* BGSQuadCircleVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E774AB10F1548400B3437A /* BGSQuadCircleVisualizer.m */; };
-		A9E7757310F17DE400B3437A /* BGSQuadCircleGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E7757210F17DE400B3437A /* BGSQuadCircleGroupView.m */; };
 		A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */; };
 		A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACD510DC9FE4005CCAA3 /* button-close.png */; };
 		A9EFACF610DCA0ED005CCAA3 /* NOTES in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACF510DCA0ED005CCAA3 /* NOTES */; };
@@ -171,19 +162,16 @@
 		A903750910EC0CE600D515F5 /* BGSLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSLoadingView.m; sourceTree = "<group>"; };
 		A90375AE10EC28EE00D515F5 /* BGSKulerOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerOperation.h; sourceTree = "<group>"; };
 		A90375AF10EC28EE00D515F5 /* BGSKulerOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerOperation.m; sourceTree = "<group>"; };
-		A90BECDF10FD6B2200624BA1 /* BGSSimpleCircleVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleCircleVisualizer.h; sourceTree = "<group>"; };
-		A90BECE010FD6B2200624BA1 /* BGSSimpleCircleVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleCircleVisualizer.m; sourceTree = "<group>"; };
-		A90BECE210FD6B4E00624BA1 /* BGSSimpleCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleCircleView.h; sourceTree = "<group>"; };
-		A90BECE310FD6B4E00624BA1 /* BGSSimpleCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleCircleView.m; sourceTree = "<group>"; };
-		A90BED0D10FD793E00624BA1 /* mask-circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mask-circle.png"; sourceTree = "<group>"; };
-		A90BEDD710FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleCircleMaskLayer.h; sourceTree = "<group>"; };
-		A90BEDD810FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleCircleMaskLayer.m; sourceTree = "<group>"; };
 		A90DEE4F1100348E00AE619F /* BGSSimpleCircleScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleCircleScene.h; sourceTree = "<group>"; };
 		A90DEE501100348E00AE619F /* BGSSimpleCircleScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleCircleScene.m; sourceTree = "<group>"; };
 		A90DF087110165B600AE619F /* BGSSimpleCircleSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleCircleSprite.h; sourceTree = "<group>"; };
 		A90DF088110165B600AE619F /* BGSSimpleCircleSprite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleCircleSprite.m; sourceTree = "<group>"; };
-		A90DF0F1110188E500AE619F /* circle-coordinates.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "circle-coordinates.plist"; sourceTree = "<group>"; };
-		A90DF0F2110188E500AE619F /* circle-spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "circle-spritesheet.png"; sourceTree = "<group>"; };
+		A90DF258110233B100AE619F /* email.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = email.html; path = Assets/Optimized/templates/email.html; sourceTree = "<group>"; };
+		A90DF259110233B100AE619F /* swatch.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = swatch.html; path = Assets/Optimized/templates/swatch.html; sourceTree = "<group>"; };
+		A90DF25C110233CF00AE619F /* UIColor+ColorFromHex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+ColorFromHex.h"; path = "Classes/UIColor+ColorFromHex.h"; sourceTree = "<group>"; };
+		A90DF25D110233CF00AE619F /* UIColor+ColorFromHex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+ColorFromHex.m"; path = "Classes/UIColor+ColorFromHex.m"; sourceTree = "<group>"; };
+		A90DF260110233FF00AE619F /* circle-coordinates.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "circle-coordinates.plist"; path = "Assets/Optimized/spritesheets/circle-coordinates.plist"; sourceTree = "<group>"; };
+		A90DF261110233FF00AE619F /* circle-spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "circle-spritesheet.png"; path = "Assets/Optimized/spritesheets/circle-spritesheet.png"; sourceTree = "<group>"; };
 		A911891910DDD9C7003AA0EB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		A911893110DDDD12003AA0EB /* list-background-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-normal.png"; sourceTree = "<group>"; };
 		A911893210DDDD12003AA0EB /* list-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-selected.png"; sourceTree = "<group>"; };
@@ -191,14 +179,10 @@
 		A911893610DDDD30003AA0EB /* BGSListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSListViewController.m; sourceTree = "<group>"; };
 		A91B97771100035F001AE43F /* BGSMailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSMailController.h; sourceTree = "<group>"; };
 		A91B97781100035F001AE43F /* BGSMailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSMailController.m; sourceTree = "<group>"; };
-		A937A91010F2FB770047A005 /* BGSQuadCircleOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSQuadCircleOverlayView.h; sourceTree = "<group>"; };
-		A937A91110F2FB770047A005 /* BGSQuadCircleOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSQuadCircleOverlayView.m; sourceTree = "<group>"; };
 		A94EABE410E09886002CD007 /* BGSEntryViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSEntryViewCell.h; sourceTree = "<group>"; };
 		A94EABE510E09886002CD007 /* BGSEntryViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSEntryViewCell.m; sourceTree = "<group>"; };
 		A9A0F7F910D8903100823BC9 /* BGSMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSMainViewController.h; sourceTree = "<group>"; };
 		A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSMainViewController.m; sourceTree = "<group>"; };
-		A9A0F80410D8910100823BC9 /* BGSCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSCircleView.h; sourceTree = "<group>"; };
-		A9A0F80510D8910100823BC9 /* BGSCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSCircleView.m; sourceTree = "<group>"; };
 		A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A9A0F86910D8941A00823BC9 /* BGSKulerParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerParser.h; sourceTree = "<group>"; };
 		A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerParser.m; sourceTree = "<group>"; };
@@ -232,18 +216,8 @@
 		A9B47F1610FADB13003DB9B1 /* HelveticaNeueLTStd-Lt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HelveticaNeueLTStd-Lt.otf"; sourceTree = "<group>"; };
 		A9B4803710FC1A0F003DB9B1 /* background-color-strip-debug.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-color-strip-debug.png"; sourceTree = "<group>"; };
 		A9B4803810FC1A0F003DB9B1 /* background-color-strip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-color-strip.png"; sourceTree = "<group>"; };
-		A9B480E810FC2D65003DB9B1 /* UIColor+ColorFromHex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ColorFromHex.h"; sourceTree = "<group>"; };
-		A9B480E910FC2D65003DB9B1 /* UIColor+ColorFromHex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ColorFromHex.m"; sourceTree = "<group>"; };
-		A9B4813E10FC32C0003DB9B1 /* email.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = email.html; sourceTree = "<group>"; };
-		A9B4815410FC355A003DB9B1 /* swatch.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = swatch.html; sourceTree = "<group>"; };
 		A9BCCE9F10DC910200742013 /* FontsAndColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontsAndColors.h; sourceTree = "<group>"; };
-		A9E7736110F13D3400B3437A /* BGSCircleVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSCircleVisualizer.h; sourceTree = "<group>"; };
-		A9E7736210F13D3400B3437A /* BGSCircleVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSCircleVisualizer.m; sourceTree = "<group>"; };
 		A9E773B910F146BD00B3437A /* BGSVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSVisualizer.h; sourceTree = "<group>"; };
-		A9E774AA10F1548400B3437A /* BGSQuadCircleVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSQuadCircleVisualizer.h; sourceTree = "<group>"; };
-		A9E774AB10F1548400B3437A /* BGSQuadCircleVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSQuadCircleVisualizer.m; sourceTree = "<group>"; };
-		A9E7757110F17DE400B3437A /* BGSQuadCircleGroupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSQuadCircleGroupView.h; sourceTree = "<group>"; };
-		A9E7757210F17DE400B3437A /* BGSQuadCircleGroupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSQuadCircleGroupView.m; sourceTree = "<group>"; };
 		A9EFACCB10DC9A8B005CCAA3 /* BGSDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSDetailViewController.h; sourceTree = "<group>"; };
 		A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSDetailViewController.m; sourceTree = "<group>"; };
 		A9EFACD510DC9FE4005CCAA3 /* button-close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-close.png"; sourceTree = "<group>"; };
@@ -483,7 +457,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A90DF0F0110188D000AE619F /* sprites */,
+				A90DF25F110233DE00AE619F /* spritesheets */,
 				A9B4815310FC3548003DB9B1 /* templates */,
 				A9B47F1510FADB13003DB9B1 /* fonts */,
 				A9EFACD410DC9FE4005CCAA3 /* Images */,
@@ -526,26 +500,13 @@
 			name = "List View";
 			sourceTree = "<group>";
 		};
-		A90BECDD10FD6AFE00624BA1 /* Refactored Simple Circle */ = {
+		A90DF25F110233DE00AE619F /* spritesheets */ = {
 			isa = PBXGroup;
 			children = (
-				A90BECDF10FD6B2200624BA1 /* BGSSimpleCircleVisualizer.h */,
-				A90BECE010FD6B2200624BA1 /* BGSSimpleCircleVisualizer.m */,
-				A90BECE210FD6B4E00624BA1 /* BGSSimpleCircleView.h */,
-				A90BECE310FD6B4E00624BA1 /* BGSSimpleCircleView.m */,
-				A90BEDD710FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.h */,
-				A90BEDD810FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.m */,
+				A90DF260110233FF00AE619F /* circle-coordinates.plist */,
+				A90DF261110233FF00AE619F /* circle-spritesheet.png */,
 			);
-			name = "Refactored Simple Circle";
-			sourceTree = "<group>";
-		};
-		A90DF0F0110188D000AE619F /* sprites */ = {
-			isa = PBXGroup;
-			children = (
-				A90DF0F1110188E500AE619F /* circle-coordinates.plist */,
-				A90DF0F2110188E500AE619F /* circle-spritesheet.png */,
-			);
-			name = sprites;
+			name = spritesheets;
 			sourceTree = "<group>";
 		};
 		A9A0F86C10D8952400823BC9 /* Kuler Feeds */ = {
@@ -637,8 +598,8 @@
 		A9B4815310FC3548003DB9B1 /* templates */ = {
 			isa = PBXGroup;
 			children = (
-				A9B4813E10FC32C0003DB9B1 /* email.html */,
-				A9B4815410FC355A003DB9B1 /* swatch.html */,
+				A90DF258110233B100AE619F /* email.html */,
+				A90DF259110233B100AE619F /* swatch.html */,
 			);
 			name = templates;
 			sourceTree = "<group>";
@@ -646,11 +607,8 @@
 		A9E7736010F13CED00B3437A /* Visualizers */ = {
 			isa = PBXGroup;
 			children = (
-				A90BECDD10FD6AFE00624BA1 /* Refactored Simple Circle */,
-				A9E774A110F150FE00B3437A /* Simple Circle */,
 				A9B47B1910FA218B003DB9B1 /* Simple Square */,
 				A9E774A710F1546D00B3437A /* Quad Square */,
-				A9E774A410F1511700B3437A /* Quad Circle */,
 				A9E773B910F146BD00B3437A /* BGSVisualizer.h */,
 			);
 			name = Visualizers;
@@ -659,38 +617,14 @@
 		A9E773A410F1452500B3437A /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				A90DF25C110233CF00AE619F /* UIColor+ColorFromHex.h */,
+				A90DF25D110233CF00AE619F /* UIColor+ColorFromHex.m */,
 				A9EFB2D810DDCAB5005CCAA3 /* NSArray+Shuffle.h */,
 				A9EFB2D910DDCAB5005CCAA3 /* NSArray+Shuffle.m */,
 				A9EFB00710DD79A7005CCAA3 /* UIColor+CMYK.h */,
 				A9EFB00810DD79A7005CCAA3 /* UIColor+CMYK.m */,
-				A9B480E810FC2D65003DB9B1 /* UIColor+ColorFromHex.h */,
-				A9B480E910FC2D65003DB9B1 /* UIColor+ColorFromHex.m */,
 			);
 			name = Extensions;
-			sourceTree = "<group>";
-		};
-		A9E774A110F150FE00B3437A /* Simple Circle */ = {
-			isa = PBXGroup;
-			children = (
-				A9E7736110F13D3400B3437A /* BGSCircleVisualizer.h */,
-				A9E7736210F13D3400B3437A /* BGSCircleVisualizer.m */,
-				A9A0F80410D8910100823BC9 /* BGSCircleView.h */,
-				A9A0F80510D8910100823BC9 /* BGSCircleView.m */,
-			);
-			name = "Simple Circle";
-			sourceTree = "<group>";
-		};
-		A9E774A410F1511700B3437A /* Quad Circle */ = {
-			isa = PBXGroup;
-			children = (
-				A9E774AA10F1548400B3437A /* BGSQuadCircleVisualizer.h */,
-				A9E774AB10F1548400B3437A /* BGSQuadCircleVisualizer.m */,
-				A9E7757110F17DE400B3437A /* BGSQuadCircleGroupView.h */,
-				A9E7757210F17DE400B3437A /* BGSQuadCircleGroupView.m */,
-				A937A91010F2FB770047A005 /* BGSQuadCircleOverlayView.h */,
-				A937A91110F2FB770047A005 /* BGSQuadCircleOverlayView.m */,
-			);
-			name = "Quad Circle";
 			sourceTree = "<group>";
 		};
 		A9E774A710F1546D00B3437A /* Quad Square */ = {
@@ -707,7 +641,6 @@
 			children = (
 				A9FEB0861100152000110A5F /* background-debug.png */,
 				A9FEB02F110010CD00110A5F /* fps_images.png */,
-				A90BED0D10FD793E00624BA1 /* mask-circle.png */,
 				A9B4803710FC1A0F003DB9B1 /* background-color-strip-debug.png */,
 				A9B4803810FC1A0F003DB9B1 /* background-color-strip.png */,
 				A9B4790110F9809F003DB9B1 /* icon-refresh.png */,
@@ -958,13 +891,12 @@
 				A9B47F1710FADB13003DB9B1 /* HelveticaNeueLTStd-Lt.otf in Resources */,
 				A9B4803910FC1A0F003DB9B1 /* background-color-strip-debug.png in Resources */,
 				A9B4803A10FC1A0F003DB9B1 /* background-color-strip.png in Resources */,
-				A9B4813F10FC32C0003DB9B1 /* email.html in Resources */,
-				A9B4815510FC355A003DB9B1 /* swatch.html in Resources */,
-				A90BED0E10FD793E00624BA1 /* mask-circle.png in Resources */,
 				A9FEB030110010CD00110A5F /* fps_images.png in Resources */,
 				A9FEB0871100152000110A5F /* background-debug.png in Resources */,
-				A90DF0F3110188E500AE619F /* circle-coordinates.plist in Resources */,
-				A90DF0F4110188E500AE619F /* circle-spritesheet.png in Resources */,
+				A90DF25A110233B100AE619F /* email.html in Resources */,
+				A90DF25B110233B100AE619F /* swatch.html in Resources */,
+				A90DF262110233FF00AE619F /* circle-coordinates.plist in Resources */,
+				A90DF263110233FF00AE619F /* circle-spritesheet.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -978,7 +910,6 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* SaturationAppDelegate.m in Sources */,
 				A9A0F7FB10D8903100823BC9 /* BGSMainViewController.m in Sources */,
-				A9A0F80610D8910100823BC9 /* BGSCircleView.m in Sources */,
 				A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */,
 				A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */,
 				A9EFAE6C10DD2508005CCAA3 /* BGSSwatchColor.m in Sources */,
@@ -994,10 +925,6 @@
 				A90374A410EBE3CD00D515F5 /* BGSTableView.m in Sources */,
 				A903750A10EC0CE600D515F5 /* BGSLoadingView.m in Sources */,
 				A90375B010EC28EE00D515F5 /* BGSKulerOperation.m in Sources */,
-				A9E7736310F13D3400B3437A /* BGSCircleVisualizer.m in Sources */,
-				A9E774AC10F1548400B3437A /* BGSQuadCircleVisualizer.m in Sources */,
-				A9E7757310F17DE400B3437A /* BGSQuadCircleGroupView.m in Sources */,
-				A937A91210F2FB770047A005 /* BGSQuadCircleOverlayView.m in Sources */,
 				A9B4749A10F91B30003DB9B1 /* BGSRefreshView.m in Sources */,
 				A9B474A710F91C7C003DB9B1 /* BGSRefreshButton.m in Sources */,
 				A9B475E710F92D5B003DB9B1 /* BGSVisualOptionView.m in Sources */,
@@ -1010,10 +937,6 @@
 				A9B47F1010FADA75003DB9B1 /* FontManager.m in Sources */,
 				A9B47F1110FADA75003DB9B1 /* ZAttributedString.m in Sources */,
 				A9B47F1210FADA75003DB9B1 /* ZFont.m in Sources */,
-				A9B480EA10FC2D65003DB9B1 /* UIColor+ColorFromHex.m in Sources */,
-				A90BECE110FD6B2200624BA1 /* BGSSimpleCircleVisualizer.m in Sources */,
-				A90BECE410FD6B4E00624BA1 /* BGSSimpleCircleView.m in Sources */,
-				A90BEDD910FD8D8C00624BA1 /* BGSSimpleCircleMaskLayer.m in Sources */,
 				A91B97791100035F001AE43F /* BGSMailController.m in Sources */,
 				A9FEAF6311000E8000110A5F /* CCAction.m in Sources */,
 				A9FEAF6411000E8000110A5F /* CCActionManager.m in Sources */,
@@ -1080,6 +1003,7 @@
 				A9FEAFC611000FC000110A5F /* BGSMainScene.m in Sources */,
 				A90DEE511100348E00AE619F /* BGSSimpleCircleScene.m in Sources */,
 				A90DF089110165B600AE619F /* BGSSimpleCircleSprite.m in Sources */,
+				A90DF25E110233CF00AE619F /* UIColor+ColorFromHex.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

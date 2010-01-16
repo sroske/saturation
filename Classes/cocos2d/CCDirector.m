@@ -201,7 +201,7 @@ static CCDirector *_sharedDirector = nil;
 	
 #if CC_DIRECTOR_FAST_FPS
     if (!FPSLabel)
-        FPSLabel = [[CCLabelAtlas labelAtlasWithString:@"00.0" charMapFile:@"fps_images.png" itemWidth:16 itemHeight:24 startCharMap:'.'] retain];
+		FPSLabel = [[CCLabelAtlas labelAtlasWithString:@"00.0" charMapFile:@"fps_images.png" itemWidth:16 itemHeight:24 startCharMap:'.'] retain];
 #endif	
 }
 
