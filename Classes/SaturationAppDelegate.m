@@ -19,7 +19,7 @@
 
 @synthesize entry;
 @synthesize window;
-@synthesize navController;
+@synthesize mainController;
 @synthesize welcomeController;
 @synthesize visualizationType;
 
@@ -50,15 +50,15 @@
 	return window;
 }
 
-- (UINavigationController *)navController
+- (BGSMainViewController *)mainController
 {
-	if (navController == nil)
+	if (mainController == nil)
 	{
-		UINavigationController *c = [[UINavigationController alloc] initWithRootViewController:self.welcomeController];
-		[self setNavController:c];
+		BGSMainViewController *c = [[BGSMainViewController alloc] init];
+		[self setMainController:c];
 		[c release];
 	}
-	return navController;
+	return mainController;
 }
 
 - (BGSWelcomeViewController *)welcomeController
@@ -71,7 +71,6 @@
 	}
 	return welcomeController;
 }
-
 
 - (void)setVisualizationType:(int)newType
 {
@@ -125,7 +124,7 @@
 	
 	// create an openGL view inside a window
 	[[CCDirector sharedDirector] attachInView:self.window];	
-	[[[CCDirector sharedDirector] openGLView] addSubview:self.navController.view];
+	[[[CCDirector sharedDirector] openGLView] addSubview:self.welcomeController.view];
 
 	[self changeEntry:self.entry];
 	
@@ -157,55 +156,74 @@
 	[[CCDirector sharedDirector] release];
 	[entry release];
     [window release];
-	[navController release];
+	[mainController release];
 	[welcomeController release];
     [super dealloc];
 }
 
-- (void)showListView
-{
-	BGSListViewController *controller = [[BGSListViewController alloc] init];
-	[self.navController presentModalViewController:controller animated:YES];
-	[controller release];	
-}
+#pragma mark -
+#pragma mark Modal Views & App Navigation
 
-- (void)showDetailFor:(NSDictionary *)entryData
+- (void)showMainView
 {
-	BGSDetailViewController *controller = [[BGSDetailViewController alloc] initWithEntry:entryData];
-	[controller setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
-	[self.navController presentModalViewController:controller animated:YES];
-	[controller release];
+	[self.welcomeController.view removeFromSuperview];
+	[[[CCDirector sharedDirector] openGLView] addSubview:self.mainController.view];
 }
 
 - (void)changeEntry:(NSDictionary *)entryData
 {
+	[self setEntry:entryData];
+	
 	CCScene *scene = [BGSMainScene node];
 	switch (self.visualizationType) 
 	{
 		case kSimpleCircle:
 			scene = [BGSSimpleCircleScene node];
 			break;
-		// .... TODO
+			// .... TODO
 	}
 	
-	[self setEntry:entryData];
 	if ([[CCDirector sharedDirector] runningScene] == nil)
 		[[CCDirector sharedDirector] runWithScene:scene];
 	else
 		[[CCDirector sharedDirector] replaceScene:scene];
+	
+	[self hideModalView];
 }
 
-- (void)emailFor:(NSDictionary *)entryData
+- (void)showListView
+{
+	BGSListViewController *controller = [[BGSListViewController alloc] init];
+	[self.mainController presentModalViewController:controller animated:YES];
+	[controller release];	
+}
+
+- (void)showDetailView
+{
+	BGSDetailViewController *controller = [[BGSDetailViewController alloc] initWithEntry:self.entry];
+	[self.mainController presentModalViewController:controller animated:YES];
+	[controller release];
+}
+
+- (void)hideModalView
+{
+	[self.mainController dismissModalViewControllerAnimated:YES];
+}
+
+#pragma mark -
+#pragma mark Mail Composer
+
+- (void)emailView
 {
 	[self hideModalView];
-	[self performSelector:@selector(presentMailComposer:) withObject:entryData afterDelay:0.8];
+	[self performSelector:@selector(presentMailComposer:) withObject:self.entry afterDelay:0.8];
 }
 
 - (void)presentMailComposer:(NSDictionary *)entryData
 {
 	BGSMailController *controller = [[BGSMailController alloc] initWithEntry:entryData];
 	[[controller mailer] setMailComposeDelegate:self];
-	[self.navController presentModalViewController:[controller mailer] animated:YES];
+	[self.mainController presentModalViewController:[controller mailer] animated:YES];
 	[controller release];
 }
 
@@ -222,11 +240,6 @@
 		[alert release];
 	}
 	[self hideModalView];
-}
-
-- (void)hideModalView
-{
-	[self.navController dismissModalViewControllerAnimated:YES];
 }
 
 @end

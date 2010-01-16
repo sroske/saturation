@@ -469,7 +469,7 @@
 - (void)email:(id)sender
 {
 	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-	[app emailFor:self.entry];
+	[app emailView];
 }
 
 - (id)initWithEntry:(NSDictionary *)entryData

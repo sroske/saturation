@@ -148,9 +148,8 @@
 
 - (void)introCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
-	BGSMainViewController *controller = [[BGSMainViewController alloc] init];
-	[self.navigationController pushViewController:controller animated:NO];
-	[controller release];
+	SaturationAppDelegate *d = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	[d showMainView];
 }
 
 - (void)didReceiveMemoryWarning {

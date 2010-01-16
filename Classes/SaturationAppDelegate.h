@@ -11,6 +11,7 @@
 #import "cocos2d.h"
 #import "FontManager.h"
 #import "BGSKulerFeedController.h"
+#import "BGSMainViewController.h"
 #import "BGSWelcomeViewController.h"
 #import "BGSDetailViewController.h"
 #import "BGSListViewController.h"
@@ -32,21 +33,22 @@ enum VisualizationTypes
 {
 	NSDictionary *entry;
     UIWindow *window;
-	UINavigationController *navController;
+	BGSMainViewController *mainController;
 	BGSWelcomeViewController *welcomeController;
 	int visualizationType;
 }
 
 @property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) UIWindow *window;
-@property (nonatomic, retain) UINavigationController *navController;
+@property (nonatomic, retain) BGSMainViewController *mainController;
 @property (nonatomic, retain) BGSWelcomeViewController *welcomeController;
 @property (nonatomic, assign) int visualizationType;
 
+- (void)showMainView;
 - (void)showListView;
-- (void)showDetailFor:(NSDictionary *)entryData;
+- (void)showDetailView;
 - (void)changeEntry:(NSDictionary *)entryData;
-- (void)emailFor:(NSDictionary *)entryData;
+- (void)emailView;
 - (void)hideModalView;
 
 @end

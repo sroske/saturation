@@ -109,8 +109,8 @@
 
 - (void)showDetailView:(id)sender
 {
-	//SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-	//[ad showDetailFor:self.entry];
+	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	[ad showDetailView];
 }
 
 - (id)init
@@ -134,7 +134,7 @@
 	[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
 	[v sizeToFit];
 	self.view = v;
-	[v release];
+	[v release];;
 	
 	[self.view addSubview:self.logo];
 	[self.view addSubview:self.kulerLogo];

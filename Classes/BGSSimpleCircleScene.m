@@ -20,7 +20,7 @@
 		CCSprite *bg = [CCSprite spriteWithFile:@"background.png"];
 		[bg setPosition:CGPointMake(s.width*0.5f, 
 									s.height*0.5f)];
-		[self addChild:bg z:0];
+		//[self addChild:bg z:0];
 		[self addChild:[BGSSimpleCircleLayer node] z:1];
 	}
 	return self;
@@ -124,7 +124,7 @@
 		sprite.visible = NO;
 		sprite.position = CGPointMake(rect.origin.x+rect.size.width*0.5f, 
 									  rect.origin.y+rect.size.height*0.5f);
-		sprite.color = CCC3_FROM_UICOLOR(CC_BACKGROUND);
+		sprite.color = CCC3_FROM_UICOLOR(CC_BLACK);
 		
 		int t = lastTag++;
 		[sheet addChild:sprite z:0 tag:t];
@@ -133,7 +133,7 @@
 	}
 	
 	NSArray *shuffled = [tags shuffledArray];
-	CGFloat delay = 0.3;
+	CGFloat delay = 0.6;
 	
 	for (NSNumber *t in shuffled)
 	{
@@ -248,6 +248,7 @@
 
 - (BOOL)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	NSLog(@"began");
 	if (!hasFadedIn) return NO;
 	
 	for (UITouch *touch in touches)
