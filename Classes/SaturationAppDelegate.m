@@ -17,10 +17,27 @@
 
 @implementation SaturationAppDelegate
 
+@synthesize entry;
 @synthesize window;
 @synthesize navController;
 @synthesize welcomeController;
 @synthesize visualizationType;
+
+- (NSDictionary *)entry
+{
+	if (entry == nil)
+	{
+		BGSKulerFeedController *feed = [[BGSKulerFeedController alloc] init];
+		NSArray *entries = feed.popularEntries;
+		if ([entries count] > 0)
+		{
+			int i = arc4random()%[entries count];
+			[self setEntry:[entries objectAtIndex:i]];
+		}
+		[feed release];
+	}
+	return entry;
+}
 
 - (UIWindow *)window
 {
@@ -48,18 +65,9 @@
 {
 	if (welcomeController == nil)
 	{
-		BGSKulerFeedController *feed = [[BGSKulerFeedController alloc] init];
-		NSArray *entries = feed.popularEntries;
-		NSDictionary *entry = [NSDictionary dictionary];
-		if ([entries count] > 0)
-		{
-			int i = arc4random()%[entries count];
-			entry = [entries objectAtIndex:i];
-		}
-		BGSWelcomeViewController *c = [[BGSWelcomeViewController alloc] initWithEntry:entry];
+		BGSWelcomeViewController *c = [[BGSWelcomeViewController alloc] init];
 		[self setWelcomeController:c];
 		[c release];
-		[feed release];
 	}
 	return welcomeController;
 }
@@ -88,12 +96,66 @@
 	
 	[[FontManager sharedManager] loadFont:CF_NORMAL];
 	
-	[self.window addSubview:self.navController.view];
-    [self.window makeKeyAndVisible];
+	// cocos2d will inherit these values
+	[self.window setUserInteractionEnabled:YES];	
+	[self.window setMultipleTouchEnabled:YES];
+	
+	// Try to use CADisplayLink director
+	// if it fails (SDK < 3.1) use the default director
+	if( ! [CCDirector setDirectorType:CCDirectorTypeDisplayLink] )
+		[CCDirector setDirectorType:CCDirectorTypeDefault];
+	
+	// Use RGBA_8888 buffers
+	// Default is: RGB_565 buffers
+	[[CCDirector sharedDirector] setPixelFormat:kPixelFormatRGBA8888];
+	
+	// Create a depth buffer of 16 bits
+	// Enable it if you are going to use 3D transitions or 3d objects
+	//	[[CCDirector sharedDirector] setDepthBufferFormat:kDepthBuffer16];
+	
+	// Default texture format for PNG/BMP/TIFF/JPEG/GIF images
+	// It can be RGBA8888, RGBA4444, RGB5_A1, RGB565
+	// You can change anytime.
+	[CCTexture2D setDefaultAlphaPixelFormat:kTexture2DPixelFormat_RGBA8888];
+	
+	// before creating any layer, set the landscape mode
+	[[CCDirector sharedDirector] setDeviceOrientation:CCDeviceOrientationLandscapeLeft];
+	[[CCDirector sharedDirector] setAnimationInterval:1.0/60];
+	[[CCDirector sharedDirector] setDisplayFPS:YES];
+	
+	// create an openGL view inside a window
+	[[CCDirector sharedDirector] attachInView:self.window];	
+	[[[CCDirector sharedDirector] openGLView] addSubview:self.navController.view];
+
+	[self changeEntry:self.entry];
+	
+	[self.window makeKeyAndVisible];
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+	[[CCDirector sharedDirector] pause];
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+	[[CCDirector sharedDirector] resume];
+}
+
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+	[[CCTextureCache sharedTextureCache] removeUnusedTextures];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+	[[CCDirector sharedDirector] end];
+}
+
+- (void)applicationSignificantTimeChange:(UIApplication *)application {
+	[[CCDirector sharedDirector] setNextDeltaTimeZero:YES];
 }
 
 - (void)dealloc 
 {
+	[[CCDirector sharedDirector] release];
+	[entry release];
     [window release];
 	[navController release];
 	[welcomeController release];
@@ -117,9 +179,20 @@
 
 - (void)changeEntry:(NSDictionary *)entryData
 {
-	BGSMainViewController *c = (BGSMainViewController *)[self.navController topViewController];
-	[c switchToVisualization:self.visualizationType withEntry:entryData];
-	[self hideModalView];
+	CCScene *scene = [BGSMainScene node];
+	switch (self.visualizationType) 
+	{
+		case kSimpleCircle:
+			scene = [BGSSimpleCircleScene node];
+			break;
+		// .... TODO
+	}
+	
+	[self setEntry:entryData];
+	if ([[CCDirector sharedDirector] runningScene] == nil)
+		[[CCDirector sharedDirector] runWithScene:scene];
+	else
+		[[CCDirector sharedDirector] replaceScene:scene];
 }
 
 - (void)emailFor:(NSDictionary *)entryData

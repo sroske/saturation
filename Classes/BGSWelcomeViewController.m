@@ -18,29 +18,10 @@
 
 @implementation BGSWelcomeViewController
 
-@synthesize entry;
-@synthesize background;
 @synthesize shadow;
 @synthesize logo;
 @synthesize kulerLogo;
 @synthesize light;
-
-- (UIImageView *)background
-{
-	if (background == nil)
-	{
-		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"background.png"];
-		UIImage *i = [UIImage imageWithContentsOfFile:p];
-		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 
-																		0.0f, 
-																		i.size.width, 
-																		i.size.height)];
-		[iv setImage:i];
-		[self setBackground:iv];
-		[iv release];
-	}
-	return background;
-}
 
 - (UIImageView *)shadow
 {
@@ -110,28 +91,20 @@
 	return light;
 }
 
-- (id)initWithEntry:(NSDictionary *)entryData
-{
-	if (self = [super init])
-	{
-		self.entry = entryData;
-	}
-	return self;
-}
-
 - (void)loadView 
 {	
-	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
+	CGRect frame = [[UIScreen mainScreen] bounds];
 	
 	UIView *v = [[UIView alloc] initWithFrame:frame];
-	[v setBackgroundColor:CC_BACKGROUND];
+	[v setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+	[v setBounds:CGRectMake(0.0f, 0.0f, frame.size.height, frame.size.width)];
+	[v setBackgroundColor:CC_CLEAR];
 	[v setAutoresizesSubviews:YES];
 	[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
 	[v sizeToFit];
 	self.view = v;
 	[v release];
 	
-	[self.view addSubview:self.background];
 	[self.view addSubview:self.light];
 	[self.view addSubview:self.shadow];
 	[self.view addSubview:self.logo];
@@ -175,8 +148,7 @@
 
 - (void)introCompleted:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
 {
-	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-	BGSMainViewController *controller = [[BGSMainViewController alloc] initWithEntry:self.entry andVisualizationType:app.visualizationType];
+	BGSMainViewController *controller = [[BGSMainViewController alloc] init];
 	[self.navigationController pushViewController:controller animated:NO];
 	[controller release];
 }
@@ -196,8 +168,6 @@
 
 - (void)dealloc 
 {
-	[entry release];
-	[background release];
 	[shadow release];
 	[logo release];
 	[light release];

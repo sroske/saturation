@@ -8,38 +8,20 @@
 
 #import <UIKit/UIKit.h>
 #import "FontsAndColors.h"
-#import "BGSVisualizer.h"
-#import "BGSSimpleCircleVisualizer.h"
-#import "BGSQuadCircleVisualizer.h"
-#import "BGSSimpleSquareVisualizer.h"
-#import "BGSQuadSquareVisualizer.h"
-
-enum 
-{
-	kVisualizer = 30000
-};
 
 @interface BGSMainViewController : UIViewController
 {
-	NSDictionary *entry;
 	UIImageView *logo;
 	UIImageView *kulerLogo;
-	UIImageView *background;
 	UIButton *settingsButton;
 	UIButton *infoButton;
 	BOOL hasAnimated;
-	int visualizationType;
 }
 
-@property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) UIImageView *logo;
 @property (nonatomic, retain) UIImageView *kulerLogo;
-@property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) UIButton *settingsButton;
 @property (nonatomic, retain) UIButton *infoButton;
-@property (nonatomic, assign) int visualizationType;
 
-- (id)initWithEntry:(NSDictionary *)entryData andVisualizationType:(int)type;
-- (void)switchToVisualization:(int)type withEntry:(NSDictionary *)entryData;
 
 @end

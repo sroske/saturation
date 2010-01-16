@@ -14,68 +14,16 @@
 - (void)showSettings:(id)sender;
 - (void)showDetailView:(id)sender;
 - (void)logoFaded:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context;
-- (void)switchToCurrentVisualization;
 
 @end
 
 
 @implementation BGSMainViewController
 
-@synthesize entry;
-@synthesize background;
 @synthesize logo;
 @synthesize kulerLogo;
 @synthesize settingsButton;
 @synthesize infoButton;
-@synthesize visualizationType;
-
-- (void)switchToVisualization:(int)type withEntry:(NSDictionary *)entryData
-{
-	[self setEntry:entryData];
-	[self setVisualizationType:type];
-
-	[self switchToCurrentVisualization];
-}
-
-- (void)switchToCurrentVisualization
-{
-	UIView *current = [self.view viewWithTag:kVisualizer];
-	if (current != nil)
-		[current removeFromSuperview];
-
-	if (self.visualizationType == kQuadCircle)
-	{
-		BGSQuadCircleVisualizer *v = [[BGSQuadCircleVisualizer alloc] initWithFrame:self.view.bounds 
-																		   andEntry:self.entry];
-		[v setTag:kVisualizer];
-		[self.view insertSubview:v atIndex:1];
-		[v release];
-	}
-	else if (self.visualizationType == kSimpleCircle)
-	{
-		BGSSimpleCircleVisualizer *v = [[BGSSimpleCircleVisualizer alloc] initWithFrame:self.view.bounds 
-																			   andEntry:self.entry];
-		[v setTag:kVisualizer];
-		[self.view insertSubview:v atIndex:1];
-		[v release];
-	}
-	else if (self.visualizationType == kQuadSquare)
-	{
-		BGSQuadSquareVisualizer *v = [[BGSQuadSquareVisualizer alloc] initWithFrame:self.view.bounds 
-																		   andEntry:self.entry];
-		[v setTag:kVisualizer];
-		[self.view insertSubview:v atIndex:1];
-		[v release];
-	}
-	else if (self.visualizationType == kSimpleSquare)
-	{
-		BGSSimpleSquareVisualizer *v = [[BGSSimpleSquareVisualizer alloc] initWithFrame:self.view.bounds 
-																			   andEntry:self.entry];
-		[v setTag:kVisualizer];
-		[self.view insertSubview:v atIndex:1];
-		[v release];
-	}
-}
 
 - (UIImageView *)logo
 {
@@ -109,23 +57,6 @@
 		[iv release];
 	}
 	return kulerLogo;
-}
-
-- (UIImageView *)background
-{
-	if (background == nil)
-	{
-		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"background.png"];
-		UIImage *i = [UIImage imageWithContentsOfFile:p];
-		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 
-																		0.0f, 
-																		i.size.width, 
-																		i.size.height)];
-		[iv setImage:i];
-		[self setBackground:iv];
-		[iv release];
-	}
-	return background;
 }
 
 - (UIButton *)settingsButton
@@ -178,50 +109,43 @@
 
 - (void)showDetailView:(id)sender
 {
-	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-	[ad showDetailFor:self.entry];
+	//SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	//[ad showDetailFor:self.entry];
 }
 
-- (id)initWithEntry:(NSDictionary *)entryData andVisualizationType:(int)type
+- (id)init
 {
 	if (self = [super init])
 	{
 		hasAnimated = NO;
-		self.entry = entryData;
-		self.visualizationType = type;
 	}
 	return self;
 }
 
 - (void)loadView 
 {	
-	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
+	CGRect frame = [[UIScreen mainScreen] bounds];
 	
 	UIView *v = [[UIView alloc] initWithFrame:frame];
-	[v setBackgroundColor:CC_BACKGROUND];
+	[v setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+	[v setBounds:CGRectMake(0.0f, 0.0f, frame.size.height, frame.size.width)];
+	[v setBackgroundColor:CC_CLEAR];
 	[v setAutoresizesSubviews:YES];
 	[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
 	[v sizeToFit];
 	self.view = v;
 	[v release];
 	
-	[self.view addSubview:self.background];
 	[self.view addSubview:self.logo];
 	[self.view addSubview:self.kulerLogo];
 	[self.view addSubview:self.settingsButton];
 	[self.view addSubview:self.infoButton];
-	
-	[self switchToCurrentVisualization];
 }
 
 - (void)viewWillAppear:(BOOL)animated 
 {
 	if (!hasAnimated)
 	{
-		UIView *current = [self.view viewWithTag:kVisualizer];
-		if (current != nil)
-			[(id<BGSVisualizer>)current viewWillAppear:YES];
-		
 		[UIView beginAnimations:@"kulerLogoFade" context:self.kulerLogo];
 		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
 		[UIView setAnimationDelay:0.4];
@@ -256,13 +180,6 @@
 		
 		hasAnimated = YES;
 	}
-	else 
-	{
-		UIView *current = [self.view viewWithTag:kVisualizer];
-		if (current != nil)
-			[(id<BGSVisualizer>)current viewWillAppear:animated];
-	}
-
 	
 	[self.navigationController setNavigationBarHidden:YES animated:NO];
     [super viewWillAppear:animated];
@@ -282,8 +199,6 @@
 
 - (void)dealloc 
 {
-	[entry release];
-	[background release];
 	[logo release];
 	[kulerLogo release];
     [super dealloc];

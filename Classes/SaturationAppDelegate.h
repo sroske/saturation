@@ -8,13 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
+#import "cocos2d.h"
 #import "FontManager.h"
 #import "BGSKulerFeedController.h"
 #import "BGSWelcomeViewController.h"
-#import "BGSMainViewController.h"
 #import "BGSDetailViewController.h"
 #import "BGSListViewController.h"
 #import "BGSMailController.h"
+#import "BGSMainScene.h"
+#import "BGSSimpleCircleScene.h"
 
 #define DEFAULT_VISUALIZER_TYPE kSimpleCircle
 
@@ -28,13 +30,14 @@ enum VisualizationTypes
 
 @interface SaturationAppDelegate : NSObject <UIApplicationDelegate,  MFMailComposeViewControllerDelegate> 
 {
+	NSDictionary *entry;
     UIWindow *window;
 	UINavigationController *navController;
 	BGSWelcomeViewController *welcomeController;
 	int visualizationType;
-
 }
 
+@property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) UIWindow *window;
 @property (nonatomic, retain) UINavigationController *navController;
 @property (nonatomic, retain) BGSWelcomeViewController *welcomeController;
