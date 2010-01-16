@@ -33,6 +33,7 @@
 - (UIColor *)randomColor;
 - (CGRect)rectForEntry:(int)size;
 - (void)initCircles;
+- (void)completedFadeIn;
 - (void)duplicate:(BGSSimpleCircleSprite *)original;
 - (BGSSimpleCircleSprite *)touchedSprite:(UITouch *)touch;
 - (void)completedScaleAndMovement:(BGSSimpleCircleSprite *)sprite;
@@ -87,6 +88,7 @@
 	{
 		self.isTouchEnabled = YES;
 		lastTag = 0;
+		hasFadedIn = NO;
 		
 		CCSpriteSheet *sheet = [CCSpriteSheet spriteSheetWithFile:@"circle-spritesheet.png" capacity:1];
 		[sheet.texture setAntiAliasTexParameters];
@@ -107,6 +109,8 @@
 	CCSpriteSheet *sheet = (CCSpriteSheet *) [self getChildByTag:kTagSpriteSheet];
 	CGSize s = [[CCDirector sharedDirector] winSize];
 	
+	NSMutableArray *tags = [[NSMutableArray alloc] init];
+	
 	for (int i = 0; i < SIMPLE_CIRCLE_ROWS*SIMPLE_CIRCLE_COLS; i++)
 	{
 		int row = i/SIMPLE_CIRCLE_COLS;
@@ -117,12 +121,39 @@
 								 s.height/SIMPLE_CIRCLE_ROWS);
 		BGSSimpleCircleSprite *sprite = [BGSSimpleCircleSprite spriteWithTexture:sheet.texture 
 																			rect:[self rectForEntry:rect.size.width]];
+		sprite.visible = NO;
 		sprite.position = CGPointMake(rect.origin.x+rect.size.width*0.5f, 
 									  rect.origin.y+rect.size.height*0.5f);
-		const CGFloat *components = CGColorGetComponents([self randomColor].CGColor);
-		sprite.color = ccc3(components[0]*255, components[1]*255, components[2]*255);
-		[sheet addChild:sprite z:0 tag:lastTag++];
+		sprite.color = CCC3_FROM_UICOLOR(CC_BACKGROUND);
+		
+		int t = lastTag++;
+		[sheet addChild:sprite z:0 tag:t];
+		
+		[tags addObject:[NSNumber numberWithInt:t]];
 	}
+	
+	NSArray *shuffled = [tags shuffledArray];
+	CGFloat delay = 0.3;
+	
+	for (NSNumber *t in shuffled)
+	{
+		BGSSimpleCircleSprite *sprite = (BGSSimpleCircleSprite *)[sheet getChildByTag:[t intValue]];
+		sprite.visible = YES;
+		const CGFloat *components = CGColorGetComponents([self randomColor].CGColor);
+		[sprite runAction:[CCSequence actions:[CCDelayTime actionWithDuration:delay], 
+						   [CCTintTo actionWithDuration:0.6 red:components[0]*255 green:components[1]*255 blue:components[2]*255], nil]];
+		delay += 0.4;
+	}
+	
+	[self runAction:[CCSequence actions:[CCDelayTime actionWithDuration:delay+0.6], 
+					 [CCCallFunc actionWithTarget:self selector:@selector(completedFadeIn)], nil]];
+	
+	[tags release];
+}
+
+- (void)completedFadeIn
+{
+	hasFadedIn = YES;
 }
 
 - (void)duplicate:(BGSSimpleCircleSprite *)original
@@ -217,6 +248,8 @@
 
 - (BOOL)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	if (!hasFadedIn) return NO;
+	
 	for (UITouch *touch in touches)
 	{
 		BGSSimpleCircleSprite *sprite = [self touchedSprite:touch];
@@ -231,6 +264,8 @@
 
 - (BOOL)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	if (!hasFadedIn) return NO;
+	
 	for (UITouch *touch in touches)
 	{
 		BGSSimpleCircleSprite *sprite = [self touchedSprite:touch];

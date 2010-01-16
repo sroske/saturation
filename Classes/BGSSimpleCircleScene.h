@@ -11,6 +11,7 @@
 #import "FontsAndColors.h"
 #import "BGSSimpleCircleSprite.h"
 #import "UIColor+ColorFromHex.h"
+#import "NSArray+Shuffle.h"
 
 #define SIMPLE_CIRCLE_ROWS			2
 #define SIMPLE_CIRCLE_COLS			3
@@ -32,6 +33,7 @@ enum
 {
 	NSDictionary *coordinates;
 	int lastTag;
+	BOOL hasFadedIn;
 }
 
 @property (nonatomic, retain) NSDictionary *coordinates;

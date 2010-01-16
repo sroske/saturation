@@ -12,6 +12,10 @@
 	green:((float)((rgb & 0xFF00) >> 8))/255.0 \
 	blue:((float)(rgb & 0xFF))/255.0 alpha:1.0]
 
+#define CCC3_FROM_UICOLOR(uicolor) ccc3(CGColorGetComponents(uicolor.CGColor)[0]*255, \
+	CGColorGetComponents(uicolor.CGColor)[1]*255, \
+	CGColorGetComponents(uicolor.CGColor)[2]*255)
+
 
 #define CC_BLACK				CC_FROM_RGB(0x000000)
 #define CC_WHITE				CC_FROM_RGB(0xffffff)
