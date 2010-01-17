@@ -10,14 +10,17 @@
 #import <MessageUI/MessageUI.h>
 #import "cocos2d.h"
 #import "FontManager.h"
+
 #import "BGSKulerFeedController.h"
+
 #import "BGSMainViewController.h"
 #import "BGSWelcomeViewController.h"
 #import "BGSDetailViewController.h"
 #import "BGSListViewController.h"
 #import "BGSMailController.h"
-#import "BGSMainScene.h"
+
 #import "BGSSimpleCircleScene.h"
+#import "BGSSimpleSquareScene.h"
 
 #define DEFAULT_VISUALIZER_TYPE kSimpleCircle
 

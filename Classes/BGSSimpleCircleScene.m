@@ -20,7 +20,7 @@
 		CCSprite *bg = [CCSprite spriteWithFile:@"background.png"];
 		[bg setPosition:CGPointMake(s.width*0.5f, 
 									s.height*0.5f)];
-		//[self addChild:bg z:0];
+		[self addChild:bg z:0];
 		[self addChild:[BGSSimpleCircleLayer node] z:1];
 	}
 	return self;
@@ -90,9 +90,9 @@
 		lastTag = 0;
 		hasFadedIn = NO;
 		
-		CCSpriteSheet *sheet = [CCSpriteSheet spriteSheetWithFile:@"circle-spritesheet.png" capacity:1];
+		CCSpriteSheet *sheet = [CCSpriteSheet spriteSheetWithFile:@"circle-spritesheet.png" capacity:5];
 		[sheet.texture setAntiAliasTexParameters];
-		[self addChild:sheet z:0 tag:kTagSpriteSheet];
+		[self addChild:sheet z:0 tag:kCircleSpriteSheet];
 		
 		[self initCircles];
 	}
@@ -106,7 +106,7 @@
 
 - (void)initCircles
 {
-	CCSpriteSheet *sheet = (CCSpriteSheet *) [self getChildByTag:kTagSpriteSheet];
+	CCSpriteSheet *sheet = (CCSpriteSheet *) [self getChildByTag:kCircleSpriteSheet];
 	CGSize s = [[CCDirector sharedDirector] winSize];
 	
 	NSMutableArray *tags = [[NSMutableArray alloc] init];
@@ -124,7 +124,8 @@
 		sprite.visible = NO;
 		sprite.position = CGPointMake(rect.origin.x+rect.size.width*0.5f, 
 									  rect.origin.y+rect.size.height*0.5f);
-		sprite.color = CCC3_FROM_UICOLOR(CC_BLACK);
+		const CGFloat *components = CGColorGetComponents(CC_BACKGROUND.CGColor);
+		sprite.color = ccc3(components[0]*255, components[1]*255, components[2]*255);
 		
 		int t = lastTag++;
 		[sheet addChild:sprite z:0 tag:t];
@@ -164,7 +165,7 @@
 {
 	if (original.animating) return;
 	
-	CCSpriteSheet *sheet = (CCSpriteSheet *) [self getChildByTag:kTagSpriteSheet];
+	CCSpriteSheet *sheet = (CCSpriteSheet *) [self getChildByTag:kCircleSpriteSheet];
 	
 	original.animating = YES;
 	CGSize new = CGSizeMake(original.contentSize.width*(original.scale*0.5f), 
@@ -249,7 +250,7 @@
 
 - (BGSSimpleCircleSprite *)touchedSprite:(UITouch *)touch
 {
-	CCSpriteSheet *sheet = (CCSpriteSheet *) [self getChildByTag:kTagSpriteSheet];
+	CCSpriteSheet *sheet = (CCSpriteSheet *) [self getChildByTag:kCircleSpriteSheet];
 	CGPoint point = [touch locationInView:[touch view]];
 	point.y = [[CCDirector sharedDirector] winSize].height-point.y;
 	for (BGSSimpleCircleSprite *sprite in sheet.children)

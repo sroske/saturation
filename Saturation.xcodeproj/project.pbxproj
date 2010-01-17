@@ -27,6 +27,10 @@
 		A90DF35A1102651E00AE619F /* newest.plist in Resources */ = {isa = PBXBuildFile; fileRef = A90DF3561102651E00AE619F /* newest.plist */; };
 		A90DF35B1102651E00AE619F /* popular.plist in Resources */ = {isa = PBXBuildFile; fileRef = A90DF3571102651E00AE619F /* popular.plist */; };
 		A90DF35C1102651E00AE619F /* random.plist in Resources */ = {isa = PBXBuildFile; fileRef = A90DF3581102651E00AE619F /* random.plist */; };
+		A90DF3CB1102AAEF00AE619F /* BGSSimpleSquareScene.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DF3CA1102AAEF00AE619F /* BGSSimpleSquareScene.m */; };
+		A90DF3DD1102AEBD00AE619F /* square-coordinates.plist in Resources */ = {isa = PBXBuildFile; fileRef = A90DF3DB1102AEBD00AE619F /* square-coordinates.plist */; };
+		A90DF3DE1102AEBD00AE619F /* square-spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = A90DF3DC1102AEBD00AE619F /* square-spritesheet.png */; };
+		A90DF3F51102B6DE00AE619F /* BGSSimpleSquareSprite.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DF3F41102B6DE00AE619F /* BGSSimpleSquareSprite.m */; };
 		A911891A10DDD9C7003AA0EB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A911891910DDD9C7003AA0EB /* icon.png */; };
 		A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893110DDDD12003AA0EB /* list-background-normal.png */; };
 		A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893210DDDD12003AA0EB /* list-background-selected.png */; };
@@ -39,10 +43,7 @@
 		A9B4749A10F91B30003DB9B1 /* BGSRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B4749910F91B30003DB9B1 /* BGSRefreshView.m */; };
 		A9B474A710F91C7C003DB9B1 /* BGSRefreshButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B474A610F91C7C003DB9B1 /* BGSRefreshButton.m */; };
 		A9B475E710F92D5B003DB9B1 /* BGSVisualOptionView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B475E610F92D5B003DB9B1 /* BGSVisualOptionView.m */; };
-		A9B4768A10F93947003DB9B1 /* BGSQuadSquareVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B4768910F93947003DB9B1 /* BGSQuadSquareVisualizer.m */; };
 		A9B4790210F9809F003DB9B1 /* icon-refresh.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B4790110F9809F003DB9B1 /* icon-refresh.png */; };
-		A9B47B1C10FA21AA003DB9B1 /* BGSSimpleSquareVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B47B1B10FA21AA003DB9B1 /* BGSSimpleSquareVisualizer.m */; };
-		A9B47B1F10FA2353003DB9B1 /* BGSSimpleSquareView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B47B1E10FA2353003DB9B1 /* BGSSimpleSquareView.m */; };
 		A9B47DD910FAB964003DB9B1 /* BGSEmailButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B47DD810FAB964003DB9B1 /* BGSEmailButton.m */; };
 		A9B47E3E10FAC33B003DB9B1 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9B47E3D10FAC33B003DB9B1 /* MessageUI.framework */; };
 		A9B47F0E10FADA75003DB9B1 /* FontLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B47F0410FADA75003DB9B1 /* FontLabel.m */; };
@@ -55,7 +56,6 @@
 		A9B4803A10FC1A0F003DB9B1 /* background-color-strip.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B4803810FC1A0F003DB9B1 /* background-color-strip.png */; };
 		A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */; };
 		A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACD510DC9FE4005CCAA3 /* button-close.png */; };
-		A9EFACF610DCA0ED005CCAA3 /* NOTES in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACF510DCA0ED005CCAA3 /* NOTES */; };
 		A9EFADCF10DCAB6D005CCAA3 /* icon-email.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCB10DCAB6D005CCAA3 /* icon-email.png */; };
 		A9EFADD010DCAB6D005CCAA3 /* icon-favorite-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCC10DCAB6D005CCAA3 /* icon-favorite-selected.png */; };
 		A9EFADD110DCAB6D005CCAA3 /* icon-favorite-unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCD10DCAB6D005CCAA3 /* icon-favorite-unselected.png */; };
@@ -140,7 +140,6 @@
 		A9FEAFA011000E8000110A5F /* ZipUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FEAF6211000E8000110A5F /* ZipUtils.m */; };
 		A9FEAFA211000EAD00110A5F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9FEAFA111000EAD00110A5F /* OpenGLES.framework */; };
 		A9FEAFA611000EB700110A5F /* libz.1.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A9FEAFA511000EB700110A5F /* libz.1.2.3.dylib */; };
-		A9FEAFC611000FC000110A5F /* BGSMainScene.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FEAFC511000FC000110A5F /* BGSMainScene.m */; };
 		A9FEB030110010CD00110A5F /* fps_images.png in Resources */ = {isa = PBXBuildFile; fileRef = A9FEB02F110010CD00110A5F /* fps_images.png */; };
 		A9FEB0871100152000110A5F /* background-debug.png in Resources */ = {isa = PBXBuildFile; fileRef = A9FEB0861100152000110A5F /* background-debug.png */; };
 /* End PBXBuildFile section */
@@ -178,6 +177,12 @@
 		A90DF3561102651E00AE619F /* newest.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = newest.plist; sourceTree = "<group>"; };
 		A90DF3571102651E00AE619F /* popular.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = popular.plist; sourceTree = "<group>"; };
 		A90DF3581102651E00AE619F /* random.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = random.plist; sourceTree = "<group>"; };
+		A90DF3C91102AAEF00AE619F /* BGSSimpleSquareScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleSquareScene.h; sourceTree = "<group>"; };
+		A90DF3CA1102AAEF00AE619F /* BGSSimpleSquareScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleSquareScene.m; sourceTree = "<group>"; };
+		A90DF3DB1102AEBD00AE619F /* square-coordinates.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "square-coordinates.plist"; path = "Assets/Optimized/spritesheets/square-coordinates.plist"; sourceTree = "<group>"; };
+		A90DF3DC1102AEBD00AE619F /* square-spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "square-spritesheet.png"; path = "Assets/Optimized/spritesheets/square-spritesheet.png"; sourceTree = "<group>"; };
+		A90DF3F31102B6DE00AE619F /* BGSSimpleSquareSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleSquareSprite.h; sourceTree = "<group>"; };
+		A90DF3F41102B6DE00AE619F /* BGSSimpleSquareSprite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleSquareSprite.m; sourceTree = "<group>"; };
 		A911891910DDD9C7003AA0EB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		A911893110DDDD12003AA0EB /* list-background-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-normal.png"; sourceTree = "<group>"; };
 		A911893210DDDD12003AA0EB /* list-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-selected.png"; sourceTree = "<group>"; };
@@ -198,13 +203,7 @@
 		A9B474A610F91C7C003DB9B1 /* BGSRefreshButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSRefreshButton.m; sourceTree = "<group>"; };
 		A9B475E510F92D5B003DB9B1 /* BGSVisualOptionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSVisualOptionView.h; sourceTree = "<group>"; };
 		A9B475E610F92D5B003DB9B1 /* BGSVisualOptionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSVisualOptionView.m; sourceTree = "<group>"; };
-		A9B4768810F93947003DB9B1 /* BGSQuadSquareVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSQuadSquareVisualizer.h; sourceTree = "<group>"; };
-		A9B4768910F93947003DB9B1 /* BGSQuadSquareVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSQuadSquareVisualizer.m; sourceTree = "<group>"; };
 		A9B4790110F9809F003DB9B1 /* icon-refresh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-refresh.png"; sourceTree = "<group>"; };
-		A9B47B1A10FA21AA003DB9B1 /* BGSSimpleSquareVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleSquareVisualizer.h; sourceTree = "<group>"; };
-		A9B47B1B10FA21AA003DB9B1 /* BGSSimpleSquareVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleSquareVisualizer.m; sourceTree = "<group>"; };
-		A9B47B1D10FA2353003DB9B1 /* BGSSimpleSquareView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleSquareView.h; sourceTree = "<group>"; };
-		A9B47B1E10FA2353003DB9B1 /* BGSSimpleSquareView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleSquareView.m; sourceTree = "<group>"; };
 		A9B47DD710FAB964003DB9B1 /* BGSEmailButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSEmailButton.h; sourceTree = "<group>"; };
 		A9B47DD810FAB964003DB9B1 /* BGSEmailButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSEmailButton.m; sourceTree = "<group>"; };
 		A9B47E3D10FAC33B003DB9B1 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -223,7 +222,6 @@
 		A9B4803710FC1A0F003DB9B1 /* background-color-strip-debug.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-color-strip-debug.png"; sourceTree = "<group>"; };
 		A9B4803810FC1A0F003DB9B1 /* background-color-strip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-color-strip.png"; sourceTree = "<group>"; };
 		A9BCCE9F10DC910200742013 /* FontsAndColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontsAndColors.h; sourceTree = "<group>"; };
-		A9E773B910F146BD00B3437A /* BGSVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSVisualizer.h; sourceTree = "<group>"; };
 		A9EFACCB10DC9A8B005CCAA3 /* BGSDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSDetailViewController.h; sourceTree = "<group>"; };
 		A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSDetailViewController.m; sourceTree = "<group>"; };
 		A9EFACD510DC9FE4005CCAA3 /* button-close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-close.png"; sourceTree = "<group>"; };
@@ -388,8 +386,6 @@
 		A9FEAF6211000E8000110A5F /* ZipUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipUtils.m; sourceTree = "<group>"; };
 		A9FEAFA111000EAD00110A5F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		A9FEAFA511000EB700110A5F /* libz.1.2.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.3.dylib; path = usr/lib/libz.1.2.3.dylib; sourceTree = SDKROOT; };
-		A9FEAFC411000FC000110A5F /* BGSMainScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSMainScene.h; sourceTree = "<group>"; };
-		A9FEAFC511000FC000110A5F /* BGSMainScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSMainScene.m; sourceTree = "<group>"; };
 		A9FEB02F110010CD00110A5F /* fps_images.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fps_images.png; sourceTree = "<group>"; };
 		A9FEB0861100152000110A5F /* background-debug.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-debug.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -419,7 +415,6 @@
 				A9B47F0210FADA75003DB9B1 /* FontLabel */,
 				A9E7736010F13CED00B3437A /* Visualizers */,
 				A9A0F86E10D8952E00823BC9 /* Controllers */,
-				A9FEAFC311000FAB00110A5F /* Scenes */,
 				A9A0F86D10D8952A00823BC9 /* Views */,
 				A9A0F86C10D8952400823BC9 /* Kuler Feeds */,
 				1D3623240D0F684500981E51 /* SaturationAppDelegate.h */,
@@ -510,6 +505,8 @@
 		A90DF25F110233DE00AE619F /* spritesheets */ = {
 			isa = PBXGroup;
 			children = (
+				A90DF3DB1102AEBD00AE619F /* square-coordinates.plist */,
+				A90DF3DC1102AEBD00AE619F /* square-spritesheet.png */,
 				A90DF260110233FF00AE619F /* circle-coordinates.plist */,
 				A90DF261110233FF00AE619F /* circle-spritesheet.png */,
 			);
@@ -525,6 +522,17 @@
 			);
 			name = "default-feeds";
 			path = "Assets/Optimized/default-feeds";
+			sourceTree = "<group>";
+		};
+		A90DF3C51102AA5C00AE619F /* Simple Circle */ = {
+			isa = PBXGroup;
+			children = (
+				A90DEE4F1100348E00AE619F /* BGSSimpleCircleScene.h */,
+				A90DEE501100348E00AE619F /* BGSSimpleCircleScene.m */,
+				A90DF087110165B600AE619F /* BGSSimpleCircleSprite.h */,
+				A90DF088110165B600AE619F /* BGSSimpleCircleSprite.m */,
+			);
+			name = "Simple Circle";
 			sourceTree = "<group>";
 		};
 		A9A0F86C10D8952400823BC9 /* Kuler Feeds */ = {
@@ -578,10 +586,10 @@
 		A9B47B1910FA218B003DB9B1 /* Simple Square */ = {
 			isa = PBXGroup;
 			children = (
-				A9B47B1A10FA21AA003DB9B1 /* BGSSimpleSquareVisualizer.h */,
-				A9B47B1B10FA21AA003DB9B1 /* BGSSimpleSquareVisualizer.m */,
-				A9B47B1D10FA2353003DB9B1 /* BGSSimpleSquareView.h */,
-				A9B47B1E10FA2353003DB9B1 /* BGSSimpleSquareView.m */,
+				A90DF3C91102AAEF00AE619F /* BGSSimpleSquareScene.h */,
+				A90DF3CA1102AAEF00AE619F /* BGSSimpleSquareScene.m */,
+				A90DF3F31102B6DE00AE619F /* BGSSimpleSquareSprite.h */,
+				A90DF3F41102B6DE00AE619F /* BGSSimpleSquareSprite.m */,
 			);
 			name = "Simple Square";
 			sourceTree = "<group>";
@@ -625,9 +633,8 @@
 		A9E7736010F13CED00B3437A /* Visualizers */ = {
 			isa = PBXGroup;
 			children = (
+				A90DF3C51102AA5C00AE619F /* Simple Circle */,
 				A9B47B1910FA218B003DB9B1 /* Simple Square */,
-				A9E774A710F1546D00B3437A /* Quad Square */,
-				A9E773B910F146BD00B3437A /* BGSVisualizer.h */,
 			);
 			name = Visualizers;
 			sourceTree = "<group>";
@@ -643,15 +650,6 @@
 				A9EFB00810DD79A7005CCAA3 /* UIColor+CMYK.m */,
 			);
 			name = Extensions;
-			sourceTree = "<group>";
-		};
-		A9E774A710F1546D00B3437A /* Quad Square */ = {
-			isa = PBXGroup;
-			children = (
-				A9B4768810F93947003DB9B1 /* BGSQuadSquareVisualizer.h */,
-				A9B4768910F93947003DB9B1 /* BGSQuadSquareVisualizer.m */,
-			);
-			name = "Quad Square";
 			sourceTree = "<group>";
 		};
 		A9EFACD410DC9FE4005CCAA3 /* Images */ = {
@@ -831,19 +829,6 @@
 			path = Support;
 			sourceTree = "<group>";
 		};
-		A9FEAFC311000FAB00110A5F /* Scenes */ = {
-			isa = PBXGroup;
-			children = (
-				A9FEAFC411000FC000110A5F /* BGSMainScene.h */,
-				A9FEAFC511000FC000110A5F /* BGSMainScene.m */,
-				A90DEE4F1100348E00AE619F /* BGSSimpleCircleScene.h */,
-				A90DEE501100348E00AE619F /* BGSSimpleCircleScene.m */,
-				A90DF087110165B600AE619F /* BGSSimpleCircleSprite.h */,
-				A90DF088110165B600AE619F /* BGSSimpleCircleSprite.m */,
-			);
-			name = Scenes;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -887,7 +872,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */,
-				A9EFACF610DCA0ED005CCAA3 /* NOTES in Resources */,
 				A9EFADCF10DCAB6D005CCAA3 /* icon-email.png in Resources */,
 				A9EFADD010DCAB6D005CCAA3 /* icon-favorite-selected.png in Resources */,
 				A9EFADD110DCAB6D005CCAA3 /* icon-favorite-unselected.png in Resources */,
@@ -918,6 +902,8 @@
 				A90DF35A1102651E00AE619F /* newest.plist in Resources */,
 				A90DF35B1102651E00AE619F /* popular.plist in Resources */,
 				A90DF35C1102651E00AE619F /* random.plist in Resources */,
+				A90DF3DD1102AEBD00AE619F /* square-coordinates.plist in Resources */,
+				A90DF3DE1102AEBD00AE619F /* square-spritesheet.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -949,9 +935,6 @@
 				A9B4749A10F91B30003DB9B1 /* BGSRefreshView.m in Sources */,
 				A9B474A710F91C7C003DB9B1 /* BGSRefreshButton.m in Sources */,
 				A9B475E710F92D5B003DB9B1 /* BGSVisualOptionView.m in Sources */,
-				A9B4768A10F93947003DB9B1 /* BGSQuadSquareVisualizer.m in Sources */,
-				A9B47B1C10FA21AA003DB9B1 /* BGSSimpleSquareVisualizer.m in Sources */,
-				A9B47B1F10FA2353003DB9B1 /* BGSSimpleSquareView.m in Sources */,
 				A9B47DD910FAB964003DB9B1 /* BGSEmailButton.m in Sources */,
 				A9B47F0E10FADA75003DB9B1 /* FontLabel.m in Sources */,
 				A9B47F0F10FADA75003DB9B1 /* FontLabelStringDrawing.m in Sources */,
@@ -1021,10 +1004,11 @@
 				A9FEAF9E11000E8000110A5F /* TGAlib.m in Sources */,
 				A9FEAF9F11000E8000110A5F /* TransformUtils.m in Sources */,
 				A9FEAFA011000E8000110A5F /* ZipUtils.m in Sources */,
-				A9FEAFC611000FC000110A5F /* BGSMainScene.m in Sources */,
 				A90DEE511100348E00AE619F /* BGSSimpleCircleScene.m in Sources */,
 				A90DF089110165B600AE619F /* BGSSimpleCircleSprite.m in Sources */,
 				A90DF25E110233CF00AE619F /* UIColor+ColorFromHex.m in Sources */,
+				A90DF3CB1102AAEF00AE619F /* BGSSimpleSquareScene.m in Sources */,
+				A90DF3F51102B6DE00AE619F /* BGSSimpleSquareSprite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,35 +1,35 @@
 //
-//  BGSSimpleCircleScene.h
+//  BGSSimpleSquareScene.h
 //  Saturation
 //
-//  Created by Shawn Roske on 1/14/10.
+//  Created by Shawn Roske on 1/16/10.
 //  Copyright 2010 Bitgun. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 #import "FontsAndColors.h"
-#import "BGSSimpleCircleSprite.h"
+#import "BGSSimpleSquareSprite.h"
 #import "UIColor+ColorFromHex.h"
 #import "NSArray+Shuffle.h"
 
-#define SIMPLE_CIRCLE_ROWS			2
-#define SIMPLE_CIRCLE_COLS			3
-#define SIMPLE_CIRCLE_MIN_SCALE		10.0f
+#define SIMPLE_SQUARE_ROWS			2
+#define SIMPLE_SQUARE_COLS			3
+#define SIMPLE_SQUARE_MIN_SCALE		10.0f
 
-@interface BGSSimpleCircleScene : CCScene
+@interface BGSSimpleSquareScene : CCScene 
 {
 	// nothing
 }
 
 @end
 
-enum 
+enum
 {
-	kCircleSpriteSheet
+	kSquareSpriteSheet
 };
 
-@interface BGSSimpleCircleLayer : CCLayer
+@interface BGSSimpleSquareLayer : CCLayer 
 {
 	NSDictionary *coordinates;
 	int lastTag;

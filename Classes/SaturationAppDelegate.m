@@ -175,11 +175,14 @@
 {
 	[self setEntry:entryData];
 	
-	CCScene *scene = [BGSMainScene node];
+	CCScene *scene = nil;
 	switch (self.visualizationType) 
 	{
 		case kSimpleCircle:
 			scene = [BGSSimpleCircleScene node];
+			break;
+		case kSimpleSquare:
+			scene = [BGSSimpleSquareScene node];
 			break;
 			// .... TODO
 	}
