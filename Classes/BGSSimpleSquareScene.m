@@ -32,7 +32,7 @@
 
 - (NSDictionary *)coordinates;
 - (CGRect)rectForEntry:(NSString *)filename;
-- (UIColor *)randomColor;
+- (ccColor3B)randomColorNot:(ccColor3B)skipColor;
 - (void)initSquares;
 - (void)duplicate:(BGSSimpleSquareSprite *)original;
 - (void)completedScaleAndMovement:(CCSprite *)sprite;
@@ -69,16 +69,22 @@
 					  [[entry objectForKey:@"height"] floatValue]);
 }
 
-- (UIColor *)randomColor
+- (ccColor3B)randomColorNot:(ccColor3B)skipColor
 {
 	SaturationAppDelegate *a = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
 	NSArray *swatches = [a.entry objectForKey:@"swatches"];
-	UIColor *color = CC_WHITE;
+	ccColor3B color = ccWHITE;
 	if ([swatches count] > 0)
 	{
-		int i = arc4random()%[swatches count];
-		NSDictionary *swatch = [swatches objectAtIndex:i];
-		color = [UIColor colorFromHex:[swatch objectForKey:@"swatchHexColor"] alpha:1.0];		
+		do 
+		{
+			int i = arc4random()%[swatches count];
+			NSDictionary *swatch = [swatches objectAtIndex:i];
+			UIColor *c = [UIColor colorFromHex:[swatch objectForKey:@"swatchHexColor"] alpha:1.0];
+			const CGFloat *components = CGColorGetComponents(c.CGColor);
+			color = ccc3(components[0]*255, components[1]*255, components[2]*255);
+		} 
+		while (color.r == skipColor.r && color.g == skipColor.g && color.b == skipColor.b);
 	}
 	return color;
 }
@@ -126,8 +132,7 @@
 		sprite.visible = NO;
 		sprite.position = CGPointMake(rect.origin.x+rect.size.width*0.5f, 
 									  rect.origin.y+rect.size.height*0.5f);
-		const CGFloat *components = CGColorGetComponents([self randomColor].CGColor);
-		sprite.color = ccc3(components[0]*255, components[1]*255, components[2]*255);
+		sprite.color = [self randomColorNot:ccBLACK];
 		
 		int t = lastTag++;
 		[sheet addChild:sprite z:0 tag:t];
@@ -200,10 +205,7 @@
 																		 rect:textureRect];
 	sprite4.position = origin;
 	sprite4.scale = original.scale*0.5f;
-	const CGFloat *components4 = CGColorGetComponents([self randomColor].CGColor);
-	sprite4.color = ccc3(components4[0]*255, 
-						 components4[1]*255, 
-						 components4[2]*255);
+	sprite4.color = [self randomColorNot:original.color];
 	sprite4.animating = YES;
 	[sheet addChild:sprite4 z:0 tag:lastTag++];
 	
@@ -211,10 +213,7 @@
 																		 rect:textureRect];
 	sprite3.position = origin;
 	sprite3.scale = original.scale*0.5f;
-	const CGFloat *components3 = CGColorGetComponents([self randomColor].CGColor);
-	sprite3.color = ccc3(components3[0]*255, 
-						 components3[1]*255, 
-						 components3[2]*255);
+	sprite3.color = [self randomColorNot:original.color];
 	sprite3.animating = YES;
 	[sheet addChild:sprite3 z:0 tag:lastTag++];
 	
@@ -222,10 +221,7 @@
 																		 rect:textureRect];
 	sprite2.position = origin;
 	sprite2.scale = original.scale*0.5f;
-	const CGFloat *components2 = CGColorGetComponents([self randomColor].CGColor);
-	sprite2.color = ccc3(components2[0]*255, 
-						 components2[1]*255, 
-						 components2[2]*255);
+	sprite2.color = [self randomColorNot:original.color];
 	sprite2.animating = YES;
 	[sheet addChild:sprite2 z:0 tag:lastTag++];
 	
