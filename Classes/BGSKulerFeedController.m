@@ -10,6 +10,7 @@
 
 @interface BGSKulerFeedController (Private)
 
+- (BOOL)copyDefaultFeedForType:(int)feedType;
 - (NSURL *)urlForFeedType:(int)feedType atStartIndex:(int)startIndex;
 - (NSString *)pathForFeedType:(int)feedType;
 
@@ -80,41 +81,80 @@
 -(void)fetchCompleted:(NSNotification *)notice
 {
 	NSDictionary *data = [notice userInfo];
-	int scope = [[data objectForKey:@"scope"] intValue];
-	if (scope == kKulerFeedScopeFull)
+	if ([[data objectForKey:@"entries"] count] > 0)
 	{
-		int feedType = [[data objectForKey:@"feedType"] intValue];
-		switch (feedType) {
-			case kKulerFeedTypeNewest:
-				[self setNewestEntries:[data objectForKey:@"entries"]];
-				break;
-			case kKulerFeedTypePopular:
-				[self setPopularEntries:[data objectForKey:@"entries"]];
-				break;
-			case kKulerFeedTypeRandom:
-				[self setRandomEntries:[data objectForKey:@"entries"]];
-				break;
+		int scope = [[data objectForKey:@"scope"] intValue];
+		if (scope == kKulerFeedScopeFull)
+		{
+			int feedType = [[data objectForKey:@"feedType"] intValue];
+			switch (feedType) {
+				case kKulerFeedTypeNewest:
+					[self setNewestEntries:[data objectForKey:@"entries"]];
+					break;
+				case kKulerFeedTypePopular:
+					[self setPopularEntries:[data objectForKey:@"entries"]];
+					break;
+				case kKulerFeedTypeRandom:
+					[self setRandomEntries:[data objectForKey:@"entries"]];
+					break;
+			}
 		}
+		else
+		{
+			int feedType = [[data objectForKey:@"feedType"] intValue];
+			switch (feedType) {
+				case kKulerFeedTypeNewest:
+					[self setNewestEntries:[self.newestEntries arrayByAddingObjectsFromArray:[data objectForKey:@"entries"]]];
+					break;
+				case kKulerFeedTypePopular:
+					[self setPopularEntries:[self.popularEntries arrayByAddingObjectsFromArray:[data objectForKey:@"entries"]]];
+					break;
+				case kKulerFeedTypeRandom:
+					[self setRandomEntries:[self.randomEntries arrayByAddingObjectsFromArray:[data objectForKey:@"entries"]]];
+					break;
+			}
+		}		
 	}
-	else
-	{
-		int feedType = [[data objectForKey:@"feedType"] intValue];
-		switch (feedType) {
-			case kKulerFeedTypeNewest:
-				[self setNewestEntries:[self.newestEntries arrayByAddingObjectsFromArray:[data objectForKey:@"entries"]]];
-				break;
-			case kKulerFeedTypePopular:
-				[self setPopularEntries:[self.popularEntries arrayByAddingObjectsFromArray:[data objectForKey:@"entries"]]];
-				break;
-			case kKulerFeedTypeRandom:
-				[self setRandomEntries:[self.randomEntries arrayByAddingObjectsFromArray:[data objectForKey:@"entries"]]];
-				break;
-		}
-	}
+
 	// pass it along the chain
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"kuler.feed.update.completed" 
 														object:self
 													  userInfo:[notice userInfo]];
+}
+
+- (BOOL)copyDefaultFeedForType:(int)feedType
+{
+	BOOL success;
+	NSFileManager *fm = [NSFileManager defaultManager];
+	NSError *error;
+	
+	NSString *destPath = [self pathForFeedType:feedType];
+	success = [fm fileExistsAtPath:destPath];
+	if (success) return YES;
+	
+	NSString *filename = @"";
+	switch (feedType) {
+		case kKulerFeedTypeNewest:
+			filename = @"newest.plist";
+			break;
+		case kKulerFeedTypePopular:
+			filename = @"popular.plist";
+			break;
+		case kKulerFeedTypeRandom:
+			filename = @"random.plist";
+			break;
+		default:
+			filename = @"default.plist";
+			break;
+	}
+	
+	NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:filename];
+	NSLog(@"copying default feed from %@ to %@", p, destPath);
+	success = [fm copyItemAtPath:p toPath:destPath error:&error];
+	if (!success)
+		NSAssert1(0, @"Failed to create a writeable copy of a feed: %@", [error localizedDescription]);
+	
+	return YES;
 }
 
 - (NSURL *)urlForFeedType:(int)feedType atStartIndex:(int)startIndex
@@ -174,10 +214,9 @@
 	if (newestEntries == nil)
 	{
 		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFeedType:kKulerFeedTypeNewest]];
-		if (saved != nil)
-			[self setNewestEntries:saved];
-		else
-			[self refreshNewestEntries];
+		if (saved == nil && [self copyDefaultFeedForType:kKulerFeedTypeNewest])
+			saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFeedType:kKulerFeedTypeNewest]];
+		[self setNewestEntries:saved];
 		[saved release];
 	}
 	return newestEntries;
@@ -221,14 +260,9 @@
 	if (popularEntries == nil)
 	{
 		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFeedType:kKulerFeedTypePopular]];
-		if (saved != nil)
-		{
-			[self setPopularEntries:saved];
-		}
-		else
-		{
-			[self refreshPopularEntries];
-		}	
+		if (saved == nil && [self copyDefaultFeedForType:kKulerFeedTypePopular])
+			saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFeedType:kKulerFeedTypePopular]];
+		[self setPopularEntries:saved];
 		[saved release];
 	}
 	return popularEntries;
@@ -272,14 +306,9 @@
 	if (randomEntries == nil)
 	{
 		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFeedType:kKulerFeedTypeRandom]];
-		if (saved != nil)
-		{
-			[self setRandomEntries:saved];
-		}
-		else
-		{
-			[self refreshRandomEntries];
-		}	
+		if (saved == nil && [self copyDefaultFeedForType:kKulerFeedTypeRandom])
+			saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFeedType:kKulerFeedTypeRandom]];
+		[self setRandomEntries:saved];
 		[saved release];
 	}
 	return randomEntries;

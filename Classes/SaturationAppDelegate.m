@@ -10,6 +10,7 @@
 
 @interface SaturationAppDelegate (Private)
 
+- (void)runScene:(CCScene *)scene;
 - (void)presentMailComposer:(NSDictionary *)entryData;
 
 @end
@@ -84,7 +85,7 @@
 {
 	NSMutableDictionary *defs = [NSMutableDictionary dictionary];
 	[defs setObject:[NSNumber numberWithInt:kSimpleCircle] forKey:@"saturation.visualizationType"];
-	[defs setObject:[NSNumber numberWithInt:kKulerFeedTypeNewest] forKey:@"saturation.lastOpenedSection"];
+	[defs setObject:[NSNumber numberWithInt:kKulerFeedTypePopular] forKey:@"saturation.lastOpenedSection"];
 	[[NSUserDefaults standardUserDefaults] registerDefaults:defs];
 }
 
@@ -184,22 +185,31 @@
 	}
 	
 	if ([[CCDirector sharedDirector] runningScene] == nil)
-		[[CCDirector sharedDirector] runWithScene:scene];
+		[self performSelector:@selector(runScene:) withObject:scene afterDelay:1.0f];
 	else
 		[[CCDirector sharedDirector] replaceScene:scene];
 	
 	[self hideModalView];
 }
 
+- (void)runScene:(CCScene *)scene
+{
+	[[CCDirector sharedDirector] runWithScene:scene];
+}
+
 - (void)showListView
 {
+	[[CCDirector sharedDirector] pause];
+	
 	BGSListViewController *controller = [[BGSListViewController alloc] init];
 	[self.mainController presentModalViewController:controller animated:YES];
-	[controller release];	
+	[controller release];
 }
 
 - (void)showDetailView
 {
+	[[CCDirector sharedDirector] pause];
+	
 	BGSDetailViewController *controller = [[BGSDetailViewController alloc] initWithEntry:self.entry];
 	[self.mainController presentModalViewController:controller animated:YES];
 	[controller release];
@@ -207,6 +217,8 @@
 
 - (void)hideModalView
 {
+	[[CCDirector sharedDirector] resume];
+	
 	[self.mainController dismissModalViewControllerAnimated:YES];
 }
 

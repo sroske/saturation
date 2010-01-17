@@ -133,7 +133,7 @@
 	}
 	
 	NSArray *shuffled = [tags shuffledArray];
-	CGFloat delay = 0.6;
+	CGFloat delay = 0.3;
 	
 	for (NSNumber *t in shuffled)
 	{
@@ -141,7 +141,11 @@
 		sprite.visible = YES;
 		const CGFloat *components = CGColorGetComponents([self randomColor].CGColor);
 		[sprite runAction:[CCSequence actions:[CCDelayTime actionWithDuration:delay], 
-						   [CCTintTo actionWithDuration:0.6 red:components[0]*255 green:components[1]*255 blue:components[2]*255], nil]];
+						   [CCEaseOut actionWithAction:[CCTintTo actionWithDuration:0.6 
+																				red:components[0]*255 
+																			  green:components[1]*255 
+																			   blue:components[2]*255] 
+												  rate:0.6f], nil]];
 		delay += 0.4;
 	}
 	
@@ -190,21 +194,33 @@
 	sprite4.animating = YES;
 	[sheet addChild:sprite4 z:0 tag:lastTag++];
 	
-	[original runAction:[CCScaleBy actionWithDuration:0.5f scale:0.5f]];
-	[original runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.5 position:CGPointMake(-new.width*0.5f, new.height*0.5f)],
-						 [CCCallFuncN actionWithTarget:self selector:@selector(completedScaleAndMovement:)], nil]];
+	[original runAction:[CCScaleBy actionWithDuration:0.5f 
+												scale:0.5f]];
+	[original runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.5 
+																position:CGPointMake(-new.width*0.5f, new.height*0.5f)],
+						 [CCCallFuncN actionWithTarget:self 
+											  selector:@selector(completedScaleAndMovement:)], nil]];
 	
-	[sprite2 runAction:[CCScaleBy actionWithDuration:0.5f scale:0.5f]];
-	[sprite2 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.5 position:CGPointMake(new.width*0.5f, new.height*0.5f)],
-						[CCCallFuncN actionWithTarget:self selector:@selector(completedScaleAndMovement:)], nil]];
+	[sprite2 runAction:[CCScaleBy actionWithDuration:0.5f 
+											   scale:0.5f]];
+	[sprite2 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.5 
+															   position:CGPointMake(new.width*0.5f, new.height*0.5f)],
+						[CCCallFuncN actionWithTarget:self 
+											 selector:@selector(completedScaleAndMovement:)], nil]];
 	
-	[sprite3 runAction:[CCScaleBy actionWithDuration:0.5f scale:0.5f]];
-	[sprite3 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.5 position:CGPointMake(-new.width*0.5f, -new.height*0.5f)],
-						[CCCallFuncN actionWithTarget:self selector:@selector(completedScaleAndMovement:)], nil]];
+	[sprite3 runAction:[CCScaleBy actionWithDuration:0.5f 
+											   scale:0.5f]];
+	[sprite3 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.5 
+															   position:CGPointMake(-new.width*0.5f, -new.height*0.5f)],
+						[CCCallFuncN actionWithTarget:self 
+											 selector:@selector(completedScaleAndMovement:)], nil]];
 	
-	[sprite4 runAction:[CCScaleBy actionWithDuration:0.5f scale:0.5f]];
-	[sprite4 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.5 position:CGPointMake(new.width*0.5f, -new.height*0.5f)],
-						[CCCallFuncN actionWithTarget:self selector:@selector(completedScaleAndMovement:)], nil]];
+	[sprite4 runAction:[CCScaleBy actionWithDuration:0.5f 
+											   scale:0.5f]];
+	[sprite4 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.5 
+															   position:CGPointMake(new.width*0.5f, -new.height*0.5f)],
+						[CCCallFuncN actionWithTarget:self 
+											 selector:@selector(completedScaleAndMovement:)], nil]];
 }
 
 - (void)completedScaleAndMovement:(BGSSimpleCircleSprite *)sprite
@@ -214,8 +230,13 @@
 	[sprite setTextureRect:[self rectForEntry:s.width]];
 	[sprite setScale:1.0f];
 	const CGFloat *components = CGColorGetComponents([self randomColor].CGColor);
-	[sprite runAction:[CCSequence actions:[CCTintTo actionWithDuration:0.5 red:components[0]*255 green:components[1]*255 blue:components[2]*255],
-					   [CCCallFuncN actionWithTarget:self selector:@selector(completedColorShift:)], nil]];
+	[sprite runAction:[CCSequence actions:[CCEaseOut actionWithAction:[CCTintTo actionWithDuration:0.5 
+																							   red:components[0]*255 
+																							 green:components[1]*255 
+																							  blue:components[2]*255] 
+																 rate:0.5f],
+					   [CCCallFuncN actionWithTarget:self 
+											selector:@selector(completedColorShift:)], nil]];
 }
 
 - (void)completedColorShift:(BGSSimpleCircleSprite *)sprite
@@ -248,9 +269,8 @@
 
 - (BOOL)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	NSLog(@"began");
-	if (!hasFadedIn) return NO;
-	
+	if (!hasFadedIn || [[CCDirector sharedDirector] isPaused]) return NO;
+
 	for (UITouch *touch in touches)
 	{
 		BGSSimpleCircleSprite *sprite = [self touchedSprite:touch];
@@ -265,7 +285,7 @@
 
 - (BOOL)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if (!hasFadedIn) return NO;
+	if (!hasFadedIn || [[CCDirector sharedDirector] isPaused]) return NO;
 	
 	for (UITouch *touch in touches)
 	{

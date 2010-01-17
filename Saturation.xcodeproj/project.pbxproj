@@ -24,6 +24,9 @@
 		A90DF25E110233CF00AE619F /* UIColor+ColorFromHex.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DF25D110233CF00AE619F /* UIColor+ColorFromHex.m */; };
 		A90DF262110233FF00AE619F /* circle-coordinates.plist in Resources */ = {isa = PBXBuildFile; fileRef = A90DF260110233FF00AE619F /* circle-coordinates.plist */; };
 		A90DF263110233FF00AE619F /* circle-spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = A90DF261110233FF00AE619F /* circle-spritesheet.png */; };
+		A90DF35A1102651E00AE619F /* newest.plist in Resources */ = {isa = PBXBuildFile; fileRef = A90DF3561102651E00AE619F /* newest.plist */; };
+		A90DF35B1102651E00AE619F /* popular.plist in Resources */ = {isa = PBXBuildFile; fileRef = A90DF3571102651E00AE619F /* popular.plist */; };
+		A90DF35C1102651E00AE619F /* random.plist in Resources */ = {isa = PBXBuildFile; fileRef = A90DF3581102651E00AE619F /* random.plist */; };
 		A911891A10DDD9C7003AA0EB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A911891910DDD9C7003AA0EB /* icon.png */; };
 		A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893110DDDD12003AA0EB /* list-background-normal.png */; };
 		A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893210DDDD12003AA0EB /* list-background-selected.png */; };
@@ -172,6 +175,9 @@
 		A90DF25D110233CF00AE619F /* UIColor+ColorFromHex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+ColorFromHex.m"; path = "Classes/UIColor+ColorFromHex.m"; sourceTree = "<group>"; };
 		A90DF260110233FF00AE619F /* circle-coordinates.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "circle-coordinates.plist"; path = "Assets/Optimized/spritesheets/circle-coordinates.plist"; sourceTree = "<group>"; };
 		A90DF261110233FF00AE619F /* circle-spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "circle-spritesheet.png"; path = "Assets/Optimized/spritesheets/circle-spritesheet.png"; sourceTree = "<group>"; };
+		A90DF3561102651E00AE619F /* newest.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = newest.plist; sourceTree = "<group>"; };
+		A90DF3571102651E00AE619F /* popular.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = popular.plist; sourceTree = "<group>"; };
+		A90DF3581102651E00AE619F /* random.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = random.plist; sourceTree = "<group>"; };
 		A911891910DDD9C7003AA0EB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		A911893110DDDD12003AA0EB /* list-background-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-normal.png"; sourceTree = "<group>"; };
 		A911893210DDDD12003AA0EB /* list-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-selected.png"; sourceTree = "<group>"; };
@@ -457,6 +463,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A90DF3541102651E00AE619F /* default-feeds */,
 				A90DF25F110233DE00AE619F /* spritesheets */,
 				A9B4815310FC3548003DB9B1 /* templates */,
 				A9B47F1510FADB13003DB9B1 /* fonts */,
@@ -507,6 +514,17 @@
 				A90DF261110233FF00AE619F /* circle-spritesheet.png */,
 			);
 			name = spritesheets;
+			sourceTree = "<group>";
+		};
+		A90DF3541102651E00AE619F /* default-feeds */ = {
+			isa = PBXGroup;
+			children = (
+				A90DF3561102651E00AE619F /* newest.plist */,
+				A90DF3571102651E00AE619F /* popular.plist */,
+				A90DF3581102651E00AE619F /* random.plist */,
+			);
+			name = "default-feeds";
+			path = "Assets/Optimized/default-feeds";
 			sourceTree = "<group>";
 		};
 		A9A0F86C10D8952400823BC9 /* Kuler Feeds */ = {
@@ -897,6 +915,9 @@
 				A90DF25B110233B100AE619F /* swatch.html in Resources */,
 				A90DF262110233FF00AE619F /* circle-coordinates.plist in Resources */,
 				A90DF263110233FF00AE619F /* circle-spritesheet.png in Resources */,
+				A90DF35A1102651E00AE619F /* newest.plist in Resources */,
+				A90DF35B1102651E00AE619F /* popular.plist in Resources */,
+				A90DF35C1102651E00AE619F /* random.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,7 +6,7 @@ def run(cmd)
 end
 
 current_path = File.dirname(__FILE__)
-application = ENV['APPLICATION'] || 'saturation'
+application = ENV['APPLICATION'] || 'Saturation'
 configuration = ENV['CONFIGURATION'] || 'Ad Hoc'
 version = ENV['VERSION'] || '1.0'
 mobileprovision = ENV['PROVISION'] || Dir.glob(File.join(current_path, '*.mobileprovision')).first.to_s
@@ -34,4 +34,11 @@ end
 task :default => [:adhoc] do
   run "rm -rf '#{output_dir}'"
   puts "Done"
+end
+
+namespace :simulator do
+  desc "attempts to find APPLICATION's installed directory in the iPhone Simulator"
+  task :path do
+    run "find ~/Library/Application\\ Support/iPhone\\ Simulator/user/Applications -name '#{application}.app'"
+  end
 end
