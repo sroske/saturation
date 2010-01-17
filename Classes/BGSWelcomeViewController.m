@@ -18,10 +18,29 @@
 
 @implementation BGSWelcomeViewController
 
+@synthesize background;
 @synthesize shadow;
 @synthesize logo;
 @synthesize kulerLogo;
 @synthesize light;
+
+- (UIImageView *)background
+{
+	if (background == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"background.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 
+																		0.0f, 
+																		i.size.width, 
+																		i.size.height)];
+		[iv setImage:i];
+		[self setBackground:iv];
+		[iv release];
+	}
+	return background;
+}
+
 
 - (UIImageView *)shadow
 {
@@ -105,6 +124,7 @@
 	self.view = v;
 	[v release];
 	
+	[self.view addSubview:self.background];
 	[self.view addSubview:self.light];
 	[self.view addSubview:self.shadow];
 	[self.view addSubview:self.logo];
@@ -167,6 +187,7 @@
 
 - (void)dealloc 
 {
+	[background release];
 	[shadow release];
 	[logo release];
 	[light release];

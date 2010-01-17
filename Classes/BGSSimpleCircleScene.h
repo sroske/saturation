@@ -26,7 +26,7 @@
 
 enum 
 {
-	kCircleSpriteSheet
+	kCircleSpriteSheet, kBackground
 };
 
 @interface BGSSimpleCircleLayer : CCLayer

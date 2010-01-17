@@ -16,11 +16,6 @@
 {
 	if (self = [super init])
 	{
-		CGSize s = [[CCDirector sharedDirector] winSize];
-		CCSprite *bg = [CCSprite spriteWithFile:@"background.png"];
-		[bg setPosition:CGPointMake(s.width*0.5f, 
-									s.height*0.5f)];
-		[self addChild:bg z:0];
 		[self addChild:[BGSSimpleCircleLayer node] z:1];
 	}
 	return self;
@@ -90,6 +85,14 @@
 		lastTag = 0;
 		hasFadedIn = NO;
 		
+		CGSize s = [[CCDirector sharedDirector] winSize];
+		CCSprite *bg = [CCSprite spriteWithFile:@"background.png"];
+		[bg setPosition:CGPointMake(s.width*0.5f, 
+									s.height*0.5f)];
+		[self addChild:bg z:0 tag:kBackground];
+		
+		[bg runAction:[CCFadeOut actionWithDuration:0.25]];
+		
 		CCSpriteSheet *sheet = [CCSpriteSheet spriteSheetWithFile:@"circle-spritesheet.png" capacity:5];
 		[sheet.texture setAntiAliasTexParameters];
 		[self addChild:sheet z:0 tag:kCircleSpriteSheet];
@@ -121,7 +124,6 @@
 								 s.height/SIMPLE_CIRCLE_ROWS);
 		BGSSimpleCircleSprite *sprite = [BGSSimpleCircleSprite spriteWithTexture:sheet.texture 
 																			rect:[self rectForEntry:rect.size.width]];
-		sprite.visible = NO;
 		sprite.position = CGPointMake(rect.origin.x+rect.size.width*0.5f, 
 									  rect.origin.y+rect.size.height*0.5f);
 		const CGFloat *components = CGColorGetComponents(CC_BACKGROUND.CGColor);
@@ -138,14 +140,13 @@
 	
 	for (NSNumber *t in shuffled)
 	{
-		BGSSimpleCircleSprite *sprite = (BGSSimpleCircleSprite *)[sheet getChildByTag:[t intValue]];
-		sprite.visible = YES;
 		const CGFloat *components = CGColorGetComponents([self randomColor].CGColor);
+		BGSSimpleCircleSprite *sprite = (BGSSimpleCircleSprite *)[sheet getChildByTag:[t intValue]];
 		[sprite runAction:[CCSequence actions:[CCDelayTime actionWithDuration:delay], 
 						   [CCEaseOut actionWithAction:[CCTintTo actionWithDuration:0.6 
 																				red:components[0]*255 
 																			  green:components[1]*255 
-																			   blue:components[2]*255] 
+																			   blue:components[2]*255]
 												  rate:0.6f], nil]];
 		delay += 0.4;
 	}
@@ -159,6 +160,9 @@
 - (void)completedFadeIn
 {
 	hasFadedIn = YES;
+	
+	CCSprite *bg = (CCSprite *) [self getChildByTag:kBackground];
+	[bg runAction:[CCFadeIn	actionWithDuration:0.25]];
 }
 
 - (void)duplicate:(BGSSimpleCircleSprite *)original

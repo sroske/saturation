@@ -12,12 +12,14 @@
 
 @interface BGSWelcomeViewController : UIViewController 
 {
+	UIImageView *background;
 	UIImageView *shadow;
 	UIImageView *logo;
 	UIImageView *kulerLogo;
 	UIImageView *light;
 }
 
+@property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) UIImageView *shadow;
 @property (nonatomic, retain) UIImageView *logo;
 @property (nonatomic, retain) UIImageView *kulerLogo;
