@@ -364,7 +364,7 @@
 	{
 		NSArray *saved = [[NSArray alloc] initWithContentsOfFile:[self pathForFeedType:kKulerFeedTypeFavorites]];
 		if (saved == nil)
-			saved = [NSArray array];
+			saved = [[NSArray alloc] init];
 		[self setFavoriteEntries:saved];
 		[saved release];
 	}
