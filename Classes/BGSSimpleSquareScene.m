@@ -192,73 +192,77 @@
 {
 	if (original.animating) return;
 	
+	original.animating = YES;
+	
 	BGSSimpleSquareSprite *sheet = (BGSSimpleSquareSprite *) [self getChildByTag:kSquareSpriteSheet];
 	
-	original.animating = YES;
 	CGSize new = CGSizeMake(original.contentSize.width*(original.scale*0.5f), 
 							original.contentSize.height*(original.scale*0.5f));
 	CGRect textureRect = [self rectForEntry:@"square.png"];
-	CGPoint origin = CGPointMake(original.position.x+new.width*0.5f, 
-								 original.position.y+new.height*0.5f);
 	
-	BGSSimpleSquareSprite *sprite4 = [BGSSimpleSquareSprite spriteWithTexture:sheet.texture 
-																		 rect:textureRect];
-	sprite4.scale = original.scale*0.5f;
-	sprite4.color = [self randomColorNot:original.color];
-	sprite4.animating = YES;
-	[sheet addChild:sprite4 z:0 tag:lastTag++];
+	CGPoint quads[4];
+	quads[0] = CGPointMake(1.0f, 1.0f);
+	quads[1] = CGPointMake(-1.0f, 1.0f);
+	quads[2] = CGPointMake(-1.0f, -1.0f);
+	quads[3] = CGPointMake(1.0f, -1.0f);
 	
-	BGSSimpleSquareSprite *sprite3 = [BGSSimpleSquareSprite spriteWithTexture:sheet.texture 
-																		 rect:textureRect];
-	sprite3.scale = original.scale*0.5f;
-	sprite3.color = [self randomColorNot:original.color];
-	sprite3.animating = YES;
-	[sheet addChild:sprite3 z:0 tag:lastTag++];
+	int startIndex = 0;
+	//int direction = 1;
 	
-	BGSSimpleSquareSprite *sprite2 = [BGSSimpleSquareSprite spriteWithTexture:sheet.texture 
-																		 rect:textureRect];
-	sprite2.scale = original.scale*0.5f;
-	sprite2.color = [self randomColorNot:original.color];
-	sprite2.animating = YES;
-	[sheet addChild:sprite2 z:0 tag:lastTag++];
-	
-	BGSSimpleSquareSprite *sprite1 = [BGSSimpleSquareSprite spriteWithTexture:sheet.texture 
-																		 rect:textureRect];
-	sprite1.scale = original.scale*0.5f;
-	sprite1.color = original.color;
-	[sheet addChild:sprite1 z:0 tag:lastTag++];
+	for (int i = 0; i < 4; i++)
+	{
+		BGSSimpleSquareSprite *sprite = [BGSSimpleSquareSprite spriteWithTexture:sheet.texture 
+																			rect:textureRect];
+		sprite.scale = original.scale*0.5f;
+		sprite.position = CGPointMake(original.position.x+(new.width*0.5f)*quads[startIndex].x, 
+									  original.position.y+(new.height*0.5f)*quads[startIndex].y);
+		if (i == 3)
+			sprite.color = original.color;
+		else
+		{
+			sprite.animating = YES;
+			sprite.color = [self randomColorNot:original.color];
+		}
+		[sheet addChild:sprite z:0 tag:lastTag++];
+		
+		id sequence = nil;
+		if (i == 0)
+		{
+			sequence = [CCSequence actions:
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[1].x, 
+																			   original.position.y+(new.height*0.5f)*quads[1].y)],
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[2].x, 
+																			   original.position.y+(new.height*0.5f)*quads[2].y)],
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[3].x, 
+																			   original.position.y+(new.height*0.5f)*quads[3].y)],
+						[CCCallFuncN actionWithTarget:self 
+											 selector:@selector(completedScaleAndMovement:)], nil];
+		}
+		else if (i == 1)
+		{
+			sequence = [CCSequence actions:
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[1].x, 
+																			   original.position.y+(new.height*0.5f)*quads[1].y)],
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[2].x, 
+																			   original.position.y+(new.height*0.5f)*quads[2].y)],
+						[CCCallFuncN actionWithTarget:self 
+											 selector:@selector(completedScaleAndMovement:)], nil];
+		}
+		else if (i == 2)
+		{
+			sequence = [CCSequence actions:
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[1].x, 
+																			   original.position.y+(new.height*0.5f)*quads[1].y)],
+						[CCCallFuncN actionWithTarget:self 
+											 selector:@selector(completedScaleAndMovement:)], nil];
+		}
+		if (sequence != nil)
+			[sprite runAction:sequence];
+	}
 
 	[original runAction:[CCSequence actions:[CCDelayTime actionWithDuration:0.75],
 						 [CCCallFuncN actionWithTarget:self 
 											  selector:@selector(cleanupOriginal:)], nil]];	
-	
-	// TODO, randomize starting quadrant and direction of rotation
-	
-	sprite1.position = origin;
-	
-	sprite2.position = origin;
-	[sprite2 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.25 
-															   position:CGPointMake(-new.width, 0.0f)],
-						[CCCallFuncN actionWithTarget:self 
-											 selector:@selector(completedScaleAndMovement:)], nil]];
-	
-	sprite3.position = origin;
-	[sprite3 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.25 
-															   position:CGPointMake(-new.width, 0.0f)],
-						[CCMoveBy actionWithDuration:0.25 
-											position:CGPointMake(0.0f, -new.height)],
-						[CCCallFuncN actionWithTarget:self 
-											 selector:@selector(completedScaleAndMovement:)], nil]];
-	
-	sprite4.position = origin;
-	[sprite4 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.25 
-															   position:CGPointMake(-new.width, 0.0f)],
-						[CCMoveBy actionWithDuration:0.25 
-											position:CGPointMake(0.0f, -new.height)],
-						[CCMoveBy actionWithDuration:0.25 
-											position:CGPointMake(new.width, 0.0f)],
-						[CCCallFuncN actionWithTarget:self 
-											 selector:@selector(completedScaleAndMovement:)], nil]];
 }
 
 - (void)completedScaleAndMovement:(BGSSimpleSquareSprite *)sprite
