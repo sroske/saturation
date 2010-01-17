@@ -151,7 +151,7 @@
 		delay += 0.4;
 	}
 	
-	[self runAction:[CCSequence actions:[CCDelayTime actionWithDuration:delay+0.6], 
+	[self runAction:[CCSequence actions:[CCDelayTime actionWithDuration:delay], 
 					 [CCCallFunc actionWithTarget:self selector:@selector(completedFadeIn)], nil]];
 	
 	[tags release];

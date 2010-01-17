@@ -177,7 +177,7 @@
 		delay += 0.4;
 	}
 	
-	[self runAction:[CCSequence actions:[CCDelayTime actionWithDuration:delay+0.6], 
+	[self runAction:[CCSequence actions:[CCDelayTime actionWithDuration:delay], 
 					 [CCCallFunc actionWithTarget:self selector:@selector(completedFadeIn)], nil]];
 	
 	[tags release];
@@ -203,7 +203,6 @@
 	
 	BGSSimpleSquareSprite *sprite4 = [BGSSimpleSquareSprite spriteWithTexture:sheet.texture 
 																		 rect:textureRect];
-	sprite4.position = origin;
 	sprite4.scale = original.scale*0.5f;
 	sprite4.color = [self randomColorNot:original.color];
 	sprite4.animating = YES;
@@ -211,7 +210,6 @@
 	
 	BGSSimpleSquareSprite *sprite3 = [BGSSimpleSquareSprite spriteWithTexture:sheet.texture 
 																		 rect:textureRect];
-	sprite3.position = origin;
 	sprite3.scale = original.scale*0.5f;
 	sprite3.color = [self randomColorNot:original.color];
 	sprite3.animating = YES;
@@ -219,7 +217,6 @@
 	
 	BGSSimpleSquareSprite *sprite2 = [BGSSimpleSquareSprite spriteWithTexture:sheet.texture 
 																		 rect:textureRect];
-	sprite2.position = origin;
 	sprite2.scale = original.scale*0.5f;
 	sprite2.color = [self randomColorNot:original.color];
 	sprite2.animating = YES;
@@ -227,21 +224,25 @@
 	
 	BGSSimpleSquareSprite *sprite1 = [BGSSimpleSquareSprite spriteWithTexture:sheet.texture 
 																		 rect:textureRect];
-	sprite1.position = origin;
 	sprite1.scale = original.scale*0.5f;
 	sprite1.color = original.color;
-	sprite1.animating = YES;
 	[sheet addChild:sprite1 z:0 tag:lastTag++];
 
 	[original runAction:[CCSequence actions:[CCDelayTime actionWithDuration:0.75],
 						 [CCCallFuncN actionWithTarget:self 
 											  selector:@selector(cleanupOriginal:)], nil]];	
 	
+	// TODO, randomize starting quadrant and direction of rotation
+	
+	sprite1.position = origin;
+	
+	sprite2.position = origin;
 	[sprite2 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.25 
 															   position:CGPointMake(-new.width, 0.0f)],
 						[CCCallFuncN actionWithTarget:self 
 											 selector:@selector(completedScaleAndMovement:)], nil]];
 	
+	sprite3.position = origin;
 	[sprite3 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.25 
 															   position:CGPointMake(-new.width, 0.0f)],
 						[CCMoveBy actionWithDuration:0.25 
@@ -249,6 +250,7 @@
 						[CCCallFuncN actionWithTarget:self 
 											 selector:@selector(completedScaleAndMovement:)], nil]];
 	
+	sprite4.position = origin;
 	[sprite4 runAction:[CCSequence actions:[CCMoveBy actionWithDuration:0.25 
 															   position:CGPointMake(-new.width, 0.0f)],
 						[CCMoveBy actionWithDuration:0.25 
