@@ -59,7 +59,7 @@
 		return;
 	}
 	
-	[self.parser parse];
+	BOOL success = [self.parser parse];
 	
 	if (!self.isCancelled)
 	{
@@ -67,7 +67,8 @@
 															object:self
 														  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:self.parser.entries, @"entries", 
 																	[NSNumber numberWithInt:self.scope], @"scope", 
-																	[NSNumber numberWithInt:self.feedType], @"feedType", nil]];		
+																	[NSNumber numberWithInt:self.feedType], @"feedType", 
+																	[NSNumber numberWithInt:(int)success], @"success", nil]];		
 	}
 }
 

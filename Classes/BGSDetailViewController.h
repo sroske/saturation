@@ -15,6 +15,7 @@
 #import "BGSFavoriteView.h"
 #import "BGSEmailButton.h"
 #import "BGSVisualOptionView.h"
+#import "BGSMailController.h"
 #import "UIColor+CMYK.h"
 #import "UIColor+ColorFromHex.h"
 
@@ -44,9 +45,7 @@
 	
 	BGSSwatchColor *rgbSeperator;
 
-	BGSVisualOptionView *quadCircleOption;
 	BGSVisualOptionView *simpleCircleOption;
-	BGSVisualOptionView *quadSquareOption;
 	BGSVisualOptionView *simpleSquareOption;
 	
 	BGSFavoriteView *favoriteButton;
@@ -76,9 +75,7 @@
 
 @property (nonatomic, retain) BGSSwatchColor *rgbSeperator;
 
-@property (nonatomic, retain) BGSVisualOptionView *quadCircleOption;
 @property (nonatomic, retain) BGSVisualOptionView *simpleCircleOption;
-@property (nonatomic, retain) BGSVisualOptionView *quadSquareOption;
 @property (nonatomic, retain) BGSVisualOptionView *simpleSquareOption;
 
 @property (nonatomic, retain) BGSFavoriteView *favoriteButton;

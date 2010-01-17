@@ -21,15 +21,15 @@
 
 #import "BGSSimpleCircleScene.h"
 #import "BGSSimpleSquareScene.h"
+#import "BGSSimpleParticlesScene.h"
 
 #define DEFAULT_VISUALIZER_TYPE kSimpleCircle
 
 enum VisualizationTypes
 {
-	kQuadCircle = 10000, 
-	kSimpleCircle,
-	kQuadSquare,
-	kSimpleSquare
+	kSimpleCircle = 10000,
+	kSimpleSquare,
+	kSimpleParticles
 };
 
 @interface SaturationAppDelegate : NSObject <UIApplicationDelegate,  MFMailComposeViewControllerDelegate> 

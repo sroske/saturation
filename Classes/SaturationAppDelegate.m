@@ -121,7 +121,7 @@
 	// before creating any layer, set the landscape mode
 	[[CCDirector sharedDirector] setDeviceOrientation:CCDeviceOrientationLandscapeLeft];
 	[[CCDirector sharedDirector] setAnimationInterval:1.0/60];
-	[[CCDirector sharedDirector] setDisplayFPS:YES];
+	//[[CCDirector sharedDirector] setDisplayFPS:YES];
 	
 	// create an openGL view inside a window
 	[[CCDirector sharedDirector] attachInView:self.window];	
@@ -132,23 +132,28 @@
 	[self.window makeKeyAndVisible];
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application {
+- (void)applicationWillResignActive:(UIApplication *)application 
+{
 	[[CCDirector sharedDirector] pause];
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
+- (void)applicationDidBecomeActive:(UIApplication *)application 
+{
 	[[CCDirector sharedDirector] resume];
 }
 
-- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application 
+{
 	[[CCTextureCache sharedTextureCache] removeUnusedTextures];
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application {
+- (void)applicationWillTerminate:(UIApplication *)application 
+{
 	[[CCDirector sharedDirector] end];
 }
 
-- (void)applicationSignificantTimeChange:(UIApplication *)application {
+- (void)applicationSignificantTimeChange:(UIApplication *)application 
+{
 	[[CCDirector sharedDirector] setNextDeltaTimeZero:YES];
 }
 
@@ -184,7 +189,9 @@
 		case kSimpleSquare:
 			scene = [BGSSimpleSquareScene node];
 			break;
-			// .... TODO
+		case kSimpleParticles:
+			scene = [BGSSimpleParticlesScene node];
+			break;
 	}
 	
 	if ([[CCDirector sharedDirector] runningScene] == nil)
@@ -192,7 +199,7 @@
 	else
 		[[CCDirector sharedDirector] replaceScene:scene];
 	
-	[self hideModalView];
+	[self performSelector:@selector(hideModalView) withObject:nil afterDelay:0.1];
 }
 
 - (void)runScene:(CCScene *)scene
@@ -237,8 +244,11 @@
 - (void)presentMailComposer:(NSDictionary *)entryData
 {
 	BGSMailController *controller = [[BGSMailController alloc] initWithEntry:entryData];
-	[[controller mailer] setMailComposeDelegate:self];
-	[self.mainController presentModalViewController:[controller mailer] animated:YES];
+	if ([controller canSendMail])
+	{
+		[[controller mailer] setMailComposeDelegate:self];
+		[self.mainController presentModalViewController:[controller mailer] animated:YES];		
+	}
 	[controller release];
 }
 

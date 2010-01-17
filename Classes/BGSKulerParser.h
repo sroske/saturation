@@ -10,6 +10,7 @@
 
 @interface BGSKulerParser : NSObject 
 {
+	BOOL success;
 	NSURL *url;
 	NSXMLParser *xml;
 	NSString *element;
@@ -18,6 +19,7 @@
 	NSMutableDictionary *swatch;
 }
 
+@property (nonatomic, assign) BOOL success;
 @property (nonatomic, retain) NSURL *url;
 @property (nonatomic, retain) NSXMLParser *xml;
 @property (nonatomic, copy) NSString *element;
@@ -27,6 +29,6 @@
 
 - (id)initWithURL:(NSURL *)u;
 - (void)fetch;
-- (void)parse;
+- (BOOL)parse;
 
 @end

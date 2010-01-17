@@ -24,19 +24,7 @@
 - (MFMailComposeViewController *)mailer
 {
 	if (mailer == nil)
-	{
-		if (![MFMailComposeViewController canSendMail])
-		{
-			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" 
-															message:@"Mail not configured." 
-														   delegate:nil 
-												  cancelButtonTitle:@"OK" 
-												  otherButtonTitles:nil];
-			[alert show];
-			[alert release];
-			return nil;
-		}
-		
+	{		
 		MFMailComposeViewController *m = [MFMailComposeViewController new];
 		[[m navigationBar] setTintColor:CC_BLACK];
 		
@@ -134,6 +122,22 @@
 							   range:NSMakeRange(0, [body length])];
 	
 	return [body autorelease];
+}
+
+- (BOOL)canSendMail
+{
+	if (![MFMailComposeViewController canSendMail])
+	{
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" 
+														message:@"Mail not configured." 
+													   delegate:nil 
+											  cancelButtonTitle:@"OK" 
+											  otherButtonTitles:nil];
+		[alert show];
+		[alert release];
+		return NO;
+	}
+	return YES;
 }
 
 - (id)initWithEntry:(NSDictionary *)entryData

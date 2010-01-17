@@ -334,28 +334,40 @@
 		  [[notice userInfo] objectForKey:@"scope"], 
 		  [[notice userInfo] objectForKey:@"feedType"]);
 	
-	int scope = [[[notice userInfo] objectForKey:@"scope"] intValue];
-	if (scope == kKulerFeedScopeFull)
+	BOOL success = [[[notice userInfo] objectForKey:@"success"] intValue];
+	NSLog(@"success: %i", success);
+	if (success)
 	{
-		currentlyRefreshing = NO;
-		[self.tableView setTableHeaderView:self.refreshView];
-		[self.tableView setTableFooterView:(self.selectedEntries.count > 5 ? self.footerView : nil)];
-		
-		if (self.tableView.contentOffset.y > 0.0f)
+		int scope = [[[notice userInfo] objectForKey:@"scope"] intValue];
+		if (scope == kKulerFeedScopeFull)
 		{
-			[self.tableView reloadData];
-		}
+			currentlyRefreshing = NO;
+			[self.tableView setTableHeaderView:self.refreshView];
+			[self.tableView setTableFooterView:(self.selectedEntries.count > 5 ? self.footerView : nil)];
+			
+			if (self.tableView.contentOffset.y > 0.0f)
+			{
+				[self.tableView reloadData];
+			}
+			else
+			{
+				[self.tableView setContentOffset:CGPointMake(0.0f, 44.0f)];
+				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
+			}
+		}	
 		else
 		{
-			[self.tableView setContentOffset:CGPointMake(0.0f, 44.0f)];
-			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
-		}
-	}	
-	else
-	{
-		currentlyPaging = NO;
-		[self.tableView reloadData];
+			currentlyPaging = NO;
+			[self.tableView reloadData];
+		}		
 	}
+	else 
+	{
+		currentlyPaging = currentlyRefreshing = NO;
+		[self.tableView setTableHeaderView:nil];
+		[self.tableView setTableFooterView:nil];
+	}
+
 }
 
 - (NSArray *)selectedEntries
@@ -622,6 +634,7 @@
 {
 	if (scrollView.contentOffset.y > (44.0f+self.selectedEntries.count*44.0f-279.0f) && !currentlyPaging)
 	{
+		currentlyPaging = YES;
 		switch (currentSection) {
 			case kKulerFeedTypeNewest:
 				[self.feed pageNewestEntries];

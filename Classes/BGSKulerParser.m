@@ -17,6 +17,7 @@
 
 @implementation BGSKulerParser
 
+@synthesize success;
 @synthesize url;
 @synthesize xml;
 @synthesize element;
@@ -50,6 +51,7 @@
 {	
 	if (self = [super init])
 	{
+		self.success = YES;
 		self.url = u;
 	}
 	return self;
@@ -66,9 +68,13 @@
 	[p release];
 }
 
-- (void)parse
+- (BOOL)parse
 {
+	self.success = YES;
+	
 	[self.xml parse];
+	
+	return self.success;
 }
 
 - (void)parserDidStartDocument:(NSXMLParser *)parser 
@@ -79,6 +85,7 @@
 - (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError 
 {
 	NSLog(@"error parsing XML: %@", [NSString stringWithFormat:@"Unable to download story feed from web site (Error code %i )", [parseError code]]);
+	self.success = NO;
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict

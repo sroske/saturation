@@ -26,4 +26,6 @@
 
 - (id)initWithEntry:(NSDictionary *)entryData;
 
+- (BOOL)canSendMail;
+
 @end

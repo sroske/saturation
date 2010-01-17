@@ -113,9 +113,8 @@
 					[self setRandomEntries:[self.randomEntries arrayByAddingObjectsFromArray:[data objectForKey:@"entries"]]];
 					break;
 			}
-		}		
+		}
 	}
-
 	// pass it along the chain
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"kuler.feed.update.completed" 
 														object:self

@@ -45,9 +45,7 @@
 
 @synthesize rgbSeperator;
 
-@synthesize quadCircleOption;
 @synthesize simpleCircleOption;
-@synthesize quadSquareOption;
 @synthesize simpleSquareOption;
 
 @synthesize favoriteButton;
@@ -299,25 +297,6 @@
 	return rgbSeperator;
 }
 
-- (BGSVisualOptionView *)quadCircleOption
-{
-	if (quadCircleOption == nil)
-	{
-		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rgbSeperator.frame)+22.0f, 
-																					   CGRectGetMinY(self.rgbSeperator.frame)-4.0f, 
-																					   48.0f, 
-																					   48.0f) 
-																	andType:kQuadCircle];
-		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
-		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-		if (app.visualizationType == kQuadCircle)
-			[v setIsSelected:YES];
-		[self setQuadCircleOption:v];
-		[v release];
-	}
-	return quadCircleOption;
-}
-
 - (BGSVisualOptionView *)simpleCircleOption
 {
 	if (simpleCircleOption == nil)
@@ -335,25 +314,6 @@
 		[v release];
 	}
 	return simpleCircleOption;
-}
-
-- (BGSVisualOptionView *)quadSquareOption
-{
-	if (quadSquareOption == nil)
-	{
-		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.simpleCircleOption.frame)+4.0f, 
-																					   CGRectGetMinY(self.simpleCircleOption.frame), 
-																					   48.0f, 
-																					   48.0f) 
-																	andType:kQuadSquare];
-		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
-		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-		if (app.visualizationType == kQuadSquare)
-			[v setIsSelected:YES];
-		[self setQuadSquareOption:v];
-		[v release];
-	}
-	return quadSquareOption;
 }
 
 - (BGSVisualOptionView *)simpleSquareOption
@@ -380,37 +340,17 @@
 	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
 	int type = app.visualizationType;
 	
-	if ([sender superview] == self.quadCircleOption && app.visualizationType != kQuadCircle)
-	{
-		type = kQuadCircle;
-		[self.simpleSquareOption setIsSelected:NO];
-		[self.quadSquareOption setIsSelected:NO];
-		[self.quadCircleOption setIsSelected:YES];
-		[self.simpleCircleOption setIsSelected:NO];
-	}
-	else if ([sender superview] == self.simpleCircleOption && app.visualizationType != kSimpleCircle)
+	if ([sender superview] == self.simpleCircleOption && app.visualizationType != kSimpleCircle)
 	{
 		type = kSimpleCircle;
 		[self.simpleSquareOption setIsSelected:NO];
-		[self.quadSquareOption setIsSelected:NO];
 		[self.simpleCircleOption setIsSelected:YES];
-		[self.quadCircleOption setIsSelected:NO];
-	}
-	else if ([sender superview] == self.quadSquareOption && app.visualizationType != kQuadSquare)
-	{
-		type = kQuadSquare;
-		[self.simpleSquareOption setIsSelected:NO];
-		[self.quadSquareOption setIsSelected:YES];
-		[self.simpleCircleOption setIsSelected:NO];
-		[self.quadCircleOption setIsSelected:NO];
 	}
 	else if ([sender superview] == self.simpleSquareOption && app.visualizationType != kSimpleSquare)
 	{
 		type = kSimpleSquare;
 		[self.simpleSquareOption setIsSelected:YES];
-		[self.quadSquareOption setIsSelected:NO];
 		[self.simpleCircleOption setIsSelected:NO];
-		[self.quadCircleOption setIsSelected:NO];
 	}
 
 	if (type != app.visualizationType)
@@ -468,8 +408,12 @@
 
 - (void)email:(id)sender
 {
-	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-	[app emailView];
+	BGSMailController *controller = [[BGSMailController alloc] initWithEntry:self.entry];
+	if ([controller canSendMail])
+	{
+		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+		[app emailView];		
+	}
 }
 
 - (id)initWithEntry:(NSDictionary *)entryData
@@ -506,9 +450,7 @@
 	
 	[self setupColorRows];
 	
-	//[self.view addSubview:self.quadCircleOption];
 	[self.view addSubview:self.simpleCircleOption];
-	//[self.view addSubview:self.quadSquareOption];
 	[self.view addSubview:self.simpleSquareOption];
 	
 	[self.view addSubview:self.hexSeperator];
@@ -670,9 +612,7 @@
 	
 	[rgbSeperator release];
 
-	[quadCircleOption release];
 	[simpleCircleOption release];
-	[quadSquareOption release];
 	[simpleSquareOption release];
 	
 	[favoriteButton release];

@@ -16,6 +16,11 @@
 {
 	if (self = [super init])
 	{
+		CGSize s = [[CCDirector sharedDirector] winSize];
+		CCSprite *bg = [CCSprite spriteWithFile:@"background.png"];
+		[bg setPosition:CGPointMake(s.width*0.5f, 
+									s.height*0.5f)];
+		[self addChild:bg z:0 tag:kBackground];
 		[self addChild:[BGSSimpleCircleLayer node] z:1];
 	}
 	return self;
@@ -85,14 +90,6 @@
 		lastTag = 0;
 		hasFadedIn = NO;
 		
-		CGSize s = [[CCDirector sharedDirector] winSize];
-		CCSprite *bg = [CCSprite spriteWithFile:@"background.png"];
-		[bg setPosition:CGPointMake(s.width*0.5f, 
-									s.height*0.5f)];
-		[self addChild:bg z:0 tag:kBackground];
-		
-		[bg runAction:[CCFadeOut actionWithDuration:0.25]];
-		
 		CCSpriteSheet *sheet = [CCSpriteSheet spriteSheetWithFile:@"circle-spritesheet.png" capacity:5];
 		[sheet.texture setAntiAliasTexParameters];
 		[self addChild:sheet z:0 tag:kCircleSpriteSheet];
@@ -160,9 +157,6 @@
 - (void)completedFadeIn
 {
 	hasFadedIn = YES;
-	
-	CCSprite *bg = (CCSprite *) [self getChildByTag:kBackground];
-	[bg runAction:[CCFadeIn	actionWithDuration:0.25]];
 }
 
 - (void)duplicate:(BGSSimpleCircleSprite *)original
