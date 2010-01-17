@@ -188,6 +188,16 @@
 	hasFadedIn = YES;
 }
 
+- (int)indexForPosition:(int)position startIndex:(int)start andDirection:(int)direction
+{
+	int temp = position+start*direction;
+	if (temp > 3)
+		temp -= 4;
+	if (temp < 0)
+		temp += 4;
+	return temp;
+}
+
 - (void)duplicate:(BGSSimpleSquareSprite *)original
 {
 	if (original.animating) return;
@@ -206,16 +216,16 @@
 	quads[2] = CGPointMake(-1.0f, -1.0f);
 	quads[3] = CGPointMake(1.0f, -1.0f);
 	
-	int startIndex = 0;
-	//int direction = 1;
+	int si = arc4random()%4;
+	int d = arc4random()%100 >= 50 ? 1 : -1;
 	
 	for (int i = 0; i < 4; i++)
 	{
 		BGSSimpleSquareSprite *sprite = [BGSSimpleSquareSprite spriteWithTexture:sheet.texture 
 																			rect:textureRect];
 		sprite.scale = original.scale*0.5f;
-		sprite.position = CGPointMake(original.position.x+(new.width*0.5f)*quads[startIndex].x, 
-									  original.position.y+(new.height*0.5f)*quads[startIndex].y);
+		sprite.position = CGPointMake(original.position.x+(new.width*0.5f)*quads[[self indexForPosition:0 startIndex:si andDirection:d]].x, 
+									  original.position.y+(new.height*0.5f)*quads[[self indexForPosition:0 startIndex:si andDirection:d]].y);
 		if (i == 3)
 			sprite.color = original.color;
 		else
@@ -229,30 +239,30 @@
 		if (i == 0)
 		{
 			sequence = [CCSequence actions:
-						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[1].x, 
-																			   original.position.y+(new.height*0.5f)*quads[1].y)],
-						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[2].x, 
-																			   original.position.y+(new.height*0.5f)*quads[2].y)],
-						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[3].x, 
-																			   original.position.y+(new.height*0.5f)*quads[3].y)],
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[[self indexForPosition:1 startIndex:si andDirection:d]].x, 
+																			   original.position.y+(new.height*0.5f)*quads[[self indexForPosition:1 startIndex:si andDirection:d]].y)],
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[[self indexForPosition:2 startIndex:si andDirection:d]].x, 
+																			   original.position.y+(new.height*0.5f)*quads[[self indexForPosition:2 startIndex:si andDirection:d]].y)],
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[[self indexForPosition:3 startIndex:si andDirection:d]].x, 
+																			   original.position.y+(new.height*0.5f)*quads[[self indexForPosition:3 startIndex:si andDirection:d]].y)],
 						[CCCallFuncN actionWithTarget:self 
 											 selector:@selector(completedScaleAndMovement:)], nil];
 		}
 		else if (i == 1)
 		{
 			sequence = [CCSequence actions:
-						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[1].x, 
-																			   original.position.y+(new.height*0.5f)*quads[1].y)],
-						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[2].x, 
-																			   original.position.y+(new.height*0.5f)*quads[2].y)],
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[[self indexForPosition:1 startIndex:si andDirection:d]].x, 
+																			   original.position.y+(new.height*0.5f)*quads[[self indexForPosition:1 startIndex:si andDirection:d]].y)],
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[[self indexForPosition:2 startIndex:si andDirection:d]].x, 
+																			   original.position.y+(new.height*0.5f)*quads[[self indexForPosition:2 startIndex:si andDirection:d]].y)],
 						[CCCallFuncN actionWithTarget:self 
 											 selector:@selector(completedScaleAndMovement:)], nil];
 		}
 		else if (i == 2)
 		{
 			sequence = [CCSequence actions:
-						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[1].x, 
-																			   original.position.y+(new.height*0.5f)*quads[1].y)],
+						[CCMoveTo actionWithDuration:0.25 position:CGPointMake(original.position.x+(new.width*0.5f)*quads[[self indexForPosition:1 startIndex:si andDirection:d]].x, 
+																			   original.position.y+(new.height*0.5f)*quads[[self indexForPosition:1 startIndex:si andDirection:d]].y)],
 						[CCCallFuncN actionWithTarget:self 
 											 selector:@selector(completedScaleAndMovement:)], nil];
 		}
