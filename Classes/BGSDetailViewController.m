@@ -47,6 +47,7 @@
 
 @synthesize simpleCircleOption;
 @synthesize simpleSquareOption;
+@synthesize simpleParticleOption;
 
 @synthesize favoriteButton;
 @synthesize emailButton;
@@ -335,6 +336,25 @@
 	return simpleSquareOption;
 }
 
+- (BGSVisualOptionView *)simpleParticleOption
+{
+	if (simpleParticleOption == nil)
+	{
+		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.simpleSquareOption.frame)+4.0f, 
+																					   CGRectGetMinY(self.simpleSquareOption.frame), 
+																					   48.0f, 
+																					   48.0f) 
+																	andType:kSimpleParticles];
+		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
+		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+		if (app.visualizationType == kSimpleParticles)
+			[v setIsSelected:YES];
+		[self setSimpleParticleOption:v];
+		[v release];
+	}
+	return simpleParticleOption;
+}
+
 - (void)toggleVisualization:(id)sender
 {
 	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -345,12 +365,21 @@
 		type = kSimpleCircle;
 		[self.simpleSquareOption setIsSelected:NO];
 		[self.simpleCircleOption setIsSelected:YES];
+		[self.simpleParticleOption setIsSelected:NO];
 	}
 	else if ([sender superview] == self.simpleSquareOption && app.visualizationType != kSimpleSquare)
 	{
 		type = kSimpleSquare;
 		[self.simpleSquareOption setIsSelected:YES];
 		[self.simpleCircleOption setIsSelected:NO];
+		[self.simpleParticleOption setIsSelected:NO];
+	}
+	else if ([sender superview] == self.simpleParticleOption && app.visualizationType != kSimpleParticles)
+	{
+		type = kSimpleParticles;
+		[self.simpleSquareOption setIsSelected:NO];
+		[self.simpleCircleOption setIsSelected:NO];
+		[self.simpleParticleOption setIsSelected:YES];
 	}
 
 	if (type != app.visualizationType)
@@ -452,6 +481,7 @@
 	
 	[self.view addSubview:self.simpleCircleOption];
 	[self.view addSubview:self.simpleSquareOption];
+	[self.view addSubview:self.simpleParticleOption];
 	
 	[self.view addSubview:self.hexSeperator];
 	[self.view addSubview:self.rgbSeperator];
@@ -614,6 +644,7 @@
 
 	[simpleCircleOption release];
 	[simpleSquareOption release];
+	[simpleParticleOption release];
 	
 	[favoriteButton release];
 	//[emailButton release];

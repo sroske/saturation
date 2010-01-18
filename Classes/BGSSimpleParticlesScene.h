@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
+#import "NSArray+Shuffle.h"
 
 @interface BGSSimpleParticlesScene : CCScene 
 {
@@ -16,9 +17,12 @@
 
 @end
 
+#define PARTICLE_TOUCH_DISTANCE	100.0f
+
 @interface BGSSimpleParticlesLayer : CCLayer
 {
-	// nothing
+	int lastTag;
+	CFMutableDictionaryRef touchLocations;
 }
 
 @end

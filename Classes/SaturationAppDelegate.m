@@ -183,14 +183,14 @@
 	CCScene *scene = nil;
 	switch (self.visualizationType) 
 	{
-		case kSimpleCircle:
-			scene = [BGSSimpleCircleScene node];
-			break;
 		case kSimpleSquare:
 			scene = [BGSSimpleSquareScene node];
 			break;
 		case kSimpleParticles:
 			scene = [BGSSimpleParticlesScene node];
+			break;
+		default:
+			scene = [BGSSimpleCircleScene node];
 			break;
 	}
 	
