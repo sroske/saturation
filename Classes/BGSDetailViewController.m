@@ -28,6 +28,8 @@
 @synthesize titleLabel;
 @synthesize authorLabel;
 @synthesize closeButton;
+
+@synthesize colorStripScroll;
 @synthesize colorStrip;
 
 @synthesize hexheaderLabel;
@@ -144,13 +146,29 @@
 	return authorLabel;
 }
 
+- (UIScrollView *)colorStripScroll
+{
+	if (colorStripScroll == nil)
+	{
+		UIScrollView *v = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0f, 
+																		 92.0f, 
+																		 480.0f, 
+																		 10.0f)];
+		[v setShowsVerticalScrollIndicator:NO];
+		[v setShowsHorizontalScrollIndicator:NO];
+		[self setColorStripScroll:v];
+		[v release];
+	}
+	return colorStripScroll;
+}
+
 - (BGSSwatchStrip *)colorStrip
 {
 	if (colorStrip == nil)
 	{
-		BGSSwatchStrip *s = [[BGSSwatchStrip alloc] initWithFrame:CGRectMake(0.0f, 
-																			 92.0f, 
-																			 480.0f, 
+		BGSSwatchStrip *s = [[BGSSwatchStrip alloc] initWithFrame:CGRectMake(-250.0f, 
+																			 0.0f, 
+																			 480.0f*3, 
 																			 10.0f) 
 													  andSwatches:[self.entry objectForKey:@"swatches"]];
 		[self setColorStrip:s];
@@ -471,7 +489,11 @@
 	[self.view addSubview:self.titleLabel];
 	[self.view addSubview:self.authorLabel];
 	[self.view addSubview:self.closeButton];
-	[self.view addSubview:self.colorStrip];
+	
+	[self.view addSubview:self.colorStripScroll];
+	[self.colorStripScroll addSubview:self.colorStrip];
+	[self.colorStripScroll setContentSize:CGSizeMake(self.colorStrip.frame.size.width-500.0f, 
+													 self.colorStrip.frame.size.height)];
 	
 	[self.view addSubview:self.hexheaderLabel];
 	[self.view addSubview:self.rgbHeaderLabel];

@@ -28,6 +28,8 @@
 	FontLabel *titleLabel;
 	FontLabel *authorLabel;
 	UIButton *closeButton;
+	
+	UIScrollView *colorStripScroll;
 	BGSSwatchStrip *colorStrip;
 	
 	FontLabel *hexheaderLabel;
@@ -59,6 +61,8 @@
 @property (nonatomic, retain) FontLabel *titleLabel;
 @property (nonatomic, retain) FontLabel *authorLabel;
 @property (nonatomic, retain) UIButton *closeButton;
+
+@property (nonatomic, retain) UIScrollView *colorStripScroll;
 @property (nonatomic, retain) BGSSwatchStrip *colorStrip;
 
 @property (nonatomic, retain) FontLabel *hexheaderLabel;
