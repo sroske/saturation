@@ -28,7 +28,7 @@
 {
 	if (background == nil)
 	{
-		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"background.png"];
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"background-solid.png"];
 		UIImage *i = [UIImage imageWithContentsOfFile:p];
 		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 
 																		0.0f, 

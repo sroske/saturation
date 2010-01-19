@@ -19,6 +19,7 @@
 	UIImageView *selectedBackgroundImage;
 	NSDictionary *entry;
 	BGSFavoriteView *favoriteView;
+	UIImageView *colorStripBackgroundView;
 	BGSSwatchStrip *colorStrip;
 	FontLabel *nameLabel;
 }
@@ -27,6 +28,7 @@
 @property (nonatomic, retain) UIImageView *selectedBackgroundImage;
 @property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) BGSFavoriteView *favoriteView;
+@property (nonatomic, retain) UIImageView *colorStripBackgroundView;
 @property (nonatomic, retain) BGSSwatchStrip *colorStrip;
 @property (nonatomic, retain) FontLabel *nameLabel;
 

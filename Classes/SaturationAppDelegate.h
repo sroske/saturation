@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
 #import "cocos2d.h"
+#import "FontsAndColors.h"
 #import "FontManager.h"
 
 #import "BGSKulerFeedController.h"

@@ -20,6 +20,7 @@
 @synthesize selectedBackgroundImage;
 @synthesize entry;
 @synthesize favoriteView;
+@synthesize colorStripBackgroundView;
 @synthesize colorStrip;
 @synthesize nameLabel;
 
@@ -87,6 +88,23 @@
 	[self.superview bringSubviewToFront:self];
 }
 
+- (UIImageView *)colorStripBackgroundView
+{
+	if (colorStripBackgroundView == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"background-color-strip.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 
+																		0.0f, 
+																		i.size.width, 
+																		i.size.height)];
+		[iv setImage:i];
+		[self setColorStripBackgroundView:iv];
+		[iv release];
+	}
+	return colorStripBackgroundView;
+}
+
 - (BGSSwatchStrip *)colorStrip
 {
 	if (colorStrip == nil)
@@ -115,12 +133,12 @@
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) 
 	{
-		//[self setSelectionStyle:UITableViewCellSelectionStyleNone];
 		[self setAccessoryType:UITableViewCellAccessoryNone];
 		
 		[self setBackgroundView:self.backgroundImage];
 		[self setSelectedBackgroundView:self.selectedBackgroundImage];
-				
+		
+		[self addSubview:self.colorStripBackgroundView];
 		[self addSubview:self.colorStrip];
 		[self addSubview:self.favoriteView];
 		[self addSubview:self.nameLabel];
@@ -139,6 +157,10 @@
 									   self.bounds.size.height/2-5.0f, 
 									   50.0f,
 									   10.0f);
+	self.colorStripBackgroundView.frame = CGRectMake(self.colorStrip.frame.origin.x-4.0f, 
+													 self.colorStrip.frame.origin.y-4.0f, 
+													 self.colorStripBackgroundView.image.size.width, 
+													 self.colorStripBackgroundView.image.size.height);
 	self.nameLabel.frame = CGRectMake(self.colorStrip.frame.origin.x+self.colorStrip.frame.size.width+14.0f, 
 									  self.bounds.size.height/2-10.0f, 
 									  280.0f, 
@@ -168,6 +190,7 @@
 	[selectedBackgroundImage release];
 	[entry release];
 	[favoriteView release];
+	[colorStripBackgroundView release];
 	[colorStrip release];
 	[nameLabel release];
     [super dealloc];

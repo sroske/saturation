@@ -15,10 +15,9 @@
 {
 	if (self = [super init])
 	{
+		CCSprite *bg = [CCSprite spriteWithFile:@"background-solid.png"];
 		CGSize s = [[CCDirector sharedDirector] winSize];
-		CCSprite *bg = [CCSprite spriteWithFile:@"background.png"];
-		[bg setPosition:CGPointMake(s.width*0.5f, 
-									s.height*0.5f)];
+		bg.position = CGPointMake(s.width*0.5f, s.height*0.5f);
 		[self addChild:bg z:0];
 		[self addChild:[BGSSimpleParticlesLayer node] z:1];
 	}
@@ -62,7 +61,7 @@
 
 - (CCPointParticleSystem *)emitterForColor:(ccColor3B)color
 {
-	CCPointParticleSystem *e = [[CCPointParticleSystem alloc] initWithTotalParticles:100];
+	CCPointParticleSystem *e = [[CCPointParticleSystem alloc] initWithTotalParticles:200];
 	
 	e.duration = -1;
 	e.gravity = ccp(0, 0);
@@ -75,7 +74,7 @@
 	e.speed = 50;
 	e.speedVar = 10;
 	e.posVar = CGPointZero;
-	e.life = 3.0f;
+	e.life = 2.3f;
 	e.lifeVar = 0.3f;
 	e.emissionRate = e.totalParticles/e.life;
 	e.startSize = 2.0f;
@@ -84,7 +83,14 @@
 	
 	ccColor4F startColor4F = { color.r/255.0f, color.g/255.0f, color.b/255.0f, 1.0f };
 	e.startColor = startColor4F;
-	e.endColor = startColor4F;
+	
+	ccColor4F endColor4F = { (color.r*0.1f)/255.0f, (color.g*0.1f)/255.0f, (color.b*0.1f)/255.0f, 0.1f };
+	e.endColor = endColor4F;
+	
+	ccColor4F endColorVar = { 0.0f, 0.0f, 0.0f, 0.1f };	
+	e.endColorVar = endColorVar;
+	
+	e.texture = [[CCTextureCache sharedTextureCache] addImage:@"particle-circle.png"];
 	
 	return [e autorelease];
 }
@@ -117,7 +123,7 @@
 	{
 		CGPoint location = [touch locationInView:[touch view]];
 		location.y = [[CCDirector sharedDirector] winSize].height-location.y;
-		
+
 		for (CCPointParticleSystem *emitter in self.children)
 		{
 			float dx = location.x-emitter.position.x;
@@ -125,13 +131,10 @@
 			float distance = sqrt(dx*dx+dy*dy);
 			if (distance <= PARTICLE_TOUCH_DISTANCE)
 			{
-				CGPoint tagPoint = CGPointMake(emitter.tag, 0.0f);
 				if (CFDictionaryContainsKey(touchLocations, touch))
-					CFDictionarySetValue(touchLocations, touch, CGPointCreateDictionaryRepresentation(tagPoint));
+					CFDictionarySetValue(touchLocations, touch, CGPointCreateDictionaryRepresentation(location));
 				else
-					CFDictionaryAddValue(touchLocations, touch, CGPointCreateDictionaryRepresentation(tagPoint));
-				
-				continue;
+					CFDictionaryAddValue(touchLocations, touch, CGPointCreateDictionaryRepresentation(location));
 			}
 		}
 	}
@@ -150,12 +153,8 @@
 		
 		if (CFDictionaryContainsKey(touchLocations, touch))
 		{
-			CFDictionaryRef ref = (CFDictionaryRef)CFDictionaryGetValue(touchLocations, touch);
-			CGPoint tagPoint;
-			CGPointMakeWithDictionaryRepresentation(ref, &tagPoint);
-			
-			CCPointParticleSystem *emitter = (CCPointParticleSystem *)[self getChildByTag:(int)tagPoint.x];
-			emitter.position = location;
+			for (CCPointParticleSystem *emitter in self.children)
+				emitter.position = location;
 		}
 	}
 	

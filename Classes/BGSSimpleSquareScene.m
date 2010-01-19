@@ -16,10 +16,9 @@
 {
 	if (self = [super init])
 	{
+		CCSprite *bg = [CCSprite spriteWithFile:@"background-solid.png"];
 		CGSize s = [[CCDirector sharedDirector] winSize];
-		CCSprite *bg = [CCSprite spriteWithFile:@"background.png"];
-		[bg setPosition:CGPointMake(s.width*0.5f, 
-									s.height*0.5f)];
+		bg.position = CGPointMake(s.width*0.5f, s.height*0.5f);
 		[self addChild:bg z:0];
 		[self addChild:[BGSSimpleSquareLayer node] z:0];
 	}
