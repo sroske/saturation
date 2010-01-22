@@ -31,27 +31,44 @@ enum VisualizationTypes
 	kSimpleParticles
 };
 
+enum ControllerTypes
+{
+	kListViewController = 20000,
+	kDetailViewController,
+	kMainViewController
+};
+
 @interface SaturationAppDelegate : NSObject <UIApplicationDelegate,  MFMailComposeViewControllerDelegate> 
 {
 	NSDictionary *entry;
     UIWindow *window;
+	BGSListViewController *listController;
+	BGSDetailViewController *detailController;
 	BGSMainViewController *mainController;
 	BGSWelcomeViewController *welcomeController;
 	int visualizationType;
+	int controllerState;
 }
 
 @property (nonatomic, retain) NSDictionary *entry;
 @property (nonatomic, retain) UIWindow *window;
+@property (nonatomic, retain) BGSListViewController *listController;
+@property (nonatomic, retain) BGSDetailViewController *detailController;
 @property (nonatomic, retain) BGSMainViewController *mainController;
 @property (nonatomic, retain) BGSWelcomeViewController *welcomeController;
 @property (nonatomic, assign) int visualizationType;
+@property (nonatomic, assign) int controllerState;
 
 - (void)showMainView;
-- (void)showListView;
-- (void)showDetailView;
 - (void)changeEntry:(NSDictionary *)entryData;
+
+- (void)showListView;
+- (void)closeListView;
+
+- (void)showDetailView;
+- (void)closeDetailView;
+
 - (void)emailView;
-- (void)hideModalView;
 
 @end
 

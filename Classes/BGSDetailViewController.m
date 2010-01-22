@@ -104,7 +104,7 @@
 - (void)close:(id)sender
 {
 	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-	[ad hideModalView];
+	[ad closeDetailView];
 }
 
 - (FontLabel *)titleLabel
@@ -445,9 +445,11 @@
 
 - (void)loadView 
 {
-	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
+	CGRect frame = [[UIScreen mainScreen] bounds];
 	
 	UIView *v = [[UIView alloc] initWithFrame:frame];
+	[v setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+	[v setBounds:CGRectMake(0.0f, 0.0f, frame.size.height, frame.size.width)];
 	[v setBackgroundColor:CC_BACKGROUND];
 	[v setAutoresizesSubviews:YES];
 	[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];

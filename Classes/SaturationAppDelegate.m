@@ -11,7 +11,6 @@
 @interface SaturationAppDelegate (Private)
 
 - (void)runScene:(CCScene *)scene;
-- (void)presentMailComposer:(NSDictionary *)entryData;
 
 @end
 
@@ -20,9 +19,12 @@
 
 @synthesize entry;
 @synthesize window;
+@synthesize listController;
+@synthesize detailController;
 @synthesize mainController;
 @synthesize welcomeController;
 @synthesize visualizationType;
+@synthesize controllerState;
 
 - (NSDictionary *)entry
 {
@@ -51,11 +53,36 @@
 	return window;
 }
 
+- (BGSListViewController *)listController
+{
+	if (listController == nil)
+	{
+		BGSListViewController *c = [[BGSListViewController alloc] init];
+		[c.view setTag:kListViewController];
+		[self setListController:c];
+		[c release];
+	}
+	return listController;
+}
+
+- (BGSDetailViewController *)detailController
+{
+	if (detailController == nil)
+	{
+		BGSDetailViewController *c = [[BGSDetailViewController alloc] initWithEntry:self.entry];
+		[c.view setTag:kDetailViewController];
+		[self setDetailController:c];
+		[c release];
+	}
+	return detailController;
+}
+
 - (BGSMainViewController *)mainController
 {
 	if (mainController == nil)
 	{
 		BGSMainViewController *c = [[BGSMainViewController alloc] init];
+		[c.view setTag:kMainViewController];
 		[self setMainController:c];
 		[c release];
 	}
@@ -93,6 +120,8 @@
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	self.visualizationType = [defaults integerForKey:@"saturation.visualizationType"];
+	
+	self.controllerState = kMainViewController;
 	
 	[[FontManager sharedManager] loadFont:CF_NORMAL];
 	
@@ -162,13 +191,15 @@
 	[[CCDirector sharedDirector] release];
 	[entry release];
     [window release];
+	[listController release];
+	[detailController release];
 	[mainController release];
 	[welcomeController release];
     [super dealloc];
 }
 
 #pragma mark -
-#pragma mark Modal Views & App Navigation
+#pragma mark Main View
 
 - (void)showMainView
 {
@@ -196,7 +227,10 @@
 	else
 		[[CCDirector sharedDirector] replaceScene:scene];
 	
-	[self performSelector:@selector(hideModalView) withObject:nil afterDelay:0.1];
+	if (self.controllerState == kListViewController)
+		[self performSelector:@selector(closeListView) withObject:nil afterDelay:0.2];
+	else
+		[self performSelector:@selector(closeDetailView) withObject:nil afterDelay:0.2];
 }
 
 - (void)runScene:(CCScene *)scene
@@ -204,29 +238,147 @@
 	[[CCDirector sharedDirector] runWithScene:scene];
 }
 
+#pragma mark -
+#pragma mark List View
+
 - (void)showListView
 {
+	self.controllerState = kListViewController;
+	
 	[[CCDirector sharedDirector] pause];
 	
-	BGSListViewController *controller = [[BGSListViewController alloc] init];
-	[self.mainController presentModalViewController:controller animated:YES];
-	[controller release];
+	[self.window addSubview:self.listController.view];
+
+	CGRect listFrame = CGRectMake(self.listController.view.frame.origin.x, 
+								  0.0f, 
+								  self.listController.view.frame.size.width, 
+								  self.listController.view.frame.size.height);
+	[self.listController.view setFrame:CGRectMake(listFrame.origin.x, 
+												  -listFrame.size.height, 
+												  listFrame.size.width, 
+												  listFrame.size.height)];
+	
+	CGRect oglFrame = [[[CCDirector sharedDirector] openGLView] frame];
+	CGRect oglDest = CGRectMake(oglFrame.origin.x, 
+								oglFrame.size.height, 
+								oglFrame.size.width, 
+								oglFrame.size.height);
+	
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+	[UIView setAnimationDuration:0.5];
+
+	[self.listController.view setFrame:listFrame];
+	[[[CCDirector sharedDirector] openGLView] setFrame:oglDest];
+
+	[UIView commitAnimations];
 }
+
+- (void)closeListView
+{	
+	CGRect listFrame = self.listController.view.frame;
+	CGRect listDest = CGRectMake(listFrame.origin.x, 
+								 -listFrame.size.height, 
+								 listFrame.size.width, 
+								 listFrame.size.height);
+	
+	CGRect oglFrame = [[[CCDirector sharedDirector] openGLView] frame];
+	CGRect oglDest = CGRectMake(oglFrame.origin.x, 
+								0.0f, 
+								oglFrame.size.width, 
+								oglFrame.size.height);
+	
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(listClosed:finished:context:)];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+	[UIView setAnimationDuration:0.5];
+	
+	[self.listController.view setFrame:listDest];
+	[[[CCDirector sharedDirector] openGLView] setFrame:oglDest];
+	
+	[UIView commitAnimations];
+}
+
+- (void)listClosed:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+{
+	self.controllerState = kMainViewController;
+	
+	[[CCDirector sharedDirector] resume];
+	
+	[self.listController.view removeFromSuperview];
+}
+
+#pragma mark -
+#pragma mark Detail View
 
 - (void)showDetailView
 {
+	self.detailController = nil;
+	self.controllerState = kDetailViewController;
+	
 	[[CCDirector sharedDirector] pause];
 	
-	BGSDetailViewController *controller = [[BGSDetailViewController alloc] initWithEntry:self.entry];
-	[self.mainController presentModalViewController:controller animated:YES];
-	[controller release];
+	[self.window addSubview:self.detailController.view];
+	
+	CGRect detailFrame = CGRectMake(self.detailController.view.frame.origin.x, 
+									0.0f, 
+									self.detailController.view.frame.size.width, 
+									self.detailController.view.frame.size.height);
+	[self.detailController.view setFrame:CGRectMake(detailFrame.origin.x, 
+													detailFrame.size.height, 
+													detailFrame.size.width, 
+													detailFrame.size.height)];
+	
+	CGRect oglFrame = [[[CCDirector sharedDirector] openGLView] frame];
+	CGRect oglDest = CGRectMake(oglFrame.origin.x, 
+								-oglFrame.size.height, 
+								oglFrame.size.width, 
+								oglFrame.size.height);
+	
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+	[UIView setAnimationDuration:0.5];
+	
+	[self.detailController.view setFrame:detailFrame];
+	[[[CCDirector sharedDirector] openGLView] setFrame:oglDest];
+	
+	[UIView commitAnimations];
 }
 
-- (void)hideModalView
+- (void)closeDetailView
 {
+	CGRect detailFrame = self.detailController.view.frame;
+	CGRect detailDest = CGRectMake(detailFrame.origin.x, 
+								   detailFrame.size.height, 
+								   detailFrame.size.width, 
+								   detailFrame.size.height);
+	
+	CGRect oglFrame = [[[CCDirector sharedDirector] openGLView] frame];
+	CGRect oglDest = CGRectMake(oglFrame.origin.x, 
+								0.0f, 
+								oglFrame.size.width, 
+								oglFrame.size.height);
+	
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(detailClosed:finished:context:)];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+	[UIView setAnimationDuration:0.5];
+	
+	[self.detailController.view setFrame:detailDest];
+	[[[CCDirector sharedDirector] openGLView] setFrame:oglDest];
+	
+	[UIView commitAnimations];
+}
+
+- (void)detailClosed:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+{
+	self.controllerState = kMainViewController;
+	
 	[[CCDirector sharedDirector] resume];
 	
-	[self.mainController dismissModalViewControllerAnimated:YES];
+	[self.detailController.view removeFromSuperview];
 }
 
 #pragma mark -
@@ -234,17 +386,11 @@
 
 - (void)emailView
 {
-	[self hideModalView];
-	[self performSelector:@selector(presentMailComposer:) withObject:self.entry afterDelay:0.8];
-}
-
-- (void)presentMailComposer:(NSDictionary *)entryData
-{
-	BGSMailController *controller = [[BGSMailController alloc] initWithEntry:entryData];
+	BGSMailController *controller = [[BGSMailController alloc] initWithEntry:self.entry];
 	if ([controller canSendMail])
 	{
 		[[controller mailer] setMailComposeDelegate:self];
-		[self.mainController presentModalViewController:[controller mailer] animated:YES];		
+		[self.detailController presentModalViewController:[controller mailer] animated:YES];
 	}
 	[controller release];
 }
@@ -261,7 +407,7 @@
 		[alert show];
 		[alert release];
 	}
-	[self hideModalView];
+	[self.detailController dismissModalViewControllerAnimated:YES];
 }
 
 @end

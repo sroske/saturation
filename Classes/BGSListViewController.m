@@ -74,6 +74,12 @@
 	return closeButton;
 }
 
+- (void)close:(id)sender
+{
+	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	[ad closeListView];
+}
+
 - (BGSKulerFeedController *)feed
 {
 	if (feed == nil)
@@ -209,12 +215,6 @@
 		[c release];
 	}
 	return seperator;
-}
-
-- (void)close:(id)sender
-{
-	SaturationAppDelegate *ad = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-	[ad hideModalView];
 }
 
 - (BGSTableView *)tableView
@@ -413,14 +413,16 @@
 			break;
 	}
 	
-	CGRect frame = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
+	CGRect frame = [[UIScreen mainScreen] bounds];
 	
-	UIView *newView = [[UIView alloc] initWithFrame:frame];
-	[newView setAutoresizesSubviews:YES];
-	[newView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-	[newView sizeToFit];
-	self.view = newView;
-	[newView release];
+	UIView *v = [[UIView alloc] initWithFrame:frame];
+	[v setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+	[v setBounds:CGRectMake(0.0f, 0.0f, frame.size.height, frame.size.width)];
+	[v setAutoresizesSubviews:YES];
+	[v setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+	[v sizeToFit];
+	self.view = v;
+	[v release];
 	
 	[self.view addSubview:self.background];
 	[self.view addSubview:self.tableView];
@@ -469,25 +471,18 @@
 
 - (void)viewWillAppear:(BOOL)animated 
 {
-	[self.navigationController setNavigationBarHidden:YES animated:animated];
+	[self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:NO];
     [super viewWillAppear:animated];
 }
 
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+- (void)viewDidDisappear:(BOOL)animate 
+{
+	NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
+	[self.tableView scrollToRowAtIndexPath:ip 
+						  atScrollPosition:UITableViewScrollPositionTop 
+								  animated:NO];
+	[super viewDidDisappear:animate];
 }
-*/
-/*
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-}
-*/
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
-}
-*/
 
 /*
 // Override to allow orientations other than the default portrait orientation.
