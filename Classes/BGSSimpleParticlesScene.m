@@ -61,7 +61,7 @@
 
 - (CCPointParticleSystem *)emitterForColor:(ccColor3B)color
 {
-	CCPointParticleSystem *e = [[CCPointParticleSystem alloc] initWithTotalParticles:200];
+	CCPointParticleSystem *e = [[CCPointParticleSystem alloc] initWithTotalParticles:150];
 	
 	e.duration = -1;
 	e.gravity = ccp(0, 0);
@@ -135,6 +135,10 @@
 					CFDictionarySetValue(touchLocations, touch, CGPointCreateDictionaryRepresentation(location));
 				else
 					CFDictionaryAddValue(touchLocations, touch, CGPointCreateDictionaryRepresentation(location));
+			}
+			else if ([touch tapCount] >= 2) 
+			{
+				emitter.position = location;
 			}
 		}
 	}

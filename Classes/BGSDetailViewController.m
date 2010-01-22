@@ -48,7 +48,6 @@
 @synthesize rgbSeperator;
 
 @synthesize simpleCircleOption;
-@synthesize simpleSquareOption;
 @synthesize simpleParticleOption;
 
 @synthesize favoriteButton;
@@ -151,9 +150,9 @@
 	if (colorStripScroll == nil)
 	{
 		UIScrollView *v = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0f, 
-																		 92.0f, 
+																		 82.0f, 
 																		 480.0f, 
-																		 10.0f)];
+																		 30.0f)];
 		[v setShowsVerticalScrollIndicator:NO];
 		[v setShowsHorizontalScrollIndicator:NO];
 		[self setColorStripScroll:v];
@@ -167,7 +166,7 @@
 	if (colorStrip == nil)
 	{
 		BGSSwatchStrip *s = [[BGSSwatchStrip alloc] initWithFrame:CGRectMake(-250.0f, 
-																			 0.0f, 
+																			 10.0f, 
 																			 480.0f*3, 
 																			 10.0f) 
 													  andSwatches:[self.entry objectForKey:@"swatches"]];
@@ -335,31 +334,12 @@
 	return simpleCircleOption;
 }
 
-- (BGSVisualOptionView *)simpleSquareOption
-{
-	if (simpleSquareOption == nil)
-	{
-		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.simpleCircleOption.frame)+4.0f, 
-																					   CGRectGetMinY(self.simpleCircleOption.frame), 
-																					   48.0f, 
-																					   48.0f) 
-																	andType:kSimpleSquare];
-		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
-		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-		if (app.visualizationType == kSimpleSquare)
-			[v setIsSelected:YES];
-		[self setSimpleSquareOption:v];
-		[v release];
-	}
-	return simpleSquareOption;
-}
-
 - (BGSVisualOptionView *)simpleParticleOption
 {
 	if (simpleParticleOption == nil)
 	{
-		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.simpleSquareOption.frame)+4.0f, 
-																					   CGRectGetMinY(self.simpleSquareOption.frame), 
+		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.simpleCircleOption.frame)+4.0f, 
+																					   CGRectGetMinY(self.simpleCircleOption.frame), 
 																					   48.0f, 
 																					   48.0f) 
 																	andType:kSimpleParticles];
@@ -381,21 +361,12 @@
 	if ([sender superview] == self.simpleCircleOption && app.visualizationType != kSimpleCircle)
 	{
 		type = kSimpleCircle;
-		[self.simpleSquareOption setIsSelected:NO];
 		[self.simpleCircleOption setIsSelected:YES];
-		[self.simpleParticleOption setIsSelected:NO];
-	}
-	else if ([sender superview] == self.simpleSquareOption && app.visualizationType != kSimpleSquare)
-	{
-		type = kSimpleSquare;
-		[self.simpleSquareOption setIsSelected:YES];
-		[self.simpleCircleOption setIsSelected:NO];
 		[self.simpleParticleOption setIsSelected:NO];
 	}
 	else if ([sender superview] == self.simpleParticleOption && app.visualizationType != kSimpleParticles)
 	{
 		type = kSimpleParticles;
-		[self.simpleSquareOption setIsSelected:NO];
 		[self.simpleCircleOption setIsSelected:NO];
 		[self.simpleParticleOption setIsSelected:YES];
 	}
@@ -493,7 +464,7 @@
 	[self.view addSubview:self.colorStripScroll];
 	[self.colorStripScroll addSubview:self.colorStrip];
 	[self.colorStripScroll setContentSize:CGSizeMake(self.colorStrip.frame.size.width-500.0f, 
-													 self.colorStrip.frame.size.height)];
+													 self.colorStrip.frame.size.height*3)];
 	
 	[self.view addSubview:self.hexheaderLabel];
 	[self.view addSubview:self.rgbHeaderLabel];
@@ -502,7 +473,6 @@
 	[self setupColorRows];
 	
 	[self.view addSubview:self.simpleCircleOption];
-	[self.view addSubview:self.simpleSquareOption];
 	[self.view addSubview:self.simpleParticleOption];
 	
 	[self.view addSubview:self.hexSeperator];
@@ -665,7 +635,6 @@
 	[rgbSeperator release];
 
 	[simpleCircleOption release];
-	[simpleSquareOption release];
 	[simpleParticleOption release];
 	
 	[favoriteButton release];

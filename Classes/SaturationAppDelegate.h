@@ -21,7 +21,6 @@
 #import "BGSMailController.h"
 
 #import "BGSSimpleCircleScene.h"
-#import "BGSSimpleSquareScene.h"
 #import "BGSSimpleParticlesScene.h"
 
 #define DEFAULT_VISUALIZER_TYPE kSimpleCircle
@@ -29,7 +28,6 @@
 enum VisualizationTypes
 {
 	kSimpleCircle = 10000,
-	kSimpleSquare,
 	kSimpleParticles
 };
 
