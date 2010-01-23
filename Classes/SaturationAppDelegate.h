@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <MessageUI/MessageUI.h>
 #import "cocos2d.h"
 #import "FontsAndColors.h"
 #import "FontManager.h"
@@ -18,7 +17,7 @@
 #import "BGSWelcomeViewController.h"
 #import "BGSDetailViewController.h"
 #import "BGSListViewController.h"
-#import "BGSMailController.h"
+#import "BGSMailViewController.h"
 
 #import "BGSSimpleCircleScene.h"
 #import "BGSSimpleParticlesScene.h"
@@ -38,7 +37,7 @@ enum ControllerTypes
 	kMainViewController
 };
 
-@interface SaturationAppDelegate : NSObject <UIApplicationDelegate,  MFMailComposeViewControllerDelegate> 
+@interface SaturationAppDelegate : NSObject <UIApplicationDelegate> 
 {
 	NSDictionary *entry;
     UIWindow *window;
@@ -46,6 +45,7 @@ enum ControllerTypes
 	BGSDetailViewController *detailController;
 	BGSMainViewController *mainController;
 	BGSWelcomeViewController *welcomeController;
+	BGSMailViewController *mailController;
 	int visualizationType;
 	int controllerState;
 }
@@ -56,6 +56,7 @@ enum ControllerTypes
 @property (nonatomic, retain) BGSDetailViewController *detailController;
 @property (nonatomic, retain) BGSMainViewController *mainController;
 @property (nonatomic, retain) BGSWelcomeViewController *welcomeController;
+@property (nonatomic, retain) BGSMailViewController *mailController;
 @property (nonatomic, assign) int visualizationType;
 @property (nonatomic, assign) int controllerState;
 
@@ -68,7 +69,8 @@ enum ControllerTypes
 - (void)showDetailView;
 - (void)closeDetailView;
 
-- (void)emailView;
+- (void)showEmailView;
+- (void)closeEmailView;
 
 @end
 

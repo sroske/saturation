@@ -252,6 +252,7 @@
 {
 	if (!currentlyRefreshing)
 	{
+		currentlyRefreshing = YES;
 		switch (currentSection) {
 			case kKulerFeedTypeNewest:
 				[self.feed refreshNewestEntries];
@@ -295,8 +296,7 @@
 {
 	if (self = [super init])
 	{
-		currentlyRefreshing = NO;
-		currentlyPaging = NO;
+		currentlyRefreshing = currentlyPaging = NO;
 		[[NSNotificationCenter defaultCenter] addObserver:self 
 												 selector:@selector(fetchStarted:) 
 													 name:@"kuler.feed.update.started" 
@@ -311,63 +311,82 @@
 
 -(void)fetchStarted:(NSNotification *)notice
 {
-	NSLog(@"fetchStarted - url: %@, scope: %@, feedType: %@", 
-		  [[notice userInfo] objectForKey:@"url"],
-		  [[notice userInfo] objectForKey:@"scope"], 
-		  [[notice userInfo] objectForKey:@"feedType"]);
-	
-	int scope = [[[notice userInfo] objectForKey:@"scope"] intValue];
-	if (scope == kKulerFeedScopeFull)
+	if ([NSThread isMainThread]) 
 	{
-		currentlyRefreshing = YES;
-		currentlyPaging = NO;
-	}
-	else
+		@synchronized (self.tableView) 
+		{
+			NSLog(@"BGSListViewController::fetchStarted - url: %@, scope: %@, feedType: %@", 
+				  [[notice userInfo] objectForKey:@"url"],
+				  [[notice userInfo] objectForKey:@"scope"], 
+				  [[notice userInfo] objectForKey:@"feedType"]);
+			
+			int scope = [[[notice userInfo] objectForKey:@"scope"] intValue];
+			if (scope == kKulerFeedScopeFull)
+			{
+				currentlyRefreshing = YES;
+				currentlyPaging = NO;
+			}
+			else
+			{
+				currentlyPaging = YES;
+				currentlyRefreshing = NO;
+			}
+		}
+	} 
+	else 
 	{
-		currentlyPaging = YES;
-		currentlyRefreshing = NO;
+		[self performSelectorOnMainThread:@selector(fetchStarted:) withObject:notice waitUntilDone:YES];
 	}
 }
 -(void)fetchCompleted:(NSNotification *)notice
 {
-	NSLog(@"fetchCompleted - scope: %@, feedType: %@", 
-		  [[notice userInfo] objectForKey:@"scope"], 
-		  [[notice userInfo] objectForKey:@"feedType"]);
-	
-	BOOL success = [[[notice userInfo] objectForKey:@"success"] intValue];
-	NSLog(@"success: %i", success);
-	if (success)
+	if ([NSThread isMainThread]) 
 	{
-		int scope = [[[notice userInfo] objectForKey:@"scope"] intValue];
-		if (scope == kKulerFeedScopeFull)
+		@synchronized (self.tableView) 
 		{
-			currentlyRefreshing = NO;
-			[self.tableView setTableHeaderView:self.refreshView];
-			[self.tableView setTableFooterView:(self.selectedEntries.count > 5 ? self.footerView : nil)];
+			NSLog(@"BGSListViewController::fetchCompleted - scope: %@, feedType: %@", 
+				  [[notice userInfo] objectForKey:@"scope"], 
+				  [[notice userInfo] objectForKey:@"feedType"]);
 			
-			if (self.tableView.contentOffset.y > 0.0f)
+			BOOL success = [[[notice userInfo] objectForKey:@"success"] intValue];
+			NSLog(@"success: %i", success);
+			if (success)
 			{
-				[self.tableView reloadData];
+				int scope = [[[notice userInfo] objectForKey:@"scope"] intValue];
+				if (scope == kKulerFeedScopeFull)
+				{
+					currentlyRefreshing = NO;
+					[self.tableView setTableHeaderView:self.refreshView];
+					[self.tableView setTableFooterView:(self.selectedEntries.count > 5 ? self.footerView : nil)];
+					
+					if (self.tableView.contentOffset.y > 0.0f)
+					{
+						[self.tableView reloadData];
+					}
+					else
+					{
+						[self.tableView setContentOffset:CGPointMake(0.0f, 44.0f)];
+						[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
+					}
+				}	
+				else
+				{
+					currentlyPaging = NO;
+					[self.tableView reloadData];
+				}		
 			}
-			else
+			else 
 			{
-				[self.tableView setContentOffset:CGPointMake(0.0f, 44.0f)];
-				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
+				currentlyPaging = currentlyRefreshing = NO;
+				[self.tableView setTableHeaderView:nil];
+				[self.tableView setTableFooterView:nil];
 			}
-		}	
-		else
-		{
-			currentlyPaging = NO;
-			[self.tableView reloadData];
-		}		
-	}
+		}
+	} 
 	else 
 	{
-		currentlyPaging = currentlyRefreshing = NO;
-		[self.tableView setTableHeaderView:nil];
-		[self.tableView setTableFooterView:nil];
+		[self performSelectorOnMainThread:@selector(fetchCompleted:) withObject:notice waitUntilDone:YES];
 	}
-
 }
 
 - (NSArray *)selectedEntries
@@ -471,14 +490,16 @@
 
 - (void)viewWillAppear:(BOOL)animated 
 {
-	[self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:NO];
+	// clear the feed on display to ensure we get the latest updates from the other controllers
+	self.feed = nil;
+	[self.tableView reloadData];
     [super viewWillAppear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animate 
 {
-	NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
-	[self.tableView scrollToRowAtIndexPath:ip 
+	[self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:NO];
+	[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] 
 						  atScrollPosition:UITableViewScrollPositionTop 
 								  animated:NO];
 	[super viewDidDisappear:animate];

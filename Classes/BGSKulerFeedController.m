@@ -72,6 +72,7 @@
 
 -(void)fetchStarted:(NSNotification *)notice
 {
+	NSLog(@"BGSKulerFeedController::fetchStarted");
 	// pass it along the chain
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"kuler.feed.update.started" 
 														object:self
@@ -233,6 +234,7 @@
 
 - (void)refreshNewestEntries
 {	
+	NSLog(@"refresh newest entries");
 	[self.queue cancelAllOperations];
 	BGSKulerOperation *op = [[BGSKulerOperation alloc] initWithURL:[self urlForFeedType:kKulerFeedTypeNewest atStartIndex:0] 
 															 scope:kKulerFeedScopeFull

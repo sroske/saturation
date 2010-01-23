@@ -39,6 +39,8 @@
 {
 	if (self.parser.url == nil) return;
 	
+	NSLog(@"starting operation for url: %@ in op: %@", self.parser.url, self);
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"kuler.fetch.started" 
 														object:self
 													  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:self.parser.url, @"url",

@@ -35,7 +35,7 @@
 		A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893110DDDD12003AA0EB /* list-background-normal.png */; };
 		A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893210DDDD12003AA0EB /* list-background-selected.png */; };
 		A911893710DDDD30003AA0EB /* BGSListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A911893610DDDD30003AA0EB /* BGSListViewController.m */; };
-		A91B97791100035F001AE43F /* BGSMailController.m in Sources */ = {isa = PBXBuildFile; fileRef = A91B97781100035F001AE43F /* BGSMailController.m */; };
+		A948A4AD110A937C0008B966 /* BGSMailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A948A4AC110A937C0008B966 /* BGSMailViewController.m */; };
 		A94EABE610E09886002CD007 /* BGSEntryViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A94EABE510E09886002CD007 /* BGSEntryViewCell.m */; };
 		A959DE211103C3C2002EAA74 /* BGSSimpleParticlesScene.m in Sources */ = {isa = PBXBuildFile; fileRef = A959DE201103C3C2002EAA74 /* BGSSimpleParticlesScene.m */; };
 		A9A0F7FB10D8903100823BC9 /* BGSMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */; };
@@ -191,8 +191,8 @@
 		A911893210DDDD12003AA0EB /* list-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-selected.png"; sourceTree = "<group>"; };
 		A911893510DDDD30003AA0EB /* BGSListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSListViewController.h; sourceTree = "<group>"; };
 		A911893610DDDD30003AA0EB /* BGSListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSListViewController.m; sourceTree = "<group>"; };
-		A91B97771100035F001AE43F /* BGSMailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSMailController.h; sourceTree = "<group>"; };
-		A91B97781100035F001AE43F /* BGSMailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSMailController.m; sourceTree = "<group>"; };
+		A948A4AB110A937C0008B966 /* BGSMailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSMailViewController.h; sourceTree = "<group>"; };
+		A948A4AC110A937C0008B966 /* BGSMailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSMailViewController.m; sourceTree = "<group>"; };
 		A94EABE410E09886002CD007 /* BGSEntryViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSEntryViewCell.h; sourceTree = "<group>"; };
 		A94EABE510E09886002CD007 /* BGSEntryViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSEntryViewCell.m; sourceTree = "<group>"; };
 		A959DE1F1103C3C2002EAA74 /* BGSSimpleParticlesScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleParticlesScene.h; sourceTree = "<group>"; };
@@ -585,8 +585,6 @@
 		A9A0F86E10D8952E00823BC9 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				A91B97771100035F001AE43F /* BGSMailController.h */,
-				A91B97781100035F001AE43F /* BGSMailController.m */,
 				A9A0F7F910D8903100823BC9 /* BGSMainViewController.h */,
 				A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */,
 				A9EFACCB10DC9A8B005CCAA3 /* BGSDetailViewController.h */,
@@ -595,6 +593,8 @@
 				A9EFB18D10DDAA93005CCAA3 /* BGSWelcomeViewController.m */,
 				A911893510DDDD30003AA0EB /* BGSListViewController.h */,
 				A911893610DDDD30003AA0EB /* BGSListViewController.m */,
+				A948A4AB110A937C0008B966 /* BGSMailViewController.h */,
+				A948A4AC110A937C0008B966 /* BGSMailViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -962,7 +962,6 @@
 				A9B47F1010FADA75003DB9B1 /* FontManager.m in Sources */,
 				A9B47F1110FADA75003DB9B1 /* ZAttributedString.m in Sources */,
 				A9B47F1210FADA75003DB9B1 /* ZFont.m in Sources */,
-				A91B97791100035F001AE43F /* BGSMailController.m in Sources */,
 				A9FEAF6311000E8000110A5F /* CCAction.m in Sources */,
 				A9FEAF6411000E8000110A5F /* CCActionManager.m in Sources */,
 				A9FEAF6511000E8000110A5F /* CCAtlasNode.m in Sources */,
@@ -1031,6 +1030,7 @@
 				A90DF3CB1102AAEF00AE619F /* BGSSimpleSquareScene.m in Sources */,
 				A90DF3F51102B6DE00AE619F /* BGSSimpleSquareSprite.m in Sources */,
 				A959DE211103C3C2002EAA74 /* BGSSimpleParticlesScene.m in Sources */,
+				A948A4AD110A937C0008B966 /* BGSMailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

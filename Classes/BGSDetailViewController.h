@@ -9,13 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "FontLabel.h"
 #import "FontsAndColors.h"
-#import "BGSKulerFeedController.h"
 #import "BGSSwatchColor.h"
 #import "BGSSwatchStrip.h"
 #import "BGSFavoriteView.h"
 #import "BGSEmailButton.h"
 #import "BGSVisualOptionView.h"
-#import "BGSMailController.h"
+#import "BGSKulerFeedController.h"
 #import "UIColor+CMYK.h"
 #import "UIColor+ColorFromHex.h"
 
@@ -24,7 +23,6 @@
 	UIImageView *background;
 	
 	NSDictionary *entry;
-	BGSKulerFeedController *feed;
 	FontLabel *titleLabel;
 	FontLabel *authorLabel;
 	UIButton *closeButton;
@@ -56,7 +54,6 @@
 
 @property (nonatomic, retain) UIImageView *background;
 @property (nonatomic, retain) NSDictionary *entry;
-@property (nonatomic, retain) BGSKulerFeedController *feed;
 @property (nonatomic, retain) FontLabel *titleLabel;
 @property (nonatomic, retain) FontLabel *authorLabel;
 @property (nonatomic, retain) UIButton *closeButton;

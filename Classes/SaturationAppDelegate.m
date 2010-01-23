@@ -23,6 +23,7 @@
 @synthesize detailController;
 @synthesize mainController;
 @synthesize welcomeController;
+@synthesize mailController;
 @synthesize visualizationType;
 @synthesize controllerState;
 
@@ -75,6 +76,17 @@
 		[c release];
 	}
 	return detailController;
+}
+
+- (BGSMailViewController *)mailController
+{
+	if (mailController == nil)
+	{
+		BGSMailViewController *c = [[BGSMailViewController alloc] initWithEntry:self.entry];
+		[self setMailController:c];
+		[c release];
+	}
+	return mailController;
 }
 
 - (BGSMainViewController *)mainController
@@ -195,6 +207,7 @@
 	[detailController release];
 	[mainController release];
 	[welcomeController release];
+	[mailController release];
     [super dealloc];
 }
 
@@ -382,32 +395,70 @@
 }
 
 #pragma mark -
-#pragma mark Mail Composer
+#pragma mark Email View
 
-- (void)emailView
+- (void)showEmailView
 {
-	BGSMailController *controller = [[BGSMailController alloc] initWithEntry:self.entry];
-	if ([controller canSendMail])
-	{
-		[[controller mailer] setMailComposeDelegate:self];
-		[self.detailController presentModalViewController:[controller mailer] animated:YES];
-	}
-	[controller release];
+	self.mailController = nil;
+	
+	if (![self.mailController canSendMail]) return;
+	
+	[self.window addSubview:self.mailController.view];
+	
+	CGRect mailFrame = CGRectMake(self.mailController.view.frame.origin.x, 
+								  0.0f, 
+								  self.mailController.view.frame.size.width, 
+								  self.mailController.view.frame.size.height);
+	[self.mailController.view setFrame:CGRectMake(mailFrame.origin.x, 
+												  mailFrame.size.height, 
+												  mailFrame.size.width, 
+												  mailFrame.size.height)];
+	
+	CGRect detailFrame = self.detailController.view.frame;
+	CGRect detailDest = CGRectMake(detailFrame.origin.x, 
+								   -detailFrame.size.height, 
+								   detailFrame.size.width, 
+								   detailFrame.size.height);
+	
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+	[UIView setAnimationDuration:0.5];
+	
+	[self.mailController.view setFrame:mailFrame];
+	[self.detailController.view setFrame:detailDest];
+	
+	[UIView commitAnimations];
 }
 
-- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+- (void)closeEmailView
 {
-	if (result == MFMailComposeResultFailed)
-	{
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" 
-														message:[error localizedDescription] 
-													   delegate:nil 
-											  cancelButtonTitle:@"OK" 
-											  otherButtonTitles:nil];
-		[alert show];
-		[alert release];
-	}
-	[self.detailController dismissModalViewControllerAnimated:YES];
+	CGRect mailFrame = self.mailController.view.frame;
+	CGRect mailDest = CGRectMake(mailFrame.origin.x, 
+								 mailFrame.size.height, 
+								 mailFrame.size.width, 
+								 mailFrame.size.height);
+	
+	CGRect detailFrame = self.detailController.view.frame;
+	CGRect detailDest = CGRectMake(detailFrame.origin.x, 
+								   0.0f, 
+								   detailFrame.size.width, 
+								   detailFrame.size.height);
+	
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(mailClosed:finished:context:)];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+	[UIView setAnimationDuration:0.5];
+	
+	[self.mailController.view setFrame:mailDest];
+	[self.detailController.view setFrame:detailDest];
+	
+	[UIView commitAnimations];
+}
+
+- (void)mailClosed:(NSString *)animationID finished:(NSNumber *)finished context:(NSObject *)context
+{	
+	[self.mailController.view removeFromSuperview];
 }
 
 @end

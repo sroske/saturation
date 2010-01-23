@@ -24,7 +24,6 @@
 @synthesize background;
 
 @synthesize entry;
-@synthesize feed;
 @synthesize titleLabel;
 @synthesize authorLabel;
 @synthesize closeButton;
@@ -52,17 +51,6 @@
 
 @synthesize favoriteButton;
 @synthesize emailButton;
-
-- (BGSKulerFeedController *)feed
-{
-	if (feed == nil)
-	{
-		BGSKulerFeedController *f = [[BGSKulerFeedController alloc] init];
-		[self setFeed:f];
-		[f release];
-	}
-	return feed;
-}
 
 - (UIImageView *)background
 {
@@ -386,7 +374,10 @@
 																			   268.0f, 
 																			   48.0f, 
 																			   48.0f)];
-		[e setIsFavorite:[self.feed isFavorite:self.entry]];
+		BGSKulerFeedController *feed = [[BGSKulerFeedController alloc] init];
+		[e setIsFavorite:[feed isFavorite:self.entry]];
+		[feed release];
+		
 		[e.iconButton addTarget:self action:@selector(toggleFavorite:) forControlEvents:UIControlEventTouchDown];
 		[self setFavoriteButton:e];
 		[e release];
@@ -396,16 +387,18 @@
 
 - (void)toggleFavorite:(id)sender
 {
+	BGSKulerFeedController *feed = [[BGSKulerFeedController alloc] init];
 	if (self.favoriteButton.isFavorite)
 	{
-		[self.feed removeFromFavorites:self.entry];
+		[feed removeFromFavorites:self.entry];
 		[self.favoriteButton setIsFavorite:NO];
 	}
 	else
 	{
-		[self.feed addToFavorites:self.entry];
+		[feed addToFavorites:self.entry];
 		[self.favoriteButton setIsFavorite:YES];
 	}
+	[feed release];
 }
 
 - (BGSEmailButton *)emailButton
@@ -426,12 +419,8 @@
 
 - (void)email:(id)sender
 {
-	BGSMailController *controller = [[BGSMailController alloc] initWithEntry:self.entry];
-	if ([controller canSendMail])
-	{
-		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
-		[app emailView];		
-	}
+	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
+	[app showEmailView];
 }
 
 - (id)initWithEntry:(NSDictionary *)entryData
@@ -616,7 +605,6 @@
 	[background release];
 	
 	[entry release];
-	[feed release];
 	[titleLabel release];
 	[authorLabel release];
 	[colorStrip release];
