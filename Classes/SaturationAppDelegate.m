@@ -10,6 +10,7 @@
 
 @interface SaturationAppDelegate (Private)
 
+- (void)removeWelcomeView;
 - (void)runScene:(CCScene *)scene;
 
 @end
@@ -216,8 +217,13 @@
 
 - (void)showMainView
 {
-	[self.welcomeController.view removeFromSuperview];
 	[[[CCDirector sharedDirector] openGLView] addSubview:self.mainController.view];
+	[self performSelector:@selector(removeWelcomeView) withObject:nil afterDelay:0.2];
+}
+
+- (void)removeWelcomeView
+{
+	[self.welcomeController.view removeFromSuperview];
 }
 
 - (void)changeEntry:(NSDictionary *)entryData
