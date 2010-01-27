@@ -7,6 +7,7 @@
 //
 
 #import "BGSVisualOptionView.h"
+#import "SaturationAppDelegate.h"
 
 @interface BGSVisualOptionView (Private)
 
@@ -107,7 +108,7 @@
 	[super layoutSubviews];
 	
 	self.iconButton.frame = CGRectMake(self.bounds.origin.x+1.0f, 
-									   self.bounds.origin.y, 
+									   self.bounds.origin.y+2.0f, 
 									   self.bounds.size.width-1.0f, 
 									   self.bounds.size.height-3.0f);
 }
@@ -122,7 +123,16 @@
 
 - (NSString *)iconFilenameForType:(int)type selected:(BOOL)selected
 {
-	return selected ? @"icon-favorite-selected.png" : @"icon-favorite-unselected.png";
+	NSString *filename = (selected ? @"icon-favorite-selected.png" : @"icon-favorite-unselected.png");
+	switch (type) {
+		case kSimpleCircle:
+			filename = (selected ? @"icon-circles-selected.png" : @"icon-circles-unselected.png");
+			break;
+		case kSimpleParticles:
+			filename = (selected ? @"icon-random-selected.png" : @"icon-random-unselected.png");
+			break;
+	}
+	return filename;
 }
 
 @end

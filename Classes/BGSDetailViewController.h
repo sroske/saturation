@@ -47,6 +47,10 @@
 
 	BGSVisualOptionView *simpleCircleOption;
 	BGSVisualOptionView *simpleParticleOption;
+	UIImageView *comingSoonOption1;
+	UIImageView *comingSoonOption2;
+	UIImageView *comingSoonOption3;
+	UIImageView *comingSoonOption4;
 	
 	BGSFavoriteView *favoriteButton;
 	BGSEmailButton *emailButton;
@@ -78,6 +82,10 @@
 
 @property (nonatomic, retain) BGSVisualOptionView *simpleCircleOption;
 @property (nonatomic, retain) BGSVisualOptionView *simpleParticleOption;
+@property (nonatomic, retain) UIImageView *comingSoonOption1;
+@property (nonatomic, retain) UIImageView *comingSoonOption2;
+@property (nonatomic, retain) UIImageView *comingSoonOption3;
+@property (nonatomic, retain) UIImageView *comingSoonOption4;
 
 @property (nonatomic, retain) BGSFavoriteView *favoriteButton;
 @property (nonatomic, retain) BGSEmailButton *emailButton;

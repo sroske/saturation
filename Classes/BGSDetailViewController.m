@@ -48,6 +48,10 @@
 
 @synthesize simpleCircleOption;
 @synthesize simpleParticleOption;
+@synthesize comingSoonOption1;
+@synthesize comingSoonOption2;
+@synthesize comingSoonOption3;
+@synthesize comingSoonOption4;
 
 @synthesize favoriteButton;
 @synthesize emailButton;
@@ -312,7 +316,8 @@
 																					   48.0f, 
 																					   48.0f) 
 																	andType:kSimpleCircle];
-		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
+		[v.iconButton addTarget:self action:@selector(bubbleUp:) forControlEvents:UIControlEventTouchDown];
+		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchUpInside];
 		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
 		if (app.visualizationType == kSimpleCircle)
 			[v setIsSelected:YES];
@@ -326,12 +331,13 @@
 {
 	if (simpleParticleOption == nil)
 	{
-		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.simpleCircleOption.frame)+4.0f, 
+		BGSVisualOptionView *v = [[BGSVisualOptionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.simpleCircleOption.frame)+6.0f, 
 																					   CGRectGetMinY(self.simpleCircleOption.frame), 
 																					   48.0f, 
 																					   48.0f) 
 																	andType:kSimpleParticles];
-		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchDown];
+		[v.iconButton addTarget:self action:@selector(bubbleUp:) forControlEvents:UIControlEventTouchDown];
+		[v.iconButton addTarget:self action:@selector(toggleVisualization:) forControlEvents:UIControlEventTouchUpInside];
 		SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
 		if (app.visualizationType == kSimpleParticles)
 			[v setIsSelected:YES];
@@ -339,6 +345,12 @@
 		[v release];
 	}
 	return simpleParticleOption;
+}
+
+- (void)bubbleUp:(id)sender
+{
+	UIButton *b = (UIButton *)sender;
+	[self.view bringSubviewToFront:[b superview]];
 }
 
 - (void)toggleVisualization:(id)sender
@@ -366,6 +378,74 @@
 	}
 }
 
+- (UIImageView *)comingSoonOption1
+{
+	if (comingSoonOption1 == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"icon-no-visualizer.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.simpleParticleOption.frame)+10.0f, 
+																		CGRectGetMinY(self.simpleParticleOption.frame)+4.0f, 
+																		i.size.width, 
+																		i.size.height)];
+		[iv setImage:i];
+		[self setComingSoonOption1:iv];
+		[iv release];
+	}
+	return comingSoonOption1;
+}
+
+- (UIImageView *)comingSoonOption2
+{
+	if (comingSoonOption2 == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"icon-no-visualizer.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rgbSeperator.frame)+26.0f, 
+																		CGRectGetMaxY(self.simpleCircleOption.frame)+8.0f, 
+																		i.size.width, 
+																		i.size.height)];
+		[iv setImage:i];
+		[self setComingSoonOption2:iv];
+		[iv release];
+	}
+	return comingSoonOption2;
+}
+
+- (UIImageView *)comingSoonOption3
+{
+	if (comingSoonOption3 == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"icon-no-visualizer.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.comingSoonOption2.frame)+14.0f, 
+																		CGRectGetMinY(self.comingSoonOption2.frame), 
+																		i.size.width, 
+																		i.size.height)];
+		[iv setImage:i];
+		[self setComingSoonOption3:iv];
+		[iv release];
+	}
+	return comingSoonOption3;
+}
+
+- (UIImageView *)comingSoonOption4
+{
+	if (comingSoonOption4 == nil)
+	{
+		NSString *p = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"icon-no-visualizer.png"];
+		UIImage *i = [UIImage imageWithContentsOfFile:p];
+		UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.comingSoonOption3.frame)+14.0f, 
+																		CGRectGetMinY(self.comingSoonOption3.frame), 
+																		i.size.width, 
+																		i.size.height)];
+		[iv setImage:i];
+		[self setComingSoonOption4:iv];
+		[iv release];
+	}
+	return comingSoonOption4;
+}
+
 - (BGSFavoriteView *)favoriteButton
 {
 	if (favoriteButton == nil)
@@ -378,7 +458,7 @@
 		[e setIsFavorite:[feed isFavorite:self.entry]];
 		[feed release];
 		
-		[e.iconButton addTarget:self action:@selector(toggleFavorite:) forControlEvents:UIControlEventTouchDown];
+		[e.iconButton addTarget:self action:@selector(toggleFavorite:) forControlEvents:UIControlEventTouchUpInside];
 		[self setFavoriteButton:e];
 		[e release];
 	}
@@ -462,7 +542,11 @@
 	[self.view addSubview:self.visualizerHeaderLabel];
 	
 	[self setupColorRows];
-	
+
+	[self.view addSubview:self.comingSoonOption1];
+	[self.view addSubview:self.comingSoonOption2];
+	[self.view addSubview:self.comingSoonOption3];
+	[self.view addSubview:self.comingSoonOption4];
 	[self.view addSubview:self.simpleCircleOption];
 	[self.view addSubview:self.simpleParticleOption];
 	
@@ -626,6 +710,10 @@
 
 	[simpleCircleOption release];
 	[simpleParticleOption release];
+	[comingSoonOption1 release];
+	[comingSoonOption2 release];
+	[comingSoonOption3 release];
+	[comingSoonOption4 release];
 	
 	[favoriteButton release];
 	//[emailButton release];

@@ -61,7 +61,7 @@
 	[super layoutSubviews];
 
 	self.icon.frame = CGRectMake(4.0f, 
-								 self.bounds.size.height/2-self.icon.image.size.height/2, 
+								 self.bounds.size.height/2-self.icon.image.size.height/2-2.0f, 
 								 self.icon.image.size.width, 
 								 self.icon.image.size.height);
 	self.label.frame = CGRectMake(self.icon.frame.origin.x+self.icon.frame.size.width+18.0f, 

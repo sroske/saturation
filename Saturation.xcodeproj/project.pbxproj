@@ -41,6 +41,11 @@
 		A9A0F7FB10D8903100823BC9 /* BGSMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */; };
 		A9A0F80B10D8912D00823BC9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */; };
 		A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */; };
+		A9B22DDB110FEF2B002AD8B0 /* icon-circles-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B22DD6110FEF2B002AD8B0 /* icon-circles-selected.png */; };
+		A9B22DDC110FEF2B002AD8B0 /* icon-circles-unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B22DD7110FEF2B002AD8B0 /* icon-circles-unselected.png */; };
+		A9B22DDD110FEF2B002AD8B0 /* icon-no-visualizer.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B22DD8110FEF2B002AD8B0 /* icon-no-visualizer.png */; };
+		A9B22DDE110FEF2B002AD8B0 /* icon-random-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B22DD9110FEF2B002AD8B0 /* icon-random-selected.png */; };
+		A9B22DDF110FEF2B002AD8B0 /* icon-random-unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B22DDA110FEF2B002AD8B0 /* icon-random-unselected.png */; };
 		A9B4749A10F91B30003DB9B1 /* BGSRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B4749910F91B30003DB9B1 /* BGSRefreshView.m */; };
 		A9B474A710F91C7C003DB9B1 /* BGSRefreshButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B474A610F91C7C003DB9B1 /* BGSRefreshButton.m */; };
 		A9B475E710F92D5B003DB9B1 /* BGSVisualOptionView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B475E610F92D5B003DB9B1 /* BGSVisualOptionView.m */; };
@@ -202,6 +207,11 @@
 		A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A9A0F86910D8941A00823BC9 /* BGSKulerParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSKulerParser.h; sourceTree = "<group>"; };
 		A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSKulerParser.m; sourceTree = "<group>"; };
+		A9B22DD6110FEF2B002AD8B0 /* icon-circles-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-circles-selected.png"; sourceTree = "<group>"; };
+		A9B22DD7110FEF2B002AD8B0 /* icon-circles-unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-circles-unselected.png"; sourceTree = "<group>"; };
+		A9B22DD8110FEF2B002AD8B0 /* icon-no-visualizer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-no-visualizer.png"; sourceTree = "<group>"; };
+		A9B22DD9110FEF2B002AD8B0 /* icon-random-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-random-selected.png"; sourceTree = "<group>"; };
+		A9B22DDA110FEF2B002AD8B0 /* icon-random-unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-random-unselected.png"; sourceTree = "<group>"; };
 		A9B4749810F91B30003DB9B1 /* BGSRefreshView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSRefreshView.h; sourceTree = "<group>"; };
 		A9B4749910F91B30003DB9B1 /* BGSRefreshView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSRefreshView.m; sourceTree = "<group>"; };
 		A9B474A510F91C7C003DB9B1 /* BGSRefreshButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSRefreshButton.h; sourceTree = "<group>"; };
@@ -672,6 +682,11 @@
 		A9EFACD410DC9FE4005CCAA3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A9B22DD6110FEF2B002AD8B0 /* icon-circles-selected.png */,
+				A9B22DD7110FEF2B002AD8B0 /* icon-circles-unselected.png */,
+				A9B22DD8110FEF2B002AD8B0 /* icon-no-visualizer.png */,
+				A9B22DD9110FEF2B002AD8B0 /* icon-random-selected.png */,
+				A9B22DDA110FEF2B002AD8B0 /* icon-random-unselected.png */,
 				A9B8FA78110557E50048ED1F /* background-solid.png */,
 				A9B8FA2111054EC00048ED1F /* particle-circle.png */,
 				A9FEB0861100152000110A5F /* background-debug.png */,
@@ -925,6 +940,11 @@
 				A90DF3DE1102AEBD00AE619F /* square-spritesheet.png in Resources */,
 				A9B8FA2211054EC00048ED1F /* particle-circle.png in Resources */,
 				A9B8FA79110557E50048ED1F /* background-solid.png in Resources */,
+				A9B22DDB110FEF2B002AD8B0 /* icon-circles-selected.png in Resources */,
+				A9B22DDC110FEF2B002AD8B0 /* icon-circles-unselected.png in Resources */,
+				A9B22DDD110FEF2B002AD8B0 /* icon-no-visualizer.png in Resources */,
+				A9B22DDE110FEF2B002AD8B0 /* icon-random-selected.png in Resources */,
+				A9B22DDF110FEF2B002AD8B0 /* icon-random-unselected.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
