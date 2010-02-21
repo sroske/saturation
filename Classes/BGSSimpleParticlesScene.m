@@ -116,9 +116,9 @@
 #pragma mark -
 #pragma mark Touch Handlers
 
-- (BOOL)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if ([[CCDirector sharedDirector] isPaused]) return NO;
+	if ([[CCDirector sharedDirector] isPaused]) return;
 	
 	for (UITouch *touch in touches)
 	{
@@ -143,13 +143,11 @@
 			}
 		}
 	}
-	
-	return kEventHandled;
 }
 
-- (BOOL)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if ([[CCDirector sharedDirector] isPaused]) return NO;
+	if ([[CCDirector sharedDirector] isPaused]) return;
 	
 	for (UITouch *touch in touches)
 	{
@@ -162,21 +160,17 @@
 				emitter.position = location;
 		}
 	}
-	
-    return kEventIgnored;
 }
 
-- (BOOL)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if ([[CCDirector sharedDirector] isPaused]) return NO;
+	if ([[CCDirector sharedDirector] isPaused]) return;
 	
 	for (UITouch *touch in touches)
 	{
 		if (CFDictionaryContainsKey(touchLocations, touch))
 			CFDictionaryRemoveValue(touchLocations, touch);
 	}
-	
-	return kEventHandled;
 }
 
 @end

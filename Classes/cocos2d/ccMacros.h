@@ -2,7 +2,7 @@
  *
  * http://www.cocos2d-iphone.org
  *
- * Copyright (C) 2008,2009 Ricardo Quesada
+ * Copyright (C) 2008,2009,2010 Ricardo Quesada
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the 'cocos2d for iPhone' license.
@@ -52,4 +52,24 @@
 #define CC_BLEND_SRC GL_ONE
 /// default gl blend dst function
 #define CC_BLEND_DST GL_ONE_MINUS_SRC_ALPHA
+
+/// GL states that are enabled: GL_TEXTURE_2D
+/// GL_VERTEX_ARRAY, GL_TEXTURE_COORD_ARRAY, GL_COLOR_ARRAY
+#define CC_ENABLE_DEFAULT_GL_STATES() {				\
+	glEnableClientState(GL_VERTEX_ARRAY);			\
+	glEnableClientState(GL_COLOR_ARRAY);			\
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);	\
+	glEnable(GL_TEXTURE_2D);						\
+}
+
+/// Disable default GL states: GL_TEXTURE_2D,
+/// GL_VERTEX_ARRAY, GL_TEXTURE_COORD_ARRAY, GL_COLOR_ARRAY
+#define CC_DISABLE_DEFAULT_GL_STATES() {			\
+	glDisable(GL_TEXTURE_2D);						\
+	glDisableClientState(GL_COLOR_ARRAY);			\
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);	\
+	glDisableClientState(GL_VERTEX_ARRAY);			\
+}
+
+
 

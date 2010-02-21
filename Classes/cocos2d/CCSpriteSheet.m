@@ -34,6 +34,7 @@ const int defaultCapacity = 29;
 
 @synthesize textureAtlas = textureAtlas_;
 @synthesize blendFunc = blendFunc_;
+@synthesize descendants = descendants_;
 
 /*
  * creation with CCTexture2D
@@ -76,7 +77,7 @@ const int defaultCapacity = 29;
 		[self updateBlendFunc];
 
 		// no lazy alloc in this node
-		children = [[NSMutableArray alloc] initWithCapacity:capacity];
+		children_ = [[NSMutableArray alloc] initWithCapacity:capacity];
 		descendants_ = [[NSMutableArray alloc] initWithCapacity:capacity];
 	}
 
@@ -94,7 +95,7 @@ const int defaultCapacity = 29;
 
 - (NSString*) description
 {
-	return [NSString stringWithFormat:@"<%@ = %08X | Tag = %i>", [self class], self, tag ];
+	return [NSString stringWithFormat:@"<%@ = %08X | Tag = %i>", [self class], self, tag_ ];
 }
 
 -(void)dealloc
@@ -119,24 +120,27 @@ const int defaultCapacity = 29;
 	// The alternative is to have a void CCSprite#visit, but
 	// although this is less mantainable, is faster
 	//
-	if (!visible)
+	if (!visible_)
 		return;
 	
 	glPushMatrix();
 	
-	if ( grid && grid.active)
-		[grid beforeDraw];
+	if ( grid_ && grid_.active) {
+		[grid_ beforeDraw];
+		[self transformAncestors];
+	}
 	
 	[self transform];
 	
 	[self draw];
 	
-	if ( grid && grid.active)
-		[grid afterDraw:self.camera];
+	if ( grid_ && grid_.active)
+		[grid_ afterDraw:self];
 	
 	glPopMatrix();
 }
 
+// XXX deprecated
 -(CCSprite*) createSpriteWithRect:(CGRect)rect
 {
 	CCSprite *sprite = [CCSprite spriteWithTexture:textureAtlas_.texture rect:rect];
@@ -145,6 +149,7 @@ const int defaultCapacity = 29;
 	return sprite;
 }
 
+// XXX deprecated
 -(void) initSprite:(CCSprite*)sprite rect:(CGRect)rect
 {
 	[sprite initWithTexture:textureAtlas_.texture rect:rect];
@@ -175,7 +180,7 @@ const int defaultCapacity = 29;
 	
 	// What's the new atlas index ?
 	NSUInteger newAtlasIndex = 0;
-	for( CCSprite *sprite in children) {
+	for( CCSprite *sprite in children_) {
 		if( [sprite isEqual:child] )
 			break;
 		newAtlasIndex++;
@@ -185,11 +190,17 @@ const int defaultCapacity = 29;
 		
 		[textureAtlas_ insertQuadFromIndex:child.atlasIndex atIndex:newAtlasIndex];
 		
+		// update descendats (issue #708)
+		[child retain];
+		[descendants_ removeObjectAtIndex: child.atlasIndex];
+		[descendants_ insertObject:child atIndex:newAtlasIndex];
+		[child release];
+		
 		// update atlas index
 		NSUInteger count = MAX( newAtlasIndex, child.atlasIndex);
 		NSUInteger index = MIN( newAtlasIndex, child.atlasIndex);
 		for( ; index < count+1 ; index++ ) {
-			CCSprite *sprite = (CCSprite *)[children objectAtIndex:index];
+			CCSprite *sprite = (CCSprite *)[children_ objectAtIndex:index];
 			[sprite setAtlasIndex: index];
 		}
 	}
@@ -202,7 +213,7 @@ const int defaultCapacity = 29;
 	if (sprite == nil)
 		return;
 
-	NSAssert([children containsObject:sprite], @"CCSpriteSheet doesn't contain the sprite. Can't remove it");
+	NSAssert([children_ containsObject:sprite], @"CCSpriteSheet doesn't contain the sprite. Can't remove it");
 
 	// cleanup before removing
 	[self removeSpriteFromAtlas:sprite];
@@ -212,15 +223,13 @@ const int defaultCapacity = 29;
 
 -(void)removeChildAtIndex:(NSUInteger)index cleanup:(BOOL)doCleanup
 {
-	[self removeChild:(CCSprite *)[children objectAtIndex:index] cleanup:doCleanup];
+	[self removeChild:(CCSprite *)[children_ objectAtIndex:index] cleanup:doCleanup];
 }
 
 -(void)removeAllChildrenWithCleanup:(BOOL)doCleanup
 {
 	// Invalidate atlas index. issue #569
-	for( CCSprite *sprite in children ) {
-		[sprite useSelfRender];
-	}
+	[children_ makeObjectsPerformSelector:@selector(useSelfRender)];
 	
 	[super removeAllChildrenWithCleanup:doCleanup];
 	
@@ -231,7 +240,7 @@ const int defaultCapacity = 29;
 #pragma mark CCSpriteSheet - draw
 -(void) draw
 {
-	if(textureAtlas_.totalQuads == 0)
+	if( textureAtlas_.totalQuads == 0 )
 		return;
 
 	// Optimization: Fast Dispatch
@@ -255,7 +264,7 @@ const int defaultCapacity = 29;
 			updateMethod(child, selUpdate);
 		
 #if CC_SPRITESHEET_DEBUG_DRAW
-		CGRect rect = [child boundingBox]; //Inssue 528
+		CGRect rect = [child boundingBox]; //Issue #528
 		CGPoint vertices[4]={
 			ccp(rect.origin.x,rect.origin.y),
 			ccp(rect.origin.x+rect.size.width,rect.origin.y),
@@ -267,10 +276,11 @@ const int defaultCapacity = 29;
 	}
 
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnable(GL_TEXTURE_2D);
+	// Default GL states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
+	// Needed states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
+	// Unneeded states: -
+	
+	
 	
 	BOOL newBlend = NO;
 	if( blendFunc_.src != CC_BLEND_SRC || blendFunc_.dst != CC_BLEND_DST ) {
@@ -280,12 +290,7 @@ const int defaultCapacity = 29;
 	
 	[textureAtlas_ drawQuads];
 	if( newBlend )
-		glBlendFunc(CC_BLEND_SRC, CC_BLEND_DST);
-		
-	glDisable(GL_TEXTURE_2D);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
+		glBlendFunc(CC_BLEND_SRC, CC_BLEND_DST);		
 }
 
 #pragma mark CCSpriteSheet - private
@@ -354,11 +359,12 @@ const int defaultCapacity = 29;
 	
 	// ignore parent Z if parent is spriteSheet
 	BOOL ignoreParent = ( sprite.parent == self );
-	CCSprite *previous = nil, *next = nil;
+	CCSprite *previous = nil;
 	if( childIndex > 0 )
 		previous = [brothers objectAtIndex:childIndex-1];
-	if( childIndex < [brothers count] -1 )
-		next = [brothers objectAtIndex:childIndex+1];
+	
+//	if( childIndex < [brothers count] -1 )
+//		next = [brothers objectAtIndex:childIndex+1];
 
 	// first child of the sprite sheet
 	if( ignoreParent ) {

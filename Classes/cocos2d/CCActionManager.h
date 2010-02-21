@@ -22,7 +22,7 @@ typedef struct _hashElement
 	struct ccArray	*actions;
 	id				target;
 	unsigned int	actionIndex;
-	CCAction			*currentAction;
+	CCAction		*currentAction;
 	BOOL			currentActionSalvaged;
 	BOOL			paused;	
 } tHashElement;
@@ -49,7 +49,7 @@ typedef struct _hashElement
 + (CCActionManager *)sharedManager;
 
 /** purges the shared action manager. It releases the retained instance.
- @since v0.9.0
+ @since v0.99.0
  */
 +(void)purgeSharedManager;
 

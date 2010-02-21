@@ -190,7 +190,7 @@
 
 -(CCTMXLayer*) layerNamed:(NSString *)layerName 
 {
-	for( CCTMXLayer *layer in children ) {
+	for( CCTMXLayer *layer in children_ ) {
 		if( [layer.layerName isEqual:layerName] )
 			return layer;
 	}
@@ -199,7 +199,7 @@
 	return nil;
 }
 
--(CCTMXObjectGroup*) groupNamed:(NSString *)groupName 
+-(CCTMXObjectGroup*) objectGroupNamed:(NSString *)groupName 
 {
 	for( CCTMXObjectGroup *objectGroup in objectGroups_ ) {
 		if( [objectGroup.groupName isEqual:groupName] )
@@ -208,6 +208,12 @@
 	
 	// objectGroup not found
 	return nil;
+}
+
+// XXX deprecated
+-(CCTMXObjectGroup*) groupNamed:(NSString *)groupName 
+{
+	return [self objectGroupNamed:groupName];
 }
 
 -(id) propertyNamed:(NSString *)propertyName 

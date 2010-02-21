@@ -2,7 +2,7 @@
  *
  * http://www.cocos2d-iphone.org
  *
- * Copyright (C) 2008,2009 Ricardo Quesada
+ * Copyright (C) 2008,2009,2010 Ricardo Quesada
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the 'cocos2d for iPhone' license.
@@ -57,7 +57,7 @@ Example:
  */
 @interface CCSequence : CCIntervalAction <NSCopying>
 {
-	NSArray *actions;
+	CCFiniteTimeAction *actions[2];
 	ccTime split;
 	int last;
 }
@@ -361,12 +361,12 @@ typedef struct _ccBezierConfig {
 -(id) initWithAnimation:(id<CCAnimationProtocol>) a restoreOriginalFrame:(BOOL)b;
 /** creates an action with a duration, animation and depending of the restoreOriginalFrame, it will restore the original frame or not.
  The 'delay' parameter of the animation will be overrided by the duration parameter.
- @since v0.9.0
+ @since v0.99.0
  */
 +(id) actionWithDuration:(ccTime)duration animation:(id<CCAnimationProtocol>)animation restoreOriginalFrame:(BOOL)b;
 /** initializes an action with a duration, animation and depending of the restoreOriginalFrame, it will restore the original frame or not.
  The 'delay' parameter of the animation will be overrided by the duration parameter.
- @since v0.9.0
+ @since v0.99.0
  */
 -(id) initWithDuration:(ccTime)duration animation:(id<CCAnimationProtocol>)animation restoreOriginalFrame:(BOOL)b;
 @end

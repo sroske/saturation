@@ -33,12 +33,9 @@
 #define RENDER_IN_SUBPIXEL (int)
 #endif
 
-#define COCOSNODE_DEBUG 1
-
 @interface CCNode (Private)
 // lazy allocs
 -(void) childrenAlloc;
--(void) timerAlloc;
 // helper that reorder a child
 -(void) insertChild:(CCNode*)child z:(int)z;
 // used internally to alter the zOrder variable. DON'T call this method manually
@@ -48,17 +45,18 @@
 
 @implementation CCNode
 
-@synthesize visible;
-@synthesize parent;
-@synthesize grid;
-@synthesize zOrder;
-@synthesize tag;
+@synthesize visible=visible_;
+@synthesize parent=parent_;
+@synthesize grid=grid_;
+@synthesize zOrder=zOrder_;
+@synthesize tag=tag_;
 @synthesize vertexZ = vertexZ_;
+@synthesize isRunning=isRunning_;
 
 #pragma mark CCNode - Transform related properties
 
 @synthesize rotation=rotation_, scaleX=scaleX_, scaleY=scaleY_, position=position_;
-@synthesize anchorPointInPixels=anchorPointInPixels_, relativeAnchorPoint=relativeAnchorPoint_;
+@synthesize anchorPointInPixels=anchorPointInPixels_, isRelativeAnchorPoint=isRelativeAnchorPoint_;
 @synthesize userData;
 
 // getters synthesized, setters explicit
@@ -86,9 +84,9 @@
 	isTransformDirty_ = isInverseDirty_ = YES;
 }
 
--(void) setRelativeAnchorPoint: (BOOL)newValue
+-(void) setIsRelativeAnchorPoint: (BOOL)newValue
 {
-	relativeAnchorPoint_ = newValue;
+	isRelativeAnchorPoint_ = newValue;
 	isTransformDirty_ = isInverseDirty_ = YES;
 }
 
@@ -147,7 +145,7 @@
 {
 	if ((self=[super init]) ) {
 
-		isRunning = NO;
+		isRunning_ = NO;
 	
 		rotation_ = 0.0f;
 		scaleX_ = scaleY_ = 1.0f;
@@ -156,30 +154,30 @@
 		contentSize_ = CGSizeZero;
 		
 
-		// "whole screen" objects. like Scenes and Layers, should set relativeAnchorPoint to NO
-		relativeAnchorPoint_ = YES; 
+		// "whole screen" objects. like Scenes and Layers, should set isRelativeAnchorPoint to NO
+		isRelativeAnchorPoint_ = YES; 
 		
 		isTransformDirty_ = isInverseDirty_ = YES;
 		
 		
 		vertexZ_ = 0;
 
-		grid = nil;
+		grid_ = nil;
 		
-		visible = YES;
+		visible_ = YES;
 
-		tag = kCCNodeTagInvalid;
+		tag_ = kCCNodeTagInvalid;
 		
-		zOrder = 0;
+		zOrder_ = 0;
 
 		// lazy alloc
-		camera = nil;
+		camera_ = nil;
 
 		// children (lazy allocs)
-		children = nil;
+		children_ = nil;
 		
 		// scheduled selectors (lazy allocs)
-		scheduledSelectors = nil;
+		scheduledSelectors_ = nil;
 		
 		// userData is always inited as nil
 		userData = nil;
@@ -194,15 +192,15 @@
 	[self stopAllActions];
 	
 	// timers
-	[scheduledSelectors release];
-	scheduledSelectors = nil;
+	[scheduledSelectors_ release];
+	scheduledSelectors_ = nil;
 	
-	[children makeObjectsPerformSelector:@selector(cleanup)];
+	[children_ makeObjectsPerformSelector:@selector(cleanup)];
 }
 
 - (NSString*) description
 {
-	return [NSString stringWithFormat:@"<%@ = %08X | Tag = %i>", [self class], self, tag];
+	return [NSString stringWithFormat:@"<%@ = %08X | Tag = %i>", [self class], self, tag_];
 }
 
 - (void) dealloc
@@ -210,21 +208,18 @@
 	CCLOG( @"cocos2d: deallocing %@", self);
 	
 	// attributes
-	[camera release];
+	[camera_ release];
 
-	[grid release];
+	[grid_ release];
 	
 	// children
 	
-	for (CCNode *child in children) {
+	for (CCNode *child in children_) {
 		child.parent = nil;
-		[child cleanup];
 	}
 	
-	[children release];
+	[children_ release];
 	
-	// timers
-	[scheduledSelectors release];
 		
 	[super dealloc];
 }
@@ -233,23 +228,32 @@
 
 -(void) childrenAlloc
 {
-	children = [[NSMutableArray arrayWithCapacity:4] retain];
+	children_ = [[NSMutableArray arrayWithCapacity:4] retain];
 }
 
 // camera: lazy alloc
 -(CCCamera*) camera
 {
-	if( ! camera )
-		camera = [[CCCamera alloc] init];
+	if( ! camera_ ) {
+		camera_ = [[CCCamera alloc] init];
+		
+		// by default, center camera at the Sprite's anchor point
+//		[camera_ setCenterX:anchorPointInPixels_.x centerY:anchorPointInPixels_.y centerZ:0];
+//		[camera_ setEyeX:anchorPointInPixels_.x eyeY:anchorPointInPixels_.y eyeZ:1];
 
-	return camera;
+//		[camera_ setCenterX:0 centerY:0 centerZ:0];
+//		[camera_ setEyeX:0 eyeY:0 eyeZ:1];
+
+	}
+
+	return camera_;
 }
 
 -(CCNode*) getChildByTag:(int) aTag
 {
 	NSAssert( aTag != kCCNodeTagInvalid, @"Invalid tag");
 	
-	for( CCNode *node in children ) {
+	for( CCNode *node in children_ ) {
 		if( node.tag == aTag )
 			return node;
 	}
@@ -259,19 +263,19 @@
 
 - (NSArray *)children
 {
-	return (NSArray *) children;
+	return (NSArray *) children_;
 }
 
-/* "add" logic MUST only be on this selector
+/* "add" logic MUST only be on this method
  * If a class want's to extend the 'addChild' behaviour it only needs
- * to override this selector
+ * to override this method
  */
 -(id) addChild: (CCNode*) child z:(int)z tag:(int) aTag
 {	
 	NSAssert( child != nil, @"Argument must be non-nil");
 	NSAssert( child.parent == nil, @"child already added. It can't be added again");
 	
-	if( ! children )
+	if( ! children_ )
 		[self childrenAlloc];
 	
 	[self insertChild:child z:z];
@@ -280,7 +284,7 @@
 	
 	[child setParent: self];
 	
-	if( isRunning )
+	if( isRunning_ )
 		[child onEnter];
 	return self;
 }
@@ -307,7 +311,7 @@
 	if (child == nil)
 		return;
 	
-	if ( [children containsObject:child] )
+	if ( [children_ containsObject:child] )
 		[self detachChild:child cleanup:cleanup];
 }
 
@@ -326,12 +330,12 @@
 -(void) removeAllChildrenWithCleanup:(BOOL)cleanup
 {
 	// not using detachChild improves speed here
-	for (CCNode *c in children)
+	for (CCNode *c in children_)
 	{
 		// IMPORTANT:
 		//  -1st do onExit
 		//  -2nd cleanup
-		if (isRunning)
+		if (isRunning_)
 			[c onExit];
 
 		if (cleanup)
@@ -341,7 +345,7 @@
 		[c setParent:nil];
 	}
 
-	[children removeAllObjects];
+	[children_ removeAllObjects];
 }
 
 -(void) detachChild:(CCNode *)child cleanup:(BOOL)doCleanup
@@ -349,24 +353,24 @@
 	// IMPORTANT:
 	//  -1st do onExit
 	//  -2nd cleanup
-	if (isRunning)
+	if (isRunning_)
 		[child onExit];
 
 	// If you don't do cleanup, the child's actions will not get removed and the
-	// its scheduledSelectors dict will not get released!
+	// its scheduledSelectors_ dict will not get released!
 	if (doCleanup)
 		[child cleanup];
 
 	// set parent nil at the end (issue #476)
 	[child setParent:nil];
 
-	[children removeObject:child];
+	[children_ removeObject:child];
 }
 
 // used internally to alter the zOrder variable. DON'T call this method manually
 -(void) _setZOrder:(int) z
 {
-	zOrder = z;
+	zOrder_ = z;
 }
 
 // helper used by reorderChild & add
@@ -374,17 +378,17 @@
 {
 	int index=0;
 	BOOL added = NO;
-	for( CCNode *a in children ) {
+	for( CCNode *a in children_ ) {
 		if ( a.zOrder > z ) {
 			added = YES;
-			[ children insertObject:child atIndex:index];
+			[ children_ insertObject:child atIndex:index];
 			break;
 		}
 		index++;
 	}
 	
 	if( ! added )
-		[children addObject:child];
+		[children_ addObject:child];
 	
 	[child _setZOrder:z];
 }
@@ -394,7 +398,7 @@
 	NSAssert( child != nil, @"Child must be non-nil");
 	
 	[child retain];
-	[children removeObject:child];
+	[children_ removeObject:child];
 	
 	[self insertChild:child z:z];
 	
@@ -412,19 +416,19 @@
 
 -(void) visit
 {
-	if (!visible)
+	if (!visible_)
 		return;
 	
 	glPushMatrix();
 	
-	if ( grid && grid.active) {
-		[grid beforeDraw];
+	if ( grid_ && grid_.active) {
+		[grid_ beforeDraw];
 		[self transformAncestors];
 	}
 	
 	[self transform];
 	
-	for (CCNode * child in children) {
+	for (CCNode * child in children_) {
 		if ( child.zOrder < 0 )
 			[child visit];
 		else
@@ -432,14 +436,14 @@
 	}
 	
 	[self draw];
-	
-	for (CCNode * child in children) {		
+
+	for (CCNode * child in children_) {		
 		if ( child.zOrder >= 0 )
 			[child visit];
 	}
 	
-	if ( grid && grid.active)
-		[grid afterDraw:self.camera];
+	if ( grid_ && grid_.active)
+		[grid_ afterDraw:self];
 	
 	glPopMatrix();
 }
@@ -448,24 +452,48 @@
 
 -(void) transformAncestors
 {
-	if( self.parent ) {
-		[self.parent transformAncestors];
-		[self.parent transform];
+	if( parent_ ) {
+		[parent_ transformAncestors];
+		[parent_ transform];
 	}
 }
 
 -(void) transform
 {
-	if ( !(grid && grid.active) )
-		[camera locate];
 	
 	// transformations
 	
+#if CC_NODE_TRANSFORM_USING_AFFINE_MATRIX
+	// BEGIN alternative -- using cached transform
+	//
+	static GLfloat m[16];
+	CGAffineTransform t = [self nodeToParentTransform];
+	CGAffineToGL(&t, m);
+	glMultMatrixf(m);
+	if( vertexZ_ )
+		glTranslatef(0, 0, vertexZ_);
+
+	// XXX: Expensive calls. Camera should be integrated into the cached affine matrix
+	if ( camera_ && !(grid_ && grid_.active) ) {
+		BOOL translate = (anchorPointInPixels_.x != 0.0f || anchorPointInPixels_.y != 0.0f);
+		
+		if( translate )
+			glTranslatef(RENDER_IN_SUBPIXEL(anchorPointInPixels_.x), RENDER_IN_SUBPIXEL(anchorPointInPixels_.y), 0);
+
+		[camera_ locate];
+		
+		if( translate )
+			glTranslatef(RENDER_IN_SUBPIXEL(-anchorPointInPixels_.x), RENDER_IN_SUBPIXEL(-anchorPointInPixels_.y), 0);
+	}
+
+
+	// END alternative
+
+#else
 	// BEGIN original implementation
 	// 
 	// translate
-
-	if ( relativeAnchorPoint_ && (anchorPointInPixels_.x != 0 || anchorPointInPixels_.y != 0 ) )
+	if ( isRelativeAnchorPoint_ && (anchorPointInPixels_.x != 0 || anchorPointInPixels_.y != 0 ) )
 		glTranslatef( RENDER_IN_SUBPIXEL(-anchorPointInPixels_.x), RENDER_IN_SUBPIXEL(-anchorPointInPixels_.y), 0);
 
 	if (anchorPointInPixels_.x != 0 || anchorPointInPixels_.y != 0)
@@ -481,51 +509,42 @@
 	if (scaleX_ != 1.0f || scaleY_ != 1.0f)
 		glScalef( scaleX_, scaleY_, 1.0f );
 	
+	if ( camera_ && !(grid_ && grid_.active) )
+		[camera_ locate];
+	
 	// restore and re-position point
 	if (anchorPointInPixels_.x != 0.0f || anchorPointInPixels_.y != 0.0f)
 		glTranslatef(RENDER_IN_SUBPIXEL(-anchorPointInPixels_.x), RENDER_IN_SUBPIXEL(-anchorPointInPixels_.y), 0);
+
 	//
 	// END original implementation
-	
-	/*
-	// BEGIN alternative -- using cached transform
-	//
-	static GLfloat m[16];
-	CGAffineTransform t = [self nodeToParentTransform];
-	CGAffineToGL(&t, m);
-	glMultMatrixf(m);
-	glTranslatef(0, 0, vertexZ_);
-	//
-	// END alternative
-	*/
+#endif
+
 }
 
 #pragma mark CCNode SceneManagement
 
 -(void) onEnter
 {
-	for( id child in children )
-		[child onEnter];
+	[children_ makeObjectsPerformSelector:@selector(onEnter)];
 	
 	[self activateTimers];
 
-	isRunning = YES;
+	isRunning_ = YES;
 }
 
 -(void) onEnterTransitionDidFinish
 {
-	for( id child in children )
-		[child onEnterTransitionDidFinish];
+	[children_ makeObjectsPerformSelector:@selector(onEnterTransitionDidFinish)];
 }
 
 -(void) onExit
 {
 	[self deactivateTimers];
 
-	isRunning = NO;	
+	isRunning_ = NO;	
 	
-	for( id child in children )
-		[child onExit];
+	[children_ makeObjectsPerformSelector:@selector(onExit)];
 }
 
 #pragma mark CCNode Actions
@@ -534,7 +553,7 @@
 {
 	NSAssert( action != nil, @"Argument must be non-nil");
 	
-	[[CCActionManager sharedManager] addAction:action target:self paused:!isRunning];
+	[[CCActionManager sharedManager] addAction:action target:self paused:!isRunning_];
 	return action;
 }
 
@@ -566,50 +585,41 @@
 	return [[CCActionManager sharedManager] numberOfRunningActionsInTarget:self];
 }
 
+
+#pragma mark CCNode Timers 
+
 #pragma mark CCNode Timers 
 
 -(void) timerAlloc
 {
-	scheduledSelectors = [[NSMutableDictionary dictionaryWithCapacity: 2] retain];
-}
-
-
--(void) schedule: (SEL) selector repeat:(int)times
-{
-	[self schedule:selector interval:0];
+	scheduledSelectors_ = [[NSMutableDictionary dictionaryWithCapacity: 2] retain];
 }
 
 -(void) schedule: (SEL) selector
 {
-	[self schedule:selector interval:0 repeat:CCTIMER_REPEAT_FOREVER];
+	[self schedule:selector interval:0];
 }
 
-
--(void) schedule: (SEL) selector interval:(ccTime)interval {
-	[self schedule:selector interval:interval repeat:CCTIMER_REPEAT_FOREVER];
-}
-
--(void) schedule: (SEL) selector interval:(ccTime)interval repeat:(int)times
+-(void) schedule: (SEL) selector interval:(ccTime)interval
 {
-	NSAssert( times >= CCTIMER_REPEAT_FOREVER, @"Repeat argument invalid");
 	NSAssert( selector != nil, @"Argument must be non-nil");
 	NSAssert( interval >=0, @"Arguemnt must be positive");
 	
-	if( !scheduledSelectors )
+	if( !scheduledSelectors_ )
 		[self timerAlloc];
 	
 	NSString *key = NSStringFromSelector(selector);
 	// already scheduled ?
-	if( [scheduledSelectors objectForKey:key  ] ) {
+	if( [scheduledSelectors_ objectForKey:key  ] ) {
 		return;
 	}
 	
-	CCTimer *timer = [CCTimer timerWithTarget:self selector:selector interval:interval repeat:times];
+	CCTimer *timer = [CCTimer timerWithTarget:self selector:selector interval:interval];
 	
-	if( isRunning )
+	if( isRunning_ )
 		[[CCScheduler sharedScheduler] scheduleTimer:timer];
 	
-	[scheduledSelectors setObject:timer forKey:key ];
+	[scheduledSelectors_ setObject:timer forKey:key ];
 }
 
 -(void) unschedule: (SEL) selector
@@ -620,36 +630,34 @@
 	
 	CCTimer *timer = nil;
 	NSString *key = NSStringFromSelector(selector);
-
-	if( ! (timer = [scheduledSelectors objectForKey:key] ) )
-	 {
-		 CCLOG(@"cocos2d: CCNode.unschedule: Selector not scheduled: %@",key );
-		 return;
-	 }
 	
-	[scheduledSelectors removeObjectForKey: key];
-
-	if( isRunning )
+	if( ! (timer = [scheduledSelectors_ objectForKey:key] ) )
+	{
+		CCLOG(@"cocos2d: CCNode.unschedule: Selector not scheduled: %@",key );
+		return;
+	}
+	
+	[scheduledSelectors_ removeObjectForKey: key];
+	
+	if( isRunning_ )
 		[[CCScheduler sharedScheduler] unscheduleTimer:timer];
 }
 
-
 - (void) activateTimers
 {
-	for( id key in scheduledSelectors )
-		[[CCScheduler sharedScheduler] scheduleTimer: [scheduledSelectors objectForKey:key]];
+	for( id key in scheduledSelectors_ )
+		[[CCScheduler sharedScheduler] scheduleTimer: [scheduledSelectors_ objectForKey:key]];
 	
 	[[CCActionManager sharedManager] resumeAllActionsForTarget:self];
 }
 
 - (void) deactivateTimers
 {
-	for( id key in scheduledSelectors )
-		[[CCScheduler sharedScheduler] unscheduleTimer: [scheduledSelectors objectForKey:key]];
-
+	for( id key in scheduledSelectors_ )
+		[[CCScheduler sharedScheduler] unscheduleTimer: [scheduledSelectors_ objectForKey:key]];
+	
 	[[CCActionManager sharedManager] pauseAllActionsForTarget:self];
 }
-
 
 #pragma mark CCNode Transform
 
@@ -659,7 +667,7 @@
 		
 		transform_ = CGAffineTransformIdentity;
 		
-		if ( !relativeAnchorPoint_ )
+		if ( !isRelativeAnchorPoint_ )
 			transform_ = CGAffineTransformTranslate(transform_, anchorPointInPixels_.x, anchorPointInPixels_.y);
 		
 		transform_ = CGAffineTransformTranslate(transform_, position_.x, position_.y);
@@ -688,7 +696,7 @@
 {
 	CGAffineTransform t = [self nodeToParentTransform];
 	
-	for (CCNode *p = parent; p != nil; p = p.parent)
+	for (CCNode *p = parent_; p != nil; p = p.parent)
 		t = CGAffineTransformConcat(t, [p nodeToParentTransform]);
 	
 	return t;

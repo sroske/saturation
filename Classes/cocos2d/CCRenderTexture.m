@@ -13,8 +13,8 @@
  */
 
 #import "CCRenderTexture.h"
-#import "cocos2d.h"
-#include "glu.h"
+#import "CCDirector.h"
+#import "ccMacros.h"
 
 @implementation CCRenderTexture
 
@@ -38,7 +38,7 @@
     
 		void *data = malloc((int)(pow * pow * 4));
 		memset(data, 0, (int)(pow * pow * 4));
-		texture = [[[CCTexture2D alloc] initWithData:data pixelFormat:format pixelsWide:pow pixelsHigh:pow contentSize:CGSizeMake(w, h)] autorelease];
+		texture = [[CCTexture2D alloc] initWithData:data pixelFormat:format pixelsWide:pow pixelsHigh:pow contentSize:CGSizeMake(w, h)];
 		free( data );
     
 		// generate FBO
@@ -55,6 +55,7 @@
 			[NSException raise:@"Render Texture" format:@"Could not attach texture to framebuffer"];
 		}
 		sprite = [CCSprite spriteWithTexture:texture];
+		[texture release];
 		[sprite setScaleY:-1];
 		[self addChild:sprite];
 		glBindFramebufferOES(GL_FRAMEBUFFER_OES, oldFBO);
@@ -71,21 +72,26 @@
 
 -(void)begin
 {
+	CC_DISABLE_DEFAULT_GL_STATES();
 	// Save the current matrix
 	glPushMatrix();
+	
+	CGSize texSize = [texture contentSize];
 
 	// Calculate the adjustment ratios based on the old and new projections
 	CGRect frame = [[[CCDirector sharedDirector] openGLView] frame];
-	float widthRatio = frame.size.width / texture.contentSize.width;
-	float heightRatio = frame.size.height / texture.contentSize.height;
+	float widthRatio = frame.size.width / texSize.width;
+	float heightRatio = frame.size.height / texSize.height;
 
 	// Adjust the orthographic propjection and viewport
 	glOrthof((float)-1.0 / widthRatio,  (float)1.0 / widthRatio, (float)-1.0 / heightRatio, (float)1.0 / heightRatio, -1,1);
-	glViewport(0, 0, texture.contentSize.width, texture.contentSize.height);
+	glViewport(0, 0, texSize.width, texSize.height);
 
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, &oldFBO);
 	glBindFramebufferOES(GL_FRAMEBUFFER_OES, fbo);//Will direct drawing to the frame buffer created above
 	glDisable(GL_DITHER);
+	
+	CC_ENABLE_DEFAULT_GL_STATES();	
 }
 
 -(void)end

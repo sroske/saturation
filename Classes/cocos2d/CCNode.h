@@ -18,6 +18,8 @@
 #import "CCAction.h"
 #import "ccTypes.h"
 #import "CCTexture2D.h"
+#import "CCProtocols.h"
+
 
 enum {
 	kCCNodeTagInvalid = -1,
@@ -62,6 +64,23 @@ enum {
  
  Limitations:
  - A CCNode is a "void" object. It doesn't have a texture
+ 
+ Order in transformations with grid disabled
+ - 1) The node will be translated (position)
+ - 2) The node will be rotated (rotation)
+ - 3) The node will be scaled (scale)
+ - 4) The node will be moved according to the camera values (camera)
+ 
+ Order in transformations with grid enabled
+ - 1) The node will be translated (position)
+ - 2) The node will be rotated (rotation)
+ - 3) The node will be scaled (scale)
+ - 4) The grid will capture the screen
+ - 5) The node will be moved according to the camera values (camera)
+ - 6) The grid will render the captured screen
+ 
+ Camera:
+ - Each node has a camera. By default it points to the center of the CCNode.
  */ 
 @interface CCNode : NSObject {
 	
@@ -73,55 +92,58 @@ enum {
 	
 	// position of the node
 	CGPoint position_;
-	
-	// If YES the transformtions will be relative to (-transform.x, -transform.y).
-	// Sprites, Labels and any other "small" object uses it.
-	// Scenes, Layers and other "whole screen" object don't use it.
-	BOOL relativeAnchorPoint_;
+
+	// is visible
+	BOOL visible_;
 	
 	// anchor point in pixels
 	CGPoint anchorPointInPixels_;	
 	// anchor point normalized
-	CGPoint anchorPoint_;
+	CGPoint anchorPoint_;	
+	// If YES the transformtions will be relative to (-transform.x, -transform.y).
+	// Sprites, Labels and any other "small" object uses it.
+	// Scenes, Layers and other "whole screen" object don't use it.
+	BOOL isRelativeAnchorPoint_;
 	
 	// untransformed size of the node
 	CGSize	contentSize_;
 	
+	// transform
 	CGAffineTransform transform_, inverse_;
-	BOOL isTransformDirty_, isInverseDirty_;
-	
+
 	// openGL real Z vertex
 	float vertexZ_;
 	
-	// is visible
-	BOOL visible;
-	
 	// a Camera
-	CCCamera *camera;
+	CCCamera *camera_;
 	
 	// a Grid
-	CCGridBase *grid;
+	CCGridBase *grid_;
 	
 	// z-order value
-	int zOrder;
+	int zOrder_;
 	
 	// array of children
-	NSMutableArray *children;
-	
-	// is running
-	BOOL isRunning;
+	NSMutableArray *children_;
 	
 	// weakref to parent
-	CCNode *parent;
+	CCNode *parent_;
 	
 	// a tag. any number you want to assign to the node
-	int tag;
-
-	// scheduled selectors
-	NSMutableDictionary *scheduledSelectors;
+	int tag_;
     
 	// user data field
 	void *userData;
+	
+	// scheduled selectors
+	NSMutableDictionary *scheduledSelectors_;
+
+	// Is running
+	BOOL isRunning_;
+
+	// To reduce memory, place BOOLs that are not properties here:
+	BOOL isTransformDirty_:1;
+	BOOL isInverseDirty_:1;
 }
 
 /** The z order of the node relative to it's "brothers": children of the same parent */
@@ -135,15 +157,15 @@ enum {
  @since v0.8
  */
 @property (nonatomic,readwrite) float vertexZ;
-/** The rotation (angle) of the node in degrees. 0 is the default rotation angle */
+/** The rotation (angle) of the node in degrees. 0 is the default rotation angle. Positive values rotate node CW. */
 @property(nonatomic,readwrite,assign) float rotation;
-/** The scale factor of the node. 1.0 is the default scale factor. It modifies the X and Y scale at the same time */
+/** The scale factor of the node. 1.0 is the default scale factor. It modifies the X and Y scale at the same time. */
 @property(nonatomic,readwrite,assign) float scale;
 /** The scale factor of the node. 1.0 is the default scale factor. It only modifies the X scale factor. */
 @property(nonatomic,readwrite,assign) float scaleX;
 /** The scale factor of the node. 1.0 is the default scale factor. It only modifies the Y scale factor. */
 @property(nonatomic,readwrite,assign) float scaleY;
-/** Position (x,y) of the node in OpenGL coordinates. (0,0) is the left-bottom corner */
+/** Position (x,y) of the node in OpenGL coordinates. (0,0) is the left-bottom corner. */
 @property(nonatomic,readwrite,assign) CGPoint position;
 /** A Camera object that lets you move the node using camera coordinates.
  * If you use the Camera then position, scale & rotation won't be used */
@@ -171,13 +193,15 @@ enum {
  @since v0.8
  */
 @property (nonatomic,readwrite) CGSize contentSize;
+/** whether or not the node is running */
+@property(nonatomic,readonly) BOOL isRunning;
 /** A weak reference to the parent */
 @property(nonatomic,readwrite,assign) CCNode* parent;
 /** If YES the transformtions will be relative to it's anchor point.
  * Sprites, Labels and any other sizeble object use it have it enabled by default.
  * Scenes, Layers and other "whole screen" object don't use it, have it disabled by default.
  */
-@property(nonatomic,readwrite,assign) BOOL relativeAnchorPoint;
+@property(nonatomic,readwrite,assign) BOOL isRelativeAnchorPoint;
 /** A tag used to identify the node easily */
 @property(nonatomic,readwrite,assign) int tag;
 /** A custom user data pointer */
@@ -275,7 +299,6 @@ enum {
 /** recursive method that visit its children and draw them */
 -(void) visit;
 
-
 // transformations
 
 /** performs OpenGL view-matrix transformation based on position, scale, rotation and other attributes. */
@@ -338,15 +361,6 @@ enum {
  If time is 0 it will be ticked every frame.
  */
 -(void) schedule: (SEL) s interval:(ccTime)seconds;
-/** schedules a selector.
- The scheduled selector will be ticked every frame, repeating a limited number of times
- */
--(void) schedule: (SEL) s repeat:(int)times;
-/** schedules a selector with an interval time in seconds.
- If time is 0 it will be ticked every frame.
- In either case, repeating a limited number of times
- */
--(void) schedule: (SEL) s interval:(ccTime)seconds repeat:(int)times;
 /** unschedule a selector */
 -(void) unschedule: (SEL) s;
 /** activate all scheduled timers.

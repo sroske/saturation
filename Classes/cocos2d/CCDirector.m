@@ -52,8 +52,6 @@ extern NSString * cocos2dVersion(void);
 -(void) preMainLoop;
 -(void) mainLoop;
 -(void) setNextScene;
-// rotates the screen if Landscape mode is activated
--(void) applyLandscape;
 // shows the FPS in the screen
 -(void) showFPS;
 // calculates delta time since last time it was called
@@ -72,7 +70,7 @@ extern NSString * cocos2dVersion(void);
 @synthesize nextDeltaTimeZero=nextDeltaTimeZero_;
 @synthesize deviceOrientation=deviceOrientation_;
 @synthesize isPaused=isPaused_;
-@synthesize loadingBundle;
+@synthesize sendCleanupToScene=sendCleanupToScene_;
 //
 // singleton stuff
 //
@@ -80,20 +78,17 @@ static CCDirector *_sharedDirector = nil;
 
 + (CCDirector *)sharedDirector
 {
-	@synchronized([CCDirector class])
-	{
-		if (!_sharedDirector) {
+	if (!_sharedDirector) {
 
-			//
-			// Default Director is TimerDirector
-			// 
-			if( [ [CCDirector class] isEqual:[self class]] )
-				_sharedDirector = [[CCTimerDirector alloc] init];
-			else
-				_sharedDirector = [[self alloc] init];
-		}
-		
+		//
+		// Default Director is TimerDirector
+		// 
+		if( [ [CCDirector class] isEqual:[self class]] )
+			_sharedDirector = [[CCTimerDirector alloc] init];
+		else
+			_sharedDirector = [[self alloc] init];
 	}
+		
 	return _sharedDirector;
 }
 
@@ -130,13 +125,8 @@ static CCDirector *_sharedDirector = nil;
 
 +(id)alloc
 {
-	@synchronized([CCDirector class])
-	{
-		NSAssert(_sharedDirector == nil, @"Attempted to allocate a second instance of a singleton.");
-		return [super alloc];
-	}
-	// to avoid compiler warning
-	return nil;
+	NSAssert(_sharedDirector == nil, @"Attempted to allocate a second instance of a singleton.");
+	return [super alloc];
 }
 
 - (id) init
@@ -146,14 +136,14 @@ static CCDirector *_sharedDirector = nil;
 	if( (self=[super init]) ) {
 
 		CCLOG(@"cocos2d: Using Director Type:%@", [self class]);
-    loadingBundle = [NSBundle mainBundle];
+		
 		// default values
 		pixelFormat_ = kPixelFormatDefault;
 		depthBufferFormat_ = 0;
 
 		// scenes
 		runningScene_ = nil;
-		nextScene = nil;
+		nextScene_ = nil;
 		
 		oldAnimationInterval = animationInterval = 1.0 / kDefaultFPS;
 		scenesStack_ = [[NSMutableArray arrayWithCapacity:10] retain];
@@ -201,7 +191,7 @@ static CCDirector *_sharedDirector = nil;
 	
 #if CC_DIRECTOR_FAST_FPS
     if (!FPSLabel)
-		FPSLabel = [[CCLabelAtlas labelAtlasWithString:@"00.0" charMapFile:@"fps_images.png" itemWidth:16 itemHeight:24 startCharMap:'.'] retain];
+        FPSLabel = [[CCLabelAtlas labelAtlasWithString:@"00.0" charMapFile:@"fps_images.png" itemWidth:16 itemHeight:24 startCharMap:'.'] retain];
 #endif	
 }
 
@@ -214,27 +204,33 @@ static CCDirector *_sharedDirector = nil;
 	[self calculateDeltaTime];
 	
 	/* tick before glClear: issue #533 */
-	if( ! isPaused_ )
+	if( ! isPaused_ ) {
 		[[CCScheduler sharedScheduler] tick: dt];	
+	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	/* to avoid flickr, nextScene MUST be here: after tick and before draw.
 	 XXX: Which bug is this one. It seems that it can't be reproduced with v0.9 */
-	if( nextScene )
+	if( nextScene_ )
 		[self setNextScene];
 	
 	glPushMatrix();
 	
 	[self applyLandscape];
 	
+	// By default enable VertexArray, ColorArray, TextureCoordArray and Texture2D
+	CC_ENABLE_DEFAULT_GL_STATES();
+
 	/* draw the scene */
 	[runningScene_ visit];
 	if( displayFPS )
 		[self showFPS];
 	
+	CC_DISABLE_DEFAULT_GL_STATES();
+	
 	glPopMatrix();
-		
+
 	/* swap buffers */
 	[openGLView_ swapBuffers];	
 }
@@ -282,27 +278,33 @@ static CCDirector *_sharedDirector = nil;
 	return projection_;
 }
 
+-(float) getZEye
+{
+	return ( openGLView_.frame.size.height / 1.1566f );
+}
+
 -(void) setProjection:(ccDirectorProjection)projection
 {
+	CGSize size = openGLView_.frame.size;
 	switch (projection) {
 		case CCDirectorProjection2D:
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			glOrthof(0, openGLView_.frame.size.width, 0, openGLView_.frame.size.height, -1, 1);
+			glOrthof(0, size.width, 0, size.height, -1, 1);
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();			
 			break;
 
 		case CCDirectorProjection3D:
-			glViewport(0, 0, openGLView_.frame.size.width, openGLView_.frame.size.height);
+			glViewport(0, 0, size.width, size.height);
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			gluPerspective(60, (GLfloat)openGLView_.frame.size.width/openGLView_.frame.size.height, 0.5f, 1500.0f);
+			gluPerspective(60, (GLfloat)size.width/size.height, 0.5f, 1500.0f);
 			
 			glMatrixMode(GL_MODELVIEW);	
 			glLoadIdentity();
-			gluLookAt( openGLView_.frame.size.width/2, openGLView_.frame.size.height/2, [CCCamera getZEye],
-					  openGLView_.frame.size.width/2, openGLView_.frame.size.height/2, 0,
+			gluLookAt( size.width/2, size.height/2, [self getZEye],
+					  size.width/2, size.height/2, 0,
 					  0.0f, 1.0f, 0.0f);			
 			break;
 			
@@ -325,14 +327,6 @@ static CCDirector *_sharedDirector = nil;
 		glBlendFunc(CC_BLEND_SRC, CC_BLEND_DST);
 	} else
 		glDisable(GL_BLEND);
-}
-
-- (void) setTexture2D: (BOOL) on
-{
-	if (on)
-		glEnable(GL_TEXTURE_2D);
-	else
-		glDisable(GL_TEXTURE_2D);
 }
 
 - (void) setDepthTest: (BOOL) on
@@ -577,6 +571,10 @@ static CCDirector *_sharedDirector = nil;
 
 -(void) applyLandscape
 {	
+	CGSize s = [openGLView_ frame].size;
+	float w = s.width / 2;
+	float h = s.height / 2;
+
 	// XXX it's using hardcoded values.
 	// What if the the screen size changes in the future?
 	switch ( deviceOrientation_ ) {
@@ -585,19 +583,19 @@ static CCDirector *_sharedDirector = nil;
 			break;
 		case CCDeviceOrientationPortraitUpsideDown:
 			// upside down
-			glTranslatef(160,240,0);
+			glTranslatef(w,h,0);
 			glRotatef(180,0,0,1);
-			glTranslatef(-160,-240,0);
+			glTranslatef(-w,-h,0);
 			break;
 		case CCDeviceOrientationLandscapeRight:
-			glTranslatef(160,240,0);
+			glTranslatef(w,h,0);
 			glRotatef(90,0,0,1);
-			glTranslatef(-240,-160,0);
+			glTranslatef(-h,-w,0);
 			break;
 		case CCDeviceOrientationLandscapeLeft:
-			glTranslatef(160,240,0);
+			glTranslatef(w,h,0);
 			glRotatef(-90,0,0,1);
-			glTranslatef(-240,-160,0);
+			glTranslatef(-h,-w,0);
 			break;
 	}	
 }
@@ -618,17 +616,20 @@ static CCDirector *_sharedDirector = nil;
 	NSAssert( scene != nil, @"Argument must be non-nil");
 
 	NSUInteger index = [scenesStack_ count];
-
+	
+	sendCleanupToScene_ = YES;
 	[scenesStack_ replaceObjectAtIndex:index-1 withObject:scene];
-	nextScene = scene;	// nextScene is a weak ref
+	nextScene_ = scene;	// nextScene_ is a weak ref
 }
 
 - (void) pushScene: (CCScene*) scene
 {
 	NSAssert( scene != nil, @"Argument must be non-nil");
 
+	sendCleanupToScene_ = NO;
+
 	[scenesStack_ addObject: scene];
-	nextScene = scene;	// nextScene is a weak ref
+	nextScene_ = scene;	// nextScene_ is a weak ref
 }
 
 -(void) popScene
@@ -641,7 +642,7 @@ static CCDirector *_sharedDirector = nil;
 	if( c == 0 ) {
 		[self end];
 	} else {
-		nextScene = [scenesStack_ objectAtIndex:c-1];
+		nextScene_ = [scenesStack_ objectAtIndex:c-1];
 	}
 }
 
@@ -652,7 +653,7 @@ static CCDirector *_sharedDirector = nil;
 	[runningScene_ release];
 
 	runningScene_ = nil;
-	nextScene = nil;
+	nextScene_ = nil;
 	
 	// remove all objects, but don't release it.
 	// runWithScene might be executed after 'end'.
@@ -684,17 +685,24 @@ static CCDirector *_sharedDirector = nil;
 
 -(void) setNextScene
 {
-	BOOL runningIsTransition = [runningScene_ isKindOfClass:[CCTransitionScene class]];
-	BOOL newIsTransition = [nextScene isKindOfClass:[CCTransitionScene class]];
+	Class transClass = [CCTransitionScene class];
+	BOOL runningIsTransition = [runningScene_ isKindOfClass:transClass];
+	BOOL newIsTransition = [nextScene_ isKindOfClass:transClass];
 
-	// If it is not a transition, call onExit
-	if( ! newIsTransition )
+	// If it is not a transition, call onExit/cleanup
+	if( ! newIsTransition ) {
 		[runningScene_ onExit];
+
+		// issue #709. the root node (scene) should receive the cleanup message too
+		// otherwise it might be leaked.
+		if( sendCleanupToScene_)
+			[runningScene_ cleanup];
+	}
 
 	[runningScene_ release];
 	
-	runningScene_ = [nextScene retain];
-	nextScene = nil;
+	runningScene_ = [nextScene_ retain];
+	nextScene_ = nil;
 
 	if( ! runningIsTransition ) {
 		[runningScene_ onEnter];
@@ -753,16 +761,19 @@ static CCDirector *_sharedDirector = nil;
 	frames++;
 	accumDt += dt;
 	
-	if ( accumDt > 0.1)  {
+	if ( accumDt > CC_DIRECTOR_FPS_INTERVAL)  {
 		frameRate = frames/accumDt;
 		frames = 0;
 		accumDt = 0;
+
+//		sprintf(format,"%.1f",frameRate);
+//		[FPSLabel setCString:format];
+
+		NSString *str = [[NSString alloc] initWithFormat:@"%.1f", frameRate];
+		[FPSLabel setString:str];
+		[str release];
 	}
 		
-	NSString *str = [NSString stringWithFormat:@"%.1f",frameRate];
-	[FPSLabel setString:str];
-//	sprintf(format,"%.1f",frameRate);
-//	[FPSLabel setCString:format];
 	[FPSLabel draw];
 }
 #else
@@ -773,17 +784,20 @@ static CCDirector *_sharedDirector = nil;
 	frames++;
 	accumDt += dt;
 	
-	if ( accumDt > 0.3)  {
+	if ( accumDt > CC_DIRECTOR_FPS_INTERVAL)  {
 		frameRate = frames/accumDt;
 		frames = 0;
 		accumDt = 0;
 	}
 	
 	NSString *str = [NSString stringWithFormat:@"%.2f",frameRate];
-	Texture2D *texture = [[Texture2D alloc] initWithString:str dimensions:CGSizeMake(100,30) alignment:UITextAlignmentLeft fontName:@"Arial" fontSize:24];
-	glEnable(GL_TEXTURE_2D);
-	glEnableClientState( GL_VERTEX_ARRAY);
-	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	CCTexture2D *texture = [[CCTexture2D alloc] initWithString:str dimensions:CGSizeMake(100,30) alignment:UITextAlignmentLeft fontName:@"Arial" fontSize:24];
+
+	// Default GL states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
+	// Needed states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_TEXTURE_COORD_ARRAY
+	// Unneeded states: GL_COLOR_ARRAY
+	glDisableClientState(GL_COLOR_ARRAY);
+	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	glColor4ub(224,224,244,200);
@@ -791,9 +805,9 @@ static CCDirector *_sharedDirector = nil;
 	[texture release];
 	
 	glBlendFunc(CC_BLEND_SRC, CC_BLEND_DST);
-	glDisable(GL_TEXTURE_2D);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	// restore default GL state
+	glEnableClientState(GL_COLOR_ARRAY);
 }
 #endif
 
@@ -992,7 +1006,7 @@ static CCDirector *_sharedDirector = nil;
 
 - (void)setAnimationInterval:(NSTimeInterval)interval
 {
-	NSLog(@"FastDirectory doesn't support setAnimationInterval, yet");
+	NSLog(@"FastDirector doesn't support setAnimationInterval, yet");
 }
 @end
 

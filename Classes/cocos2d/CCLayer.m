@@ -35,7 +35,7 @@
 		CGSize s = [[CCDirector sharedDirector] winSize];
 		anchorPoint_ = ccp(0.5f, 0.5f);
 		[self setContentSize:s];
-		self.relativeAnchorPoint = NO;
+		self.isRelativeAnchorPoint = NO;
 
 		isTouchEnabled = NO;
 		isAccelerometerEnabled = NO;
@@ -60,7 +60,7 @@
 {
 	if( enabled != isAccelerometerEnabled ) {
 		isAccelerometerEnabled = enabled;
-		if( isRunning ) {
+		if( isRunning_ ) {
 			if( enabled )
 				[[UIAccelerometer sharedAccelerometer] setDelegate:self];
 			else
@@ -78,7 +78,7 @@
 {
 	if( isTouchEnabled != enabled ) {
 		isTouchEnabled = enabled;
-		if( isRunning ) {
+		if( isRunning_ ) {
 			if( enabled )
 				[self registerWithTouchDispatcher];
 			else
@@ -188,14 +188,12 @@
 
 -(void) changeWidth: (GLfloat) w
 {
-	CGSize s = self.contentSize;
-	[self setContentSize:CGSizeMake(w,s.height)];
+	[self setContentSize:CGSizeMake(w,contentSize_.height)];
 }
 
 -(void) changeHeight: (GLfloat) h
 {
-	CGSize s = self.contentSize;
-	[self setContentSize:CGSizeMake(s.width,h)];
+	[self setContentSize:CGSizeMake(contentSize_.width,h)];
 }
 
 - (void) updateColor
@@ -215,10 +213,14 @@
 
 - (void)draw
 {		
+	// Default GL states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
+	// Needed states: GL_VERTEX_ARRAY, GL_COLOR_ARRAY
+	// Unneeded states: GL_TEXTURE_2D, GL_TEXTURE_COORD_ARRAY
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisable(GL_TEXTURE_2D);
+
 	glVertexPointer(2, GL_FLOAT, 0, squareVertices);
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glColorPointer(4, GL_UNSIGNED_BYTE, 0, squareColors);
-	glEnableClientState(GL_COLOR_ARRAY);
 	
 	BOOL newBlend = NO;
 	if( blendFunc_.src != CC_BLEND_SRC || blendFunc_.dst != CC_BLEND_DST ) {
@@ -235,8 +237,9 @@
 	if( newBlend )
 		glBlendFunc(CC_BLEND_SRC, CC_BLEND_DST);
 	
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+	// restore default GL state
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnable(GL_TEXTURE_2D);
 }
 
 #pragma mark Protocols

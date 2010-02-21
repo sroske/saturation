@@ -2,7 +2,7 @@
  *
  * http://www.cocos2d-iphone.org
  *
- * Copyright (C) 2008,2009 Ricardo Quesada
+ * Copyright (C) 2008,2009,2010 Ricardo Quesada
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the 'cocos2d for iPhone' license.
@@ -18,6 +18,8 @@
 #import "ccMacros.h"
 
 #import "Support/glu.h"
+
+#import "CCDrawingPrimitives.h"
 
 @implementation CCCamera
 
@@ -45,15 +47,10 @@
 
 -(void) restore
 {
-	CGSize s = [[CCDirector sharedDirector] displaySize];
-
-	eyeX = s.width/2;
-	eyeY = s.height/2;
+	eyeX = eyeY = 0;
 	eyeZ = [CCCamera getZEye];
 	
-	centerX = s.width/2;
-	centerY = s.height/2;
-	centerZ = 0.0f;
+	centerX = centerY = centerZ = 0;
 	
 	upX = 0.0f;
 	upY = 1.0f;
@@ -64,49 +61,18 @@
 
 -(void) locate
 {
-	if( dirty ) {
-		ccDeviceOrientation orientation = [[CCDirector sharedDirector] deviceOrientation];
-
-		glLoadIdentity();
-
-		switch( orientation ) {
-			case CCDeviceOrientationPortrait:
-				break;
-			case CCDeviceOrientationPortraitUpsideDown:
-				glRotatef(-180,0,0,1);
-				break;
-			case CCDeviceOrientationLandscapeLeft:
-				glRotatef(-90,0,0,1);
-				break;
-			case CCDeviceOrientationLandscapeRight:
-				glRotatef(90,0,0,1);
-				break;	
-		}
-		
+	if( dirty )
 		gluLookAt( eyeX, eyeY, eyeZ,
 				centerX, centerY, centerZ,
 				upX, upY, upZ
 				);
-		
-		switch( orientation ) {
-			case CCDeviceOrientationPortrait:
-			case CCDeviceOrientationPortraitUpsideDown:
-				// none
-				break;
-			case CCDeviceOrientationLandscapeLeft:
-				glTranslatef(-80,80,0);
-				break;
-			case CCDeviceOrientationLandscapeRight:
-				glTranslatef(-80,80,0);
-				break;	
-		}
-	}
 }
 
 +(float) getZEye
 {
-	CGSize s = [[CCDirector sharedDirector] displaySize];
-	return ( s.height / 1.1566f );
+	return FLT_EPSILON;
+//	CGSize s = [[CCDirector sharedDirector] displaySize];
+//	return ( s.height / 1.1566f );
 }
 
 -(void) setEyeX: (float)x eyeY:(float)y eyeZ:(float)z

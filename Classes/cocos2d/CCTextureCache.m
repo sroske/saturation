@@ -53,32 +53,21 @@ static CCTextureCache *sharedTextureCache;
 
 + (CCTextureCache *)sharedTextureCache
 {
-	@synchronized([CCTextureCache class])
-	{
-		if (!sharedTextureCache)
-			sharedTextureCache = [[CCTextureCache alloc] init];
+	if (!sharedTextureCache)
+		sharedTextureCache = [[CCTextureCache alloc] init];
 		
-	}
-	// to avoid compiler warning
 	return sharedTextureCache;
 }
 
 +(id)alloc
 {
-	@synchronized([CCTextureCache class])
-	{
-		NSAssert(sharedTextureCache == nil, @"Attempted to allocate a second instance of a singleton.");
-		return [super alloc];
-	}
-	// to avoid compiler warning
-	return nil;
+	NSAssert(sharedTextureCache == nil, @"Attempted to allocate a second instance of a singleton.");
+	return [super alloc];
 }
 
 +(void)purgeSharedTextureCache
 {
-	@synchronized( self ) {
-		[sharedTextureCache release];
-	}
+	[sharedTextureCache release];
 }
 
 -(id) init
@@ -252,6 +241,8 @@ static CCTextureCache *sharedTextureCache;
 	tex = [[CCTexture2D alloc] initWithPVRTCFile: fileimage];
 	if( tex )
 		[textures setObject: tex forKey:fileimage];
+	else
+		CCLOG(@"cocos2d: Couldn't add PVRTCImage:%@ in CCTextureCache",fileimage);	
 	
 	return [tex autorelease];
 }
@@ -260,9 +251,10 @@ static CCTextureCache *sharedTextureCache;
 {
 	NSAssert(imageref != nil, @"TextureCache: image MUST not be nill");
 	
-	CCTexture2D * tex;
+	CCTexture2D * tex = nil;
 	
-	if( (tex=[textures objectForKey: key] ) ) {
+	// If key is nil, then create a new texture each time
+	if( key && (tex=[textures objectForKey: key] ) ) {
 		return tex;
 	}
 	
@@ -271,7 +263,7 @@ static CCTextureCache *sharedTextureCache;
 	tex = [[CCTexture2D alloc] initWithImage: image];
 	[image release];
 	
-	if(tex)
+	if(tex && key)
 		[textures setObject: tex forKey:key];
 	else
 		CCLOG(@"cocos2d: Couldn't add CGImage in CCTextureCache");
@@ -279,7 +271,7 @@ static CCTextureCache *sharedTextureCache;
 	return [tex autorelease];
 }
 
-#pragma mark TextureCache - Cache
+#pragma mark TextureCache - Remove
 
 -(void) removeAllTextures
 {

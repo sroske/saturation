@@ -30,7 +30,7 @@ enum {
  Whether or not an CCSprite will rotate, scale or translate with it's parent.
  Useful in health bars, when you want that the health bar translates with it's parent but you don't
  want it to rotate with its parent.
- @since v0.9.0
+ @since v0.99.0
  */
 typedef enum {
 	//! Translate with it's parent
@@ -72,16 +72,17 @@ typedef enum {
 	//
 	CCTextureAtlas			*textureAtlas_;			// Sprite Sheet texture atlas (weak reference)
 	NSUInteger				atlasIndex_;			// Absolute (real) Index on the SpriteSheet
-	BOOL					dirty_;					// Sprite needs to be updated
 	CCSpriteSheet			*spriteSheet_;			// Used spritesheet (weak reference)
 	ccHonorParentTransform	honorParentTransform_;	// whether or not to transform according to its parent transformations
+	BOOL					dirty_;					// Sprite needs to be updated
+	BOOL					recursiveDirty_;		// Subchildren needs to be updated
 	BOOL					hasChildren_;			// optimization to check if it contain children
 	
 	//
 	// Data used when the sprite is self-rendered
 	//
-	ccBlendFunc		blendFunc_;			// Needed for the texture protocol
-	CCTexture2D		*texture_;			// Texture used to render the sprite
+	ccBlendFunc				blendFunc_;				// Needed for the texture protocol
+	CCTexture2D				*texture_;				// Texture used to render the sprite
 
 	//
 	// Shared data
@@ -96,7 +97,7 @@ typedef enum {
 	// Offset Position (used by Zwoptex)
 	CGPoint	offsetPosition_;
 
-	// vertex coords, texture coors and color info
+	// vertex coords, texture coords and color info
 	ccV3F_C4B_T2F_Quad quad_;
 	
 	// opacity and RGB protocol
@@ -110,7 +111,7 @@ typedef enum {
 	
 	
 	// Animations that belong to the sprite
-	NSMutableDictionary *animations;
+	NSMutableDictionary *animations_;
 }
 
 /** whether or not the Sprite needs to be updated in the Atlas */
@@ -121,9 +122,21 @@ typedef enum {
 @property (nonatomic,readwrite) NSUInteger atlasIndex;
 /** returns the rect of the CCSprite */
 @property (nonatomic,readonly) CGRect textureRect;
-/** whether or not the sprite is flipped horizontally */
+/** whether or not the sprite is flipped horizontally. 
+ It only flips the texture of the sprite, and not the texture of the sprite's children.
+ Also, flipping the texture doesn't alter the anchorPoint.
+ If you want to flip the anchorPoint too, and/or to flip the children too use:
+ 
+	sprite.scaleX *= -1;
+ */
 @property (nonatomic,readwrite) BOOL flipX;
-/** whether or not the sprite is flipped vertically */
+/** whether or not the sprite is flipped vertically\ 
+ It only flips the texture of the sprite, and not the texture of the sprite's children.
+ Also, flipping the texture doesn't alter the anchorPoint.
+ If you want to flip the anchorPoint too, and/or to flip the children too use:
+ 
+	sprite.scaleY *= -1;
+ */
 @property (nonatomic,readwrite) BOOL flipY;
 /** opacity: conforms to CCRGBAProtocol protocol */
 @property (nonatomic,readonly) GLubyte opacity;
@@ -138,11 +151,11 @@ typedef enum {
 /** whether or not to transform according to its parent transfomrations.
  Useful for health bars. eg: Don't rotate the health bar, even if the parent rotates.
  IMPORTANT: Only valid if it is rendered using an CCSpriteSheet.
- @since v0.9.0
+ @since v0.99.0
  */
 @property (nonatomic,readwrite) ccHonorParentTransform honorParentTransform;
 /** offset position of the sprite. Calculated automatically by editors like Zwoptex.
- @since v0.9.0
+ @since v0.99.0
  */
 @property (nonatomic,readwrite) CGPoint	offsetPosition;
 /** conforms to CCTextureProtocol protocol */
@@ -186,8 +199,22 @@ typedef enum {
 +(id) spriteWithFile:(NSString*)filename rect:(CGRect)rect;
 
 /** Creates an sprite with a CGImageRef.
+ @deprecated Use spriteWithCGImage:key: instead. Will be removed in v1.0 final
  */
-+(id) spriteWithCGImage: (CGImageRef)image;
++(id) spriteWithCGImage: (CGImageRef)image __attribute__((deprecated));
+
+/** Creates an sprite with a CGImageRef and a key.
+ The key is used by the CCTextureCache to know if a texture was already created with this CGImage.
+ For example, a valid key is: @"sprite_frame_01".
+ If key is nil, then a new texture will be created each time by the CCTextureCache. 
+ @since v0.99.0
+ */
++(id) spriteWithCGImage: (CGImageRef)image key:(NSString*)key;
+
+
+/** Creates an sprite with an CCSpriteSheet and a rect
+ */
++(id) spriteWithSpriteSheet:(CCSpriteSheet*)spritesheet rect:(CGRect)rect;
 
 
 /** Initializes an sprite with a texture.
@@ -224,8 +251,21 @@ typedef enum {
 -(id) initWithFile:(NSString*)filename rect:(CGRect)rect;
 
 /** Initializes an sprite with a CGImageRef
+ @deprecated Use spriteWithCGImage:key: instead. Will be removed in v1.0 final
  */
--(id) initWithCGImage: (CGImageRef)image;
+-(id) initWithCGImage: (CGImageRef)image __attribute__((deprecated));
+
+/** Initializes an sprite with a CGImageRef and a key
+ The key is used by the CCTextureCache to know if a texture was already created with this CGImage.
+ For example, a valid key is: @"sprite_frame_01".
+ If key is nil, then a new texture will be created each time by the CCTextureCache. 
+ @since v0.99.0
+ */
+-(id) initWithCGImage:(CGImageRef)image key:(NSString*)key;
+
+/** Initializes an sprite with an CCSpriteSheet and a rect
+ */
+-(id) initWithSpriteSheet:(CCSpriteSheet*)spritesheet rect:(CGRect)rect;
 
 /** updates the quad according the the rotation, position, scale values.
  */
@@ -236,12 +276,12 @@ typedef enum {
 -(void) setTextureRect:(CGRect) rect;
 
 /** tell the sprite to use self-render.
- @since v0.9.0
+ @since v0.99.0
  */
 -(void) useSelfRender;
 
 /** tell the sprite to use sprite sheet render.
- @since v0.9.0
+ @since v0.99.0
  */
 -(void) useSpriteSheetRender:(CCSpriteSheet*)spriteSheet;
 

@@ -2,7 +2,7 @@
  *
  * http://www.cocos2d-iphone.org
  *
- * Copyright (C) 2008,2009 Ricardo Quesada
+ * Copyright (C) 2008,2009,2010 Ricardo Quesada
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the 'cocos2d for iPhone' license.
@@ -25,9 +25,10 @@
 -(void) startWithTarget:(id)aTarget
 {
 	[super startWithTarget:aTarget];
-	[[target camera] centerX:&centerXOrig centerY:&centerYOrig centerZ: &centerZOrig];
-	[[target camera] eyeX:&eyeXOrig eyeY:&eyeYOrig eyeZ: &eyeZOrig];
-	[[target camera] upX:&upXOrig upY:&upYOrig upZ: &upZOrig];
+	CCCamera *camera = [target camera];
+	[camera centerX:&centerXOrig centerY:&centerYOrig centerZ: &centerZOrig];
+	[camera eyeX:&eyeXOrig eyeY:&eyeYOrig eyeZ: &eyeZOrig];
+	[camera upX:&upXOrig upY:&upYOrig upZ: &upZOrig];
 }
 
 -(id) reverse
@@ -50,18 +51,18 @@
 
 -(id) initWithDuration:(float)t radius:(float)r deltaRadius:(float) dr angleZ:(float)z deltaAngleZ:(float)dz angleX:(float)x deltaAngleX:(float)dx
 {
-	if(!(self=[super initWithDuration:t]) )
-		return nil;
+	if((self=[super initWithDuration:t]) ) {
 	
-	radius = r;
-	deltaRadius = dr;
-	angleZ = z;
-	deltaAngleZ = dz;
-	angleX = x;
-	deltaAngleX = dx;
+		radius = r;
+		deltaRadius = dr;
+		angleZ = z;
+		deltaAngleZ = dz;
+		angleX = x;
+		deltaAngleX = dx;
 
-	radDeltaZ = (CGFloat)CC_DEGREES_TO_RADIANS(dz);
-	radDeltaX = (CGFloat)CC_DEGREES_TO_RADIANS(dx);
+		radDeltaZ = (CGFloat)CC_DEGREES_TO_RADIANS(dz);
+		radDeltaX = (CGFloat)CC_DEGREES_TO_RADIANS(dx);
+	}
 	
 	return self;
 }
@@ -83,17 +84,18 @@
 	radX = (CGFloat)CC_DEGREES_TO_RADIANS(angleX);
 }
 
--(void) update: (ccTime) t
+-(void) update: (ccTime) dt
 {
-	float r = (radius + deltaRadius * t) *[CCCamera getZEye];
-	float za = radZ + radDeltaZ * t;
-	float xa = radX + radDeltaX * t;
+	float r = (radius + deltaRadius * dt) *[CCCamera getZEye];
+	float za = radZ + radDeltaZ * dt;
+	float xa = radX + radDeltaX * dt;
 
 	float i = sinf(za) * cosf(xa) * r + centerXOrig;
 	float j = sinf(za) * sinf(xa) * r + centerYOrig;
 	float k = cosf(za) * r + centerZOrig;
 
 	[[target camera] setEyeX:i eyeY:j eyeZ:k];
+	
 }
 
 -(void) sphericalRadius:(float*) newRadius zenith:(float*) zenith azimuth:(float*) azimuth
@@ -102,8 +104,9 @@
 	float r; // radius
 	float s;
 	
-	[[target camera] eyeX:&ex eyeY:&ey eyeZ:&ez];
-	[[target camera] centerX:&cx centerY:&cy centerZ:&cz];
+	CCCamera *camera = [target camera];
+	[camera eyeX:&ex eyeY:&ey eyeZ:&ez];
+	[camera centerX:&cx centerY:&cy centerZ:&cz];
 	
 	x = ex-cx;
 	y = ey-cy;
@@ -112,13 +115,13 @@
 	r = sqrtf( powf(x,2) + powf(y,2) + powf(z,2));
 	s = sqrtf( powf(x,2) + powf(y,2));
 	if(s==0.0f)
-		s=0.00000001f;
+		s=FLT_EPSILON;
 	if(r==0.0f)
-		r=0.00000001f;
+		r=FLT_EPSILON;
 
 	*zenith = acosf( z/r);
 	if( x < 0 )
-		*azimuth= (CGFloat)M_PI - asinf(y/s);
+		*azimuth= (float)M_PI - asinf(y/s);
 	else
 		*azimuth = asinf(y/s);
 					

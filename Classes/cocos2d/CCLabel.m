@@ -42,10 +42,10 @@
 {
 	if( (self=[super init]) ) {
 
-		_dimensions = dimensions;
-		_alignment = alignment;
-		_fontName = [name retain];
-		_fontSize = size;
+		dimensions_ = dimensions;
+		alignment_ = alignment;
+		fontName_ = [name retain];
+		fontSize_ = size;
 		
 		[self setString:string];
 	}
@@ -56,9 +56,9 @@
 {
 	if( (self=[super init]) ) {
 		
-		_dimensions = CGSizeZero;
-		_fontName = [name retain];
-		_fontSize = size;
+		dimensions_ = CGSizeZero;
+		fontName_ = [name retain];
+		fontSize_ = size;
 		
 		[self setString:string];
 	}
@@ -67,20 +67,28 @@
 
 - (void) setString:(NSString*)string
 {
-	if( CGSizeEqualToSize( _dimensions, CGSizeZero ) )
-		// WARNING: double retain
-		self.texture = [[CCTexture2D alloc] initWithString:string fontName:_fontName fontSize:_fontSize];
+	CCTexture2D *tex;
+	if( CGSizeEqualToSize( dimensions_, CGSizeZero ) )
+		tex = [[CCTexture2D alloc] initWithString:string fontName:fontName_ fontSize:fontSize_];
 	else
-		// WARNING: double retain
-		self.texture = [[CCTexture2D alloc] initWithString:string dimensions:_dimensions alignment:_alignment fontName:_fontName fontSize:_fontSize];
-	
-	// end of warning. 1 retain only
-	[self.texture release];
+		tex = [[CCTexture2D alloc] initWithString:string dimensions:dimensions_ alignment:alignment_ fontName:fontName_ fontSize:fontSize_];
+
+
+	[self setTexture:tex];
+	[tex release];
+
+	CGSize size = [texture_ contentSize];
+	[self setTextureRect: CGRectMake(0, 0, size.width, size.height)];
 }
 
 - (void) dealloc
 {
-	[_fontName release];
+	[fontName_ release];
 	[super dealloc];
+}
+
+- (NSString*) description
+{
+	return [NSString stringWithFormat:@"<%@ = %08X | FontName = %@, FontSize = %.1f>", [self class], self, fontName_, fontSize_];
 }
 @end

@@ -2,7 +2,7 @@
  *
  * http://www.cocos2d-iphone.org
  *
- * Copyright (C) 2008,2009 Ricardo Quesada
+ * Copyright (C) 2008,2009,2010 Ricardo Quesada
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the 'cocos2d for iPhone' license.
@@ -12,7 +12,6 @@
  *
  */
 
-#import <UIKit/UIKit.h>
 
 #import "CCNode.h"
 
@@ -24,6 +23,14 @@
 
     If the object is transformed by any of the scale, rotation or
     position attributes, then they will override the camera.
+ 
+	IMPORTANT: Either your use the camera or the rotation/scale/position properties. You can't use both.
+    World coordinates won't work if you use the camera.
+
+    Limitations:
+ 
+     - Some nodes, like CCParallaxNode, CCParticle uses world node coordinates, and they won't work properly if you move them (or any of their ancestors)
+       using the camera.
 */
 
 @interface CCCamera : NSObject {

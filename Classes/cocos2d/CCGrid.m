@@ -29,7 +29,6 @@
 @synthesize gridSize=gridSize_;
 @synthesize step=step_;
 
-#define kTextureSize 512
 -(id)initWithSize:(ccGridSize)gSize
 {
 	if ( (self = [super init] ) )
@@ -42,17 +41,27 @@
 	
 		if ( texture_ == nil )
 		{
-			Texture2DPixelFormat format = [CCDirector sharedDirector].pixelFormat == kPixelFormatRGB565 ? kTexture2DPixelFormat_RGB565 : kTexture2DPixelFormat_RGBA8888;
+			CCDirector *director = [CCDirector sharedDirector];
+			CGSize s = [director winSize];
+			int textureSize = 8;
+			while (textureSize < s.width || textureSize < s.height)
+				textureSize *= 2;
+
+			Texture2DPixelFormat format = [director pixelFormat] == kPixelFormatRGB565 ? kTexture2DPixelFormat_RGB565 : kTexture2DPixelFormat_RGBA8888;
 			
-			void *data = malloc((int)(kTextureSize * kTextureSize * 4));
-			memset(data, 0, (int)(kTextureSize * kTextureSize * 4));
+			void *data = malloc((int)(textureSize * textureSize * 4));
+			if( ! data ) {
+				CCLOG(@"cocos2d: CCGrid: not enough memory");
+				return nil;
+			}
+			memset(data, 0, (int)(textureSize * textureSize * 4));
 			
-			texture_ = [[CCTexture2D alloc] initWithData:data pixelFormat:format pixelsWide:kTextureSize pixelsHigh:kTextureSize contentSize:win];
+			texture_ = [[CCTexture2D alloc] initWithData:data pixelFormat:format pixelsWide:textureSize pixelsHigh:textureSize contentSize:win];
 			free( data );
 		}
 		
 		grabber_ = [[CCGrabber alloc] init];
-		[grabber_ grab:self.texture];
+		[grabber_ grab:texture_];
 
 		step_.x = win.width / gridSize_.x;
 		step_.y = win.height / gridSize_.y;
@@ -95,23 +104,29 @@
 // This routine can be merged with Director
 -(void)applyLandscape
 {
-	ccDeviceOrientation orientation  = [[CCDirector sharedDirector] deviceOrientation];
+	CCDirector *director = [CCDirector sharedDirector];
+	
+	CGSize winSize = [director displaySize];
+	float w = winSize.width / 2;
+	float h = winSize.height / 2;
+
+	ccDeviceOrientation orientation  = [director deviceOrientation];
 
 	switch (orientation) {
 		case CCDeviceOrientationLandscapeLeft:
-			glTranslatef(160,240,0);
+			glTranslatef(w,h,0);
 			glRotatef(-90,0,0,1);
-			glTranslatef(-240,-160,0);
+			glTranslatef(-h,-w,0);
 			break;
 		case CCDeviceOrientationLandscapeRight:
-			glTranslatef(160,240,0);
+			glTranslatef(w,h,0);
 			glRotatef(90,0,0,1);
-			glTranslatef(-240,-160,0);
+			glTranslatef(-h,-w,0);
 			break;
 		case CCDeviceOrientationPortraitUpsideDown:
-			glTranslatef(160,240,0);
+			glTranslatef(w,h,0);
 			glRotatef(180,0,0,1);
-			glTranslatef(-160,-240,0);
+			glTranslatef(-w,-h,0);
 			break;
 		default:
 			break;
@@ -142,7 +157,7 @@
 	
 	glMatrixMode(GL_MODELVIEW);	
 	glLoadIdentity();
-	gluLookAt( winSize.width/2, winSize.height/2, [CCCamera getZEye],
+	gluLookAt( winSize.width/2, winSize.height/2, [[CCDirector sharedDirector] getZEye],
 			  winSize.width/2, winSize.height/2, 0,
 			  0.0f, 1.0f, 0.0f
 			  );
@@ -151,27 +166,31 @@
 -(void)beforeDraw
 {
 	[self set2DProjection];
-	[grabber_ beforeRender:self.texture];
+	[grabber_ beforeRender:texture_];
 }
 
--(void)afterDraw:(CCCamera *)camera
+-(void)afterDraw:(CCNode *)target
 {
-	[grabber_ afterRender:self.texture];
+	[grabber_ afterRender:texture_];
 	
 	[self set3DProjection];
 	[self applyLandscape];
 
-	BOOL cDirty = camera.dirty;
-	camera.dirty = YES;
-	[camera locate];
-	camera.dirty = cDirty;
+	if( target.camera.dirty ) {
+
+		CGPoint offset = [target anchorPointInPixels];
+
+		//
+		// XXX: Camera should be applied in the AnchorPoint
+		//
+		glTranslatef(offset.x, offset.y, 0);
+		[target.camera locate];
+		glTranslatef(-offset.x, -offset.y, 0);
+	}
 		
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, self.texture.name);
-	
+	glBindTexture(GL_TEXTURE_2D, texture_.name);
+
 	[self blit];
-	
-	glDisable(GL_TEXTURE_2D);
 }
 
 -(void)blit
@@ -218,21 +237,23 @@
 {
 	int n = gridSize_.x * gridSize_.y;
 	
-	glEnableClientState( GL_VERTEX_ARRAY);
-	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	// Default GL states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
+	// Needed states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_TEXTURE_COORD_ARRAY
+	// Unneeded states: GL_COLOR_ARRAY
+	glDisableClientState(GL_COLOR_ARRAY);	
 	
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 	glTexCoordPointer(2, GL_FLOAT, 0, texCoordinates);
 	glDrawElements(GL_TRIANGLES, n*6, GL_UNSIGNED_SHORT, indices);
 	
-	glDisableClientState(GL_VERTEX_ARRAY );
-	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	// restore GL default state
+	glEnableClientState(GL_COLOR_ARRAY);
 }
 
 -(void)calculateVertexPoints
 {
-	float width = (float)self.texture.pixelsWide;
-	float height = (float)self.texture.pixelsHigh;
+	float width = (float)texture_.pixelsWide;
+	float height = (float)texture_.pixelsHigh;
 	
 	int x, y, i;
 	
@@ -377,21 +398,23 @@
 {
 	int n = gridSize_.x * gridSize_.y;
 	
-	glEnableClientState( GL_VERTEX_ARRAY);
-	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	// Default GL states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
+	// Needed states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_TEXTURE_COORD_ARRAY
+	// Unneeded states: GL_COLOR_ARRAY
+	glDisableClientState(GL_COLOR_ARRAY);	
 	
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 	glTexCoordPointer(2, GL_FLOAT, 0, texCoordinates);
 	glDrawElements(GL_TRIANGLES, n*6, GL_UNSIGNED_SHORT, indices);
-	
-	glDisableClientState(GL_VERTEX_ARRAY );
-	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+
+	// restore default GL state
+	glEnableClientState(GL_COLOR_ARRAY);
 }
 
 -(void)calculateVertexPoints
 {
-	float width = (float)self.texture.pixelsWide;
-	float height = (float)self.texture.pixelsHigh;
+	float width = (float)texture_.pixelsWide;
+	float height = (float)texture_.pixelsHigh;
 	
 	int numQuads = gridSize_.x * gridSize_.y;
 	

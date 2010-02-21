@@ -308,9 +308,9 @@
 	return nil;
 }
 
-- (BOOL)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if (!hasFadedIn || [[CCDirector sharedDirector] isPaused]) return NO;
+	if (!hasFadedIn || [[CCDirector sharedDirector] isPaused]) return;
 	
 	for (UITouch *touch in touches)
 	{
@@ -318,15 +318,14 @@
 		if (sprite != nil)
 		{
 			[self duplicate:sprite];
-			return kEventHandled;
+			return;
 		}
 	}
-	return NO;
 }
 
-- (BOOL)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if (!hasFadedIn || [[CCDirector sharedDirector] isPaused]) return NO;
+	if (!hasFadedIn || [[CCDirector sharedDirector] isPaused]) return;
 	
 	for (UITouch *touch in touches)
 	{
@@ -334,10 +333,9 @@
 		if (sprite != nil)
 		{
 			[self duplicate:sprite];
-			return kEventHandled;
+			return;
 		}
 	}
-	return NO;
 }
 
 @end

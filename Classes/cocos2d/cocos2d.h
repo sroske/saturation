@@ -29,8 +29,8 @@
  */
 
 // 0x00 HI ME LO
-// 00   00 09 00
-#define COCOS2D_VERSION 0x00000900
+// 00   00 99 00
+#define COCOS2D_VERSION 0x00009900
 
 //
 // all cocos2d include files
@@ -62,7 +62,6 @@
 #import "CCSpriteSheet.h"
 #import "CCSpriteFrameCache.h"
 #import "CCTextureCache.h"
-#import "CCTextureNode.h"
 #import "CCTransition.h"
 #import "CCTextureAtlas.h"
 #import "CCLabelAtlas.h"
@@ -89,6 +88,7 @@
 #import "CCPVRTexture.h"
 #import "CCTouchHandler.h"
 #import "ccConfig.h"
+#import "CCConfiguration.h"
 
 //
 // cocos2d macros

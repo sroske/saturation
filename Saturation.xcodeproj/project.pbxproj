@@ -38,6 +38,7 @@
 		A948A4AD110A937C0008B966 /* BGSMailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A948A4AC110A937C0008B966 /* BGSMailViewController.m */; };
 		A94EABE610E09886002CD007 /* BGSEntryViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A94EABE510E09886002CD007 /* BGSEntryViewCell.m */; };
 		A959DE211103C3C2002EAA74 /* BGSSimpleParticlesScene.m in Sources */ = {isa = PBXBuildFile; fileRef = A959DE201103C3C2002EAA74 /* BGSSimpleParticlesScene.m */; };
+		A96B38CA113168E400EC5E4C /* CCConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = A96B38C9113168E400EC5E4C /* CCConfiguration.m */; };
 		A9A0F7FB10D8903100823BC9 /* BGSMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */; };
 		A9A0F80B10D8912D00823BC9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */; };
 		A9A0F86B10D8941A00823BC9 /* BGSKulerParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A0F86A10D8941A00823BC9 /* BGSKulerParser.m */; };
@@ -202,6 +203,8 @@
 		A94EABE510E09886002CD007 /* BGSEntryViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSEntryViewCell.m; sourceTree = "<group>"; };
 		A959DE1F1103C3C2002EAA74 /* BGSSimpleParticlesScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSSimpleParticlesScene.h; sourceTree = "<group>"; };
 		A959DE201103C3C2002EAA74 /* BGSSimpleParticlesScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSSimpleParticlesScene.m; sourceTree = "<group>"; };
+		A96B38C8113168E300EC5E4C /* CCConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCConfiguration.h; sourceTree = "<group>"; };
+		A96B38C9113168E400EC5E4C /* CCConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCConfiguration.m; sourceTree = "<group>"; };
 		A9A0F7F910D8903100823BC9 /* BGSMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSMainViewController.h; sourceTree = "<group>"; };
 		A9A0F7FA10D8903100823BC9 /* BGSMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSMainViewController.m; sourceTree = "<group>"; };
 		A9A0F80A10D8912D00823BC9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -719,6 +722,8 @@
 		A9FEAEDD11000E8000110A5F /* cocos2d */ = {
 			isa = PBXGroup;
 			children = (
+				A96B38C8113168E300EC5E4C /* CCConfiguration.h */,
+				A96B38C9113168E400EC5E4C /* CCConfiguration.m */,
 				A9FEAEDE11000E8000110A5F /* CCAction.h */,
 				A9FEAEDF11000E8000110A5F /* CCAction.m */,
 				A9FEAEE011000E8000110A5F /* CCActionManager.h */,
@@ -1051,6 +1056,7 @@
 				A90DF3F51102B6DE00AE619F /* BGSSimpleSquareSprite.m in Sources */,
 				A959DE211103C3C2002EAA74 /* BGSSimpleParticlesScene.m in Sources */,
 				A948A4AD110A937C0008B966 /* BGSMailViewController.m in Sources */,
+				A96B38CA113168E400EC5E4C /* CCConfiguration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
