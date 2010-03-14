@@ -8,6 +8,11 @@
 
 #import "SaturationAppDelegate.h"
 
+void uncaughtExceptionHandler(NSException *exception) 
+{
+	[FlurryAPI logError:@"Uncaught" message:@"Crash!" exception:exception];
+}   
+
 @interface SaturationAppDelegate (Private)
 
 - (void)removeWelcomeView;
@@ -131,6 +136,10 @@
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
+	NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+	
+	[FlurryAPI startSession:FLURRY_API_KEY];
+	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	self.visualizationType = [defaults integerForKey:@"saturation.visualizationType"];
 	

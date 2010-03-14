@@ -63,6 +63,7 @@
 		A9B4803A10FC1A0F003DB9B1 /* background-color-strip.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B4803810FC1A0F003DB9B1 /* background-color-strip.png */; };
 		A9B8FA2211054EC00048ED1F /* particle-circle.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B8FA2111054EC00048ED1F /* particle-circle.png */; };
 		A9B8FA79110557E50048ED1F /* background-solid.png in Resources */ = {isa = PBXBuildFile; fileRef = A9B8FA78110557E50048ED1F /* background-solid.png */; };
+		A9ECDAA3114D6AFF00E30306 /* libFlurry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9ECDAA2114D6AFF00E30306 /* libFlurry.a */; };
 		A9EFACCD10DC9A8B005CCAA3 /* BGSDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */; };
 		A9EFACD610DC9FE4005CCAA3 /* button-close.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFACD510DC9FE4005CCAA3 /* button-close.png */; };
 		A9EFADCF10DCAB6D005CCAA3 /* icon-email.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EFADCB10DCAB6D005CCAA3 /* icon-email.png */; };
@@ -242,6 +243,8 @@
 		A9B8FA2111054EC00048ED1F /* particle-circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "particle-circle.png"; sourceTree = "<group>"; };
 		A9B8FA78110557E50048ED1F /* background-solid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-solid.png"; sourceTree = "<group>"; };
 		A9BCCE9F10DC910200742013 /* FontsAndColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontsAndColors.h; sourceTree = "<group>"; };
+		A9ECDAA1114D6AFF00E30306 /* FlurryAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurryAPI.h; sourceTree = "<group>"; };
+		A9ECDAA2114D6AFF00E30306 /* libFlurry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry.a; sourceTree = "<group>"; };
 		A9EFACCB10DC9A8B005CCAA3 /* BGSDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSDetailViewController.h; sourceTree = "<group>"; };
 		A9EFACCC10DC9A8B005CCAA3 /* BGSDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSDetailViewController.m; sourceTree = "<group>"; };
 		A9EFACD510DC9FE4005CCAA3 /* button-close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-close.png"; sourceTree = "<group>"; };
@@ -422,6 +425,7 @@
 				A9B47E3E10FAC33B003DB9B1 /* MessageUI.framework in Frameworks */,
 				A9FEAFA211000EAD00110A5F /* OpenGLES.framework in Frameworks */,
 				A9FEAFA611000EB700110A5F /* libz.1.2.3.dylib in Frameworks */,
+				A9ECDAA3114D6AFF00E30306 /* libFlurry.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -468,6 +472,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				A9ECDAA0114D6AFF00E30306 /* FlurryLib */,
 				A9E773A410F1452500B3437A /* Extensions */,
 				32CA4F630368D1EE00C91783 /* Saturation_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
@@ -680,6 +685,16 @@
 				A9EFB00810DD79A7005CCAA3 /* UIColor+CMYK.m */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		A9ECDAA0114D6AFF00E30306 /* FlurryLib */ = {
+			isa = PBXGroup;
+			children = (
+				A9ECDAA1114D6AFF00E30306 /* FlurryAPI.h */,
+				A9ECDAA2114D6AFF00E30306 /* libFlurry.a */,
+			);
+			name = FlurryLib;
+			path = "Flurry-v1.4/FlurryLib";
 			sourceTree = "<group>";
 		};
 		A9EFACD410DC9FE4005CCAA3 /* Images */ = {
@@ -1073,6 +1088,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Saturation_Prefix.pch;
 				INFOPLIST_FILE = "Saturation-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Flurry-v1.4/FlurryLib\"",
+				);
 				PRODUCT_NAME = Saturation;
 			};
 			name = Debug;
@@ -1085,6 +1104,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Saturation_Prefix.pch;
 				INFOPLIST_FILE = "Saturation-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Flurry-v1.4/FlurryLib\"",
+				);
 				PRODUCT_NAME = Saturation;
 			};
 			name = Release;
@@ -1112,6 +1135,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Saturation_Prefix.pch;
 				INFOPLIST_FILE = "Saturation-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Flurry-v1.4/FlurryLib\"",
+				);
 				PRODUCT_NAME = Saturation;
 			};
 			name = "Ad Hoc";

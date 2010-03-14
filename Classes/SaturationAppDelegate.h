@@ -22,6 +22,10 @@
 #import "BGSSimpleCircleScene.h"
 #import "BGSSimpleParticlesScene.h"
 
+#import "FlurryAPI.h"
+
+#define FLURRY_API_KEY @"F6XWT8ENAUJ3LNS9687K"
+
 #define DEFAULT_VISUALIZER_TYPE kSimpleCircle
 
 enum VisualizationTypes

@@ -148,6 +148,12 @@
 		[alert show];
 		[alert release];
 	}
+	else 
+	{
+		NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[self.entry objectForKey:@"themeID"], @"ThemeID", nil];
+		[FlurryAPI logEvent:@"SentEmail" withParameters:dictionary];
+	}
+
 
 	SaturationAppDelegate *app = (SaturationAppDelegate *)[[UIApplication sharedApplication] delegate];
 	[app closeEmailView];
