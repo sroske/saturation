@@ -9,10 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "BGSKulerOperation.h"
 
-#define FEED_BASE_URL			@"http://kuler-api.adobe.com/feeds/rss/get.cfm?listType=%@&itemsPerPage=%i&startIndex=%i&key=%@"
+#define FEED_BASE_URL			@"http://kuler-api.adobe.com/feeds/rss/get.cfm?listType=%@&itemsPerPage=%i&startIndex=%i&timeSpan=%i&key=%@"
 #define FEED_API_KEY			@"B90C327DD1FB1BDA94CEC6A1AF6D84D4"
 #define FEED_PER_PAGE			30
 #define FEED_MAX_OPERATIONS		2
+#define FEED_TIMESPAN			30
 
 enum FeedType 
 {

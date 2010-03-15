@@ -178,6 +178,7 @@
 								 typeString, 
 								 FEED_PER_PAGE, 
 								 startIndex, 
+								 FEED_TIMESPAN, 
 								 FEED_API_KEY, nil]];
 }
 
