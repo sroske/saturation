@@ -1,3 +1,5 @@
 build
-Saturation.xcodeproj/sroske.*
-**/.DS_Store
+sroske.*
+.DS_Store
+*.mobileprovision
+KEYS
