@@ -9,6 +9,8 @@ Features
 * Tap for designer info and RGB and HEX values
 * Play with the colors to discover new motions
 
+Design by David Maloney
+
 Requirements
 ------------
 
@@ -20,8 +22,3 @@ Download
 --------
 
 Download it in the iTunes App Store at [http://www.itunes.com/app/saturation](http://www.itunes.com/app/saturation)
-
-Bugs
------
-
-File them at [http://github.com/sroske/saturation-iphone/issues](http://github.com/sroske/saturation-iphone/issues)
