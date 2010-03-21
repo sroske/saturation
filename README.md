@@ -14,12 +14,12 @@ Requirements
 
 iPhone SDK, download at [http://developer.apple.com/iphone](http://developer.apple.com/iphone)
 
-An Adobe® KulerTM API key, generate one at [http://kuler.adobe.com/api/](http://kuler.adobe.com/api/)
+Needs an Adobe Kuler API key, generate one at [http://kuler.adobe.com/api/](http://kuler.adobe.com/api/)
 
 Download
 --------
 
-Download it in the App Store at [http://www.itunes.com/app/saturation](http://www.itunes.com/app/saturation)
+Download it in the iTunes App Store at [http://www.itunes.com/app/saturation](http://www.itunes.com/app/saturation)
 
 Bugs
 -----

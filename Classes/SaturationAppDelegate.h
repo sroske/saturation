@@ -24,7 +24,7 @@
 
 #import "FlurryAPI.h"
 
-#define FLURRY_API_KEY @"F6XWT8ENAUJ3LNS9687K"
+#define FLURRY_API_KEY @"<KEY HERE>"
 
 #define DEFAULT_VISUALIZER_TYPE kSimpleCircle
 
