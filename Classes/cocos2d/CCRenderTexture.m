@@ -1,14 +1,25 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
+ * Copyright (c) 2009 Jason Booth
  *
- * Copyright (C) 2009 Jason Booth
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
 
@@ -18,7 +29,7 @@
 
 @implementation CCRenderTexture
 
-@synthesize sprite;
+@synthesize sprite=sprite_;
 
 +(id)renderTextureWithWidth:(int)w height:(int)h
 {
@@ -30,23 +41,23 @@
 	self = [super init];
 	if (self)
 	{
-		glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, &oldFBO);
-		Texture2DPixelFormat format = kTexture2DPixelFormat_RGBA8888;  
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, &oldFBO_);
+		CCTexture2DPixelFormat format = kCCTexture2DPixelFormat_RGBA8888;  
 		// textures must be power of two squared
 		int pow = 8;
 		while (pow < w || pow < h) pow*=2;
     
 		void *data = malloc((int)(pow * pow * 4));
 		memset(data, 0, (int)(pow * pow * 4));
-		texture = [[CCTexture2D alloc] initWithData:data pixelFormat:format pixelsWide:pow pixelsHigh:pow contentSize:CGSizeMake(w, h)];
+		texture_ = [[CCTexture2D alloc] initWithData:data pixelFormat:format pixelsWide:pow pixelsHigh:pow contentSize:CGSizeMake(w, h)];
 		free( data );
     
 		// generate FBO
-		glGenFramebuffersOES(1, &fbo);
-		glBindFramebufferOES(GL_FRAMEBUFFER_OES, fbo);
+		glGenFramebuffersOES(1, &fbo_);
+		glBindFramebufferOES(GL_FRAMEBUFFER_OES, fbo_);
     
 		// associate texture with FBO
-		glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, texture.name, 0);
+		glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, texture_.name, 0);
     
 		// check if it worked (probably worth doing :) )
 		GLuint status = glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES);
@@ -54,11 +65,11 @@
 		{
 			[NSException raise:@"Render Texture" format:@"Could not attach texture to framebuffer"];
 		}
-		sprite = [CCSprite spriteWithTexture:texture];
-		[texture release];
-		[sprite setScaleY:-1];
-		[self addChild:sprite];
-		glBindFramebufferOES(GL_FRAMEBUFFER_OES, oldFBO);
+		sprite_ = [CCSprite spriteWithTexture:texture_];
+		[texture_ release];
+		[sprite_ setScaleY:-1];
+		[self addChild:sprite_];
+		glBindFramebufferOES(GL_FRAMEBUFFER_OES, oldFBO_);
 	}
 	return self;
 }
@@ -66,7 +77,7 @@
 -(void)dealloc
 {
 //	[self removeAllChildrenWithCleanup:YES];
-	glDeleteFramebuffersOES(1, &fbo);
+	glDeleteFramebuffersOES(1, &fbo_);
 	[super dealloc];
 }
 
@@ -76,38 +87,38 @@
 	// Save the current matrix
 	glPushMatrix();
 	
-	CGSize texSize = [texture contentSize];
+	CGSize texSize = [texture_ contentSize];
 
 	// Calculate the adjustment ratios based on the old and new projections
-	CGRect frame = [[[CCDirector sharedDirector] openGLView] frame];
-	float widthRatio = frame.size.width / texSize.width;
-	float heightRatio = frame.size.height / texSize.height;
+	CGSize size = [[CCDirector sharedDirector] displaySize];
+	float widthRatio = size.width / texSize.width;
+	float heightRatio = size.height / texSize.height;
 
 	// Adjust the orthographic propjection and viewport
 	glOrthof((float)-1.0 / widthRatio,  (float)1.0 / widthRatio, (float)-1.0 / heightRatio, (float)1.0 / heightRatio, -1,1);
 	glViewport(0, 0, texSize.width, texSize.height);
 
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, &oldFBO);
-	glBindFramebufferOES(GL_FRAMEBUFFER_OES, fbo);//Will direct drawing to the frame buffer created above
-	glDisable(GL_DITHER);
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, &oldFBO_);
+	glBindFramebufferOES(GL_FRAMEBUFFER_OES, fbo_);//Will direct drawing to the frame buffer created above
 	
 	CC_ENABLE_DEFAULT_GL_STATES();	
 }
 
 -(void)end
 {
-	glBindFramebufferOES(GL_FRAMEBUFFER_OES, oldFBO);
+	glBindFramebufferOES(GL_FRAMEBUFFER_OES, oldFBO_);
 	// Restore the original matrix and viewport
 	glPopMatrix();
-	CGRect frame = [[[CCDirector sharedDirector] openGLView] frame];
-	glViewport(0, 0, frame.size.width, frame.size.height);
+	CGSize size = [[CCDirector sharedDirector] displaySize];
+	glViewport(0, 0, size.width, size.height);
+
+	glColorMask(TRUE, TRUE, TRUE, TRUE);
 }
 
 
 -(void)clear:(float)r g:(float)g b:(float)b a:(float)a
 {
 	[self begin];
-	glColorMask(TRUE, TRUE, TRUE, TRUE);
 	glClearColor(r, g, b, a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColorMask(TRUE, TRUE, TRUE, FALSE);
@@ -140,8 +151,8 @@
 /* get buffer as UIImage */
 -(UIImage *)getUIImageFromBuffer
 {
-	int tx = texture.contentSize.width;
-	int ty = texture.contentSize.height;
+	int tx = texture_.contentSize.width;
+	int ty = texture_.contentSize.height;
   
 	int bitsPerComponent			= 8;
 	int bitsPerPixel				= 32;
@@ -149,10 +160,18 @@
 	int bytesPerRow					= bytesPerPixel * tx;
 	NSInteger myDataLength			= bytesPerRow * ty;
   
-	unsigned char buffer[myDataLength];
-  
+	NSMutableData *buffer	= [[NSMutableData alloc] initWithCapacity:myDataLength];
+	NSMutableData *pixels	= [[NSMutableData alloc] initWithCapacity:myDataLength];
+
+	if( ! (buffer && pixels) ) {
+		CCLOG(@"cocos2d: CCRenderTexture#getUIImageFromBuffer: not enough memory");
+		[buffer release];
+		[pixels release];
+		return nil;
+	}
+
 	[self begin];
-	glReadPixels(0,0,tx,ty,GL_RGBA,GL_UNSIGNED_BYTE, &buffer);
+	glReadPixels(0,0,tx,ty,GL_RGBA,GL_UNSIGNED_BYTE, [buffer mutableBytes]);
 	[self end];
 	/*
 	 CGImageCreate(size_t width, size_t height,
@@ -164,7 +183,7 @@
 	// make data provider with data.
   
 	CGBitmapInfo bitmapInfo			= kCGImageAlphaPremultipliedLast | kCGBitmapByteOrderDefault;
-	CGDataProviderRef provider		= CGDataProviderCreateWithData(NULL, buffer, myDataLength, NULL);
+	CGDataProviderRef provider		= CGDataProviderCreateWithData(NULL, [buffer mutableBytes], myDataLength, NULL);
 	CGColorSpaceRef colorSpaceRef	= CGColorSpaceCreateDeviceRGB();
 	CGImageRef iref					= CGImageCreate(tx, ty,
                                           bitsPerComponent, bitsPerPixel, bytesPerRow,
@@ -189,8 +208,7 @@
 	 size_t height, size_t bitsPerComponent, size_t bytesPerRow,
 	 CGColorSpaceRef colorspace, CGBitmapInfo bitmapInfo)
 	 */
-	uint32_t* pixels				= (uint32_t *)malloc(myDataLength);
-	CGContextRef context			= CGBitmapContextCreate(pixels, tx,
+	CGContextRef context			= CGBitmapContextCreate([pixels mutableBytes], tx,
                                                     ty, CGImageGetBitsPerComponent(iref), CGImageGetBytesPerRow(iref),
                                                     CGImageGetColorSpace(iref), bitmapInfo);
 	CGContextTranslateCTM(context, 0.0f, ty);
@@ -199,12 +217,14 @@
 	CGImageRef outputRef			= CGBitmapContextCreateImage(context);
 	UIImage* image					= [[UIImage alloc] initWithCGImage:outputRef];
   
-	free(pixels);
 	CGImageRelease(iref);
 	CGContextRelease(context);
 	CGColorSpaceRelease(colorSpaceRef);
 	CGDataProviderRelease(provider);
 	CGImageRelease(outputRef);
+	
+	[pixels release];
+	[buffer release];
   
 	return [image autorelease];
 }

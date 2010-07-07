@@ -35,6 +35,14 @@
 		A911893310DDDD12003AA0EB /* list-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893110DDDD12003AA0EB /* list-background-normal.png */; };
 		A911893410DDDD12003AA0EB /* list-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A911893210DDDD12003AA0EB /* list-background-selected.png */; };
 		A911893710DDDD30003AA0EB /* BGSListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A911893610DDDD30003AA0EB /* BGSListViewController.m */; };
+		A9328C3511E3F03500F82AA5 /* CCBlockSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = A9328C2C11E3F03500F82AA5 /* CCBlockSupport.m */; };
+		A9328C3611E3F03500F82AA5 /* CCProgressTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9328C2E11E3F03500F82AA5 /* CCProgressTimer.m */; };
+		A9328C3711E3F03500F82AA5 /* CCProgressTimerActions.m in Sources */ = {isa = PBXBuildFile; fileRef = A9328C3011E3F03500F82AA5 /* CCProgressTimerActions.m */; };
+		A9328C3811E3F03500F82AA5 /* CCPropertyAction.m in Sources */ = {isa = PBXBuildFile; fileRef = A9328C3211E3F03500F82AA5 /* CCPropertyAction.m */; };
+		A9328C3911E3F03500F82AA5 /* CCRadialTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = A9328C3411E3F03500F82AA5 /* CCRadialTransition.m */; };
+		A9328C4411E3F04800F82AA5 /* CCArray.m in Sources */ = {isa = PBXBuildFile; fileRef = A9328C3B11E3F04800F82AA5 /* CCArray.m */; };
+		A9328C4511E3F04800F82AA5 /* CCProfiling.m in Sources */ = {isa = PBXBuildFile; fileRef = A9328C3E11E3F04800F82AA5 /* CCProfiling.m */; };
+		A9328C4611E3F04800F82AA5 /* ES1Renderer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9328C4011E3F04800F82AA5 /* ES1Renderer.m */; };
 		A948A4AD110A937C0008B966 /* BGSMailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A948A4AC110A937C0008B966 /* BGSMailViewController.m */; };
 		A94EABE610E09886002CD007 /* BGSEntryViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A94EABE510E09886002CD007 /* BGSEntryViewCell.m */; };
 		A959DE211103C3C2002EAA74 /* BGSSimpleParticlesScene.m in Sources */ = {isa = PBXBuildFile; fileRef = A959DE201103C3C2002EAA74 /* BGSSimpleParticlesScene.m */; };
@@ -141,7 +149,6 @@
 		A9FEAF9711000E8000110A5F /* cocos2d.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FEAF4D11000E8000110A5F /* cocos2d.m */; };
 		A9FEAF9811000E8000110A5F /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = A9FEAF4F11000E8000110A5F /* base64.c */; };
 		A9FEAF9911000E8000110A5F /* CCFileUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FEAF5311000E8000110A5F /* CCFileUtils.m */; };
-		A9FEAF9A11000E8000110A5F /* ccHashSet.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FEAF5511000E8000110A5F /* ccHashSet.m */; };
 		A9FEAF9B11000E8000110A5F /* CGPointExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FEAF5711000E8000110A5F /* CGPointExtension.m */; };
 		A9FEAF9C11000E8000110A5F /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9FEAF5911000E8000110A5F /* EAGLView.m */; };
 		A9FEAF9D11000E8000110A5F /* glu.c in Sources */ = {isa = PBXBuildFile; fileRef = A9FEAF5A11000E8000110A5F /* glu.c */; };
@@ -198,6 +205,26 @@
 		A911893210DDDD12003AA0EB /* list-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-background-selected.png"; sourceTree = "<group>"; };
 		A911893510DDDD30003AA0EB /* BGSListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSListViewController.h; sourceTree = "<group>"; };
 		A911893610DDDD30003AA0EB /* BGSListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSListViewController.m; sourceTree = "<group>"; };
+		A9328C2B11E3F03500F82AA5 /* CCBlockSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBlockSupport.h; sourceTree = "<group>"; };
+		A9328C2C11E3F03500F82AA5 /* CCBlockSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBlockSupport.m; sourceTree = "<group>"; };
+		A9328C2D11E3F03500F82AA5 /* CCProgressTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCProgressTimer.h; sourceTree = "<group>"; };
+		A9328C2E11E3F03500F82AA5 /* CCProgressTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCProgressTimer.m; sourceTree = "<group>"; };
+		A9328C2F11E3F03500F82AA5 /* CCProgressTimerActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCProgressTimerActions.h; sourceTree = "<group>"; };
+		A9328C3011E3F03500F82AA5 /* CCProgressTimerActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCProgressTimerActions.m; sourceTree = "<group>"; };
+		A9328C3111E3F03500F82AA5 /* CCPropertyAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPropertyAction.h; sourceTree = "<group>"; };
+		A9328C3211E3F03500F82AA5 /* CCPropertyAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPropertyAction.m; sourceTree = "<group>"; };
+		A9328C3311E3F03500F82AA5 /* CCRadialTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRadialTransition.h; sourceTree = "<group>"; };
+		A9328C3411E3F03500F82AA5 /* CCRadialTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRadialTransition.m; sourceTree = "<group>"; };
+		A9328C3A11E3F04800F82AA5 /* CCArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCArray.h; sourceTree = "<group>"; };
+		A9328C3B11E3F04800F82AA5 /* CCArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCArray.m; sourceTree = "<group>"; };
+		A9328C3C11E3F04800F82AA5 /* ccCArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccCArray.h; sourceTree = "<group>"; };
+		A9328C3D11E3F04800F82AA5 /* CCProfiling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCProfiling.h; sourceTree = "<group>"; };
+		A9328C3E11E3F04800F82AA5 /* CCProfiling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCProfiling.m; sourceTree = "<group>"; };
+		A9328C3F11E3F04800F82AA5 /* ES1Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ES1Renderer.h; sourceTree = "<group>"; };
+		A9328C4011E3F04800F82AA5 /* ES1Renderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ES1Renderer.m; sourceTree = "<group>"; };
+		A9328C4111E3F04800F82AA5 /* ESRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESRenderer.h; sourceTree = "<group>"; };
+		A9328C4211E3F04800F82AA5 /* uthash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uthash.h; sourceTree = "<group>"; };
+		A9328C4311E3F04800F82AA5 /* utlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utlist.h; sourceTree = "<group>"; };
 		A948A4AB110A937C0008B966 /* BGSMailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSMailViewController.h; sourceTree = "<group>"; };
 		A948A4AC110A937C0008B966 /* BGSMailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGSMailViewController.m; sourceTree = "<group>"; };
 		A94EABE410E09886002CD007 /* BGSEntryViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGSEntryViewCell.h; sourceTree = "<group>"; };
@@ -392,8 +419,6 @@
 		A9FEAF5111000E8000110A5F /* ccArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccArray.h; sourceTree = "<group>"; };
 		A9FEAF5211000E8000110A5F /* CCFileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFileUtils.h; sourceTree = "<group>"; };
 		A9FEAF5311000E8000110A5F /* CCFileUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFileUtils.m; sourceTree = "<group>"; };
-		A9FEAF5411000E8000110A5F /* ccHashSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccHashSet.h; sourceTree = "<group>"; };
-		A9FEAF5511000E8000110A5F /* ccHashSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ccHashSet.m; sourceTree = "<group>"; };
 		A9FEAF5611000E8000110A5F /* CGPointExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGPointExtension.h; sourceTree = "<group>"; };
 		A9FEAF5711000E8000110A5F /* CGPointExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGPointExtension.m; sourceTree = "<group>"; };
 		A9FEAF5811000E8000110A5F /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
@@ -694,7 +719,7 @@
 				A9ECDAA2114D6AFF00E30306 /* libFlurry.a */,
 			);
 			name = FlurryLib;
-			path = "Flurry-v1.4/FlurryLib";
+			path = "Flurry-v2.5/FlurryLib";
 			sourceTree = "<group>";
 		};
 		A9EFACD410DC9FE4005CCAA3 /* Images */ = {
@@ -737,6 +762,16 @@
 		A9FEAEDD11000E8000110A5F /* cocos2d */ = {
 			isa = PBXGroup;
 			children = (
+				A9328C2B11E3F03500F82AA5 /* CCBlockSupport.h */,
+				A9328C2C11E3F03500F82AA5 /* CCBlockSupport.m */,
+				A9328C2D11E3F03500F82AA5 /* CCProgressTimer.h */,
+				A9328C2E11E3F03500F82AA5 /* CCProgressTimer.m */,
+				A9328C2F11E3F03500F82AA5 /* CCProgressTimerActions.h */,
+				A9328C3011E3F03500F82AA5 /* CCProgressTimerActions.m */,
+				A9328C3111E3F03500F82AA5 /* CCPropertyAction.h */,
+				A9328C3211E3F03500F82AA5 /* CCPropertyAction.m */,
+				A9328C3311E3F03500F82AA5 /* CCRadialTransition.h */,
+				A9328C3411E3F03500F82AA5 /* CCRadialTransition.m */,
 				A96B38C8113168E300EC5E4C /* CCConfiguration.h */,
 				A96B38C9113168E400EC5E4C /* CCConfiguration.m */,
 				A9FEAEDE11000E8000110A5F /* CCAction.h */,
@@ -859,13 +894,21 @@
 		A9FEAF4E11000E8000110A5F /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				A9328C3A11E3F04800F82AA5 /* CCArray.h */,
+				A9328C3B11E3F04800F82AA5 /* CCArray.m */,
+				A9328C3C11E3F04800F82AA5 /* ccCArray.h */,
+				A9328C3D11E3F04800F82AA5 /* CCProfiling.h */,
+				A9328C3E11E3F04800F82AA5 /* CCProfiling.m */,
+				A9328C3F11E3F04800F82AA5 /* ES1Renderer.h */,
+				A9328C4011E3F04800F82AA5 /* ES1Renderer.m */,
+				A9328C4111E3F04800F82AA5 /* ESRenderer.h */,
+				A9328C4211E3F04800F82AA5 /* uthash.h */,
+				A9328C4311E3F04800F82AA5 /* utlist.h */,
 				A9FEAF4F11000E8000110A5F /* base64.c */,
 				A9FEAF5011000E8000110A5F /* base64.h */,
 				A9FEAF5111000E8000110A5F /* ccArray.h */,
 				A9FEAF5211000E8000110A5F /* CCFileUtils.h */,
 				A9FEAF5311000E8000110A5F /* CCFileUtils.m */,
-				A9FEAF5411000E8000110A5F /* ccHashSet.h */,
-				A9FEAF5511000E8000110A5F /* ccHashSet.m */,
 				A9FEAF5611000E8000110A5F /* CGPointExtension.h */,
 				A9FEAF5711000E8000110A5F /* CGPointExtension.m */,
 				A9FEAF5811000E8000110A5F /* EAGLView.h */,
@@ -1057,7 +1100,6 @@
 				A9FEAF9711000E8000110A5F /* cocos2d.m in Sources */,
 				A9FEAF9811000E8000110A5F /* base64.c in Sources */,
 				A9FEAF9911000E8000110A5F /* CCFileUtils.m in Sources */,
-				A9FEAF9A11000E8000110A5F /* ccHashSet.m in Sources */,
 				A9FEAF9B11000E8000110A5F /* CGPointExtension.m in Sources */,
 				A9FEAF9C11000E8000110A5F /* EAGLView.m in Sources */,
 				A9FEAF9D11000E8000110A5F /* glu.c in Sources */,
@@ -1072,6 +1114,14 @@
 				A959DE211103C3C2002EAA74 /* BGSSimpleParticlesScene.m in Sources */,
 				A948A4AD110A937C0008B966 /* BGSMailViewController.m in Sources */,
 				A96B38CA113168E400EC5E4C /* CCConfiguration.m in Sources */,
+				A9328C3511E3F03500F82AA5 /* CCBlockSupport.m in Sources */,
+				A9328C3611E3F03500F82AA5 /* CCProgressTimer.m in Sources */,
+				A9328C3711E3F03500F82AA5 /* CCProgressTimerActions.m in Sources */,
+				A9328C3811E3F03500F82AA5 /* CCPropertyAction.m in Sources */,
+				A9328C3911E3F03500F82AA5 /* CCRadialTransition.m in Sources */,
+				A9328C4411E3F04800F82AA5 /* CCArray.m in Sources */,
+				A9328C4511E3F04800F82AA5 /* CCProfiling.m in Sources */,
+				A9328C4611E3F04800F82AA5 /* ES1Renderer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1090,7 +1140,7 @@
 				INFOPLIST_FILE = "Saturation-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Flurry-v1.4/FlurryLib\"",
+					"\"$(SRCROOT)/Flurry-v2.5/FlurryLib\"",
 				);
 				PRODUCT_NAME = Saturation;
 			};
@@ -1106,7 +1156,7 @@
 				INFOPLIST_FILE = "Saturation-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Flurry-v1.4/FlurryLib\"",
+					"\"$(SRCROOT)/Flurry-v2.5/FlurryLib\"",
 				);
 				PRODUCT_NAME = Saturation;
 			};
@@ -1121,9 +1171,10 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1.3;
 				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F6966CC8-AC21-4AE3-BA0C-DA5AABCCC1A7";
-				SDKROOT = iphoneos3.0;
+				SDKROOT = iphonesimulator4.0;
 			};
 			name = "App Store";
 		};
@@ -1137,7 +1188,7 @@
 				INFOPLIST_FILE = "Saturation-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Flurry-v1.4/FlurryLib\"",
+					"\"$(SRCROOT)/Flurry-v2.5/FlurryLib\"",
 				);
 				PRODUCT_NAME = Saturation;
 			};
@@ -1152,9 +1203,10 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1.3;
 				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "54EB59E4-AEA7-472A-A451-72E1BDF2FA0B";
-				SDKROOT = iphoneos3.0;
+				SDKROOT = iphonesimulator4.0;
 			};
 			name = "Ad Hoc";
 		};
@@ -1168,7 +1220,7 @@
 				INFOPLIST_FILE = "Saturation-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Flurry-v1.4/FlurryLib\"",
+					"\"$(SRCROOT)/Flurry-v2.5/FlurryLib\"",
 				);
 				PRODUCT_NAME = Saturation;
 			};
@@ -1182,9 +1234,10 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1.3;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.0;
+				SDKROOT = iphonesimulator4.0;
 			};
 			name = Debug;
 		};
@@ -1196,8 +1249,9 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1.3;
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.0;
+				SDKROOT = iphonesimulator4.0;
 			};
 			name = Release;
 		};

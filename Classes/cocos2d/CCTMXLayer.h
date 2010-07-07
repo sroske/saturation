@@ -1,23 +1,35 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
+ * Copyright (c) 2009-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
- * Copyright (C) 2008,2009 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
  *
  * TMX Tiled Map support:
  * http://www.mapeditor.org
  *
  */
 
+
 #import "CCAtlasNode.h"
 #import "CCSpriteSheet.h"
-#import "Support/ccArray.h"
 
 
 @class CCTMXMapInfo;
@@ -26,9 +38,26 @@
 
 /** CCTMXLayer represents the TMX layer.
  
- It is a subclass of CCSpriteSheet, so each "tile" is represented by an CCSprite.
+ It is a subclass of CCSpriteSheet. By default the tiles are rendered using a CCTextureAtlas.
+ If you mofify a tile on runtime, then, that tile will become a CCSprite, otherwise no CCSprite objects are created.
  The benefits of using CCSprite objects as tiles are:
  - tiles (CCSprite) can be rotated/scaled/moved with a nice API
+ 
+ If the layer contains a property named "cc_vertexz" with an integer (in can be positive or negative),
+ then all the tiles belonging to the layer will use that value as their OpenGL vertex Z for depth.
+
+ On the other hand, if the "cc_vertexz" property has the "automatic" value, then the tiles will use an automatic vertex Z value.
+ Also before drawing the tiles, GL_ALPHA_TEST will be enabled, and disabled after drawing them. The used alpha func will be:
+
+    glAlphaFunc( GL_GREATER, value )
+ 
+ "value" by default is 0, but you can change it from Tiled by adding the "cc_alpha_func" property to the layer.
+ The value 0 should work for most cases, but if you have tiles that are semi-transparent, then you might want to use a differnt
+ value, like 0.5.
+ 
+ For further information, please see the programming guide:
+ 
+	http://www.cocos2d-iphone.org/wiki/doku.php/prog_guide:tiled_maps
  
  @since v0.8.1
  */
@@ -42,9 +71,21 @@
 	int					layerOrientation_;
 	NSMutableArray		*properties_;
 	
+	unsigned char		opacity_; // TMX Layer supports opacity
+	
+	unsigned int		minGID_;
+	unsigned int		maxGID_;
+	
+	// Only used when vertexZ is used
+	int					vertexZvalue_;
+	BOOL				useAutomaticVertexZ_;
+	float				alphaFuncValue_;
+	
 	// used for optimization
 	CCSprite		*reusedTile_;
 	ccCArray		*atlasIndexArray_;
+	
+	
 }
 /** name of the layer */
 @property (nonatomic,readwrite,retain) NSString *layerName;
@@ -58,7 +99,7 @@
 @property (nonatomic,readwrite,retain) CCTMXTilesetInfo *tileset;
 /** Layer orientation, which is the same as the map orientation */
 @property (nonatomic,readwrite) int layerOrientation;
-/** properties */
+/** properties from the layer. They can be added using Tiled */
 @property (nonatomic,readwrite,retain) NSMutableArray *properties;
 
 /** creates a CCTMXLayer with an tileset info, a layer info and a map info */
@@ -102,10 +143,11 @@
 /** return the value for the specific property name */
 -(id) propertyNamed:(NSString *)propertyName;
 
-/* optimization methos */
--(CCSprite*) appendTileForGID:(unsigned int)gid at:(CGPoint)pos;
-/* optimization methos */
--(CCSprite*) insertTileForGID:(unsigned int)gid at:(CGPoint)pos;
-/* optimization methos */
--(CCSprite*) updateTileForGID:(unsigned int)gid at:(CGPoint)pos;
+/** Creates the tiles */
+-(void) setupTiles;
+
+/** CCTMXLayer doesn't support adding a CCSprite manually.
+ @warning addchild:z:tag: is not supported on CCTMXLayer. Instead of setTileGID:at:/tileAt:
+ */
+-(id) addChild: (CCNode*)node z:(int)z tag:(int)tag;
 @end

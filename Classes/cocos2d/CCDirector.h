@@ -1,16 +1,27 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2008,2009,2010 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
- *
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
+
 
 
 //
@@ -20,48 +31,66 @@
 // OpenGL related
 #import "Support/EAGLView.h"
 
-/** Possible Pixel Formats for the EAGLView */
+/** @typedef tPixelFormat
+ Possible Pixel Formats for the EAGLView
+ */
 typedef enum {
 	/** RGB565 pixel format. No alpha. 16-bit. (Default) */
-	kPixelFormatRGB565,
+	kCCPixelFormatRGB565,
 	/** RGBA format. 32-bit. Needed for some 3D effects. It is not as fast as the RGB565 format. */
-	kPixelFormatRGBA8888,
+	kCCPixelFormatRGBA8888,
 	/** default pixel format */
-	kPixelFormatDefault = kPixelFormatRGB565,
+	kCCPixelFormatDefault = kCCPixelFormatRGB565,
 
-	kRGB565 = kPixelFormatRGB565,
-	kRGBA8 = kPixelFormatRGBA8888,
+	// backward compatibility stuff
+	kPixelFormatRGB565 = kCCPixelFormatRGB565,
+	kRGB565 = kCCPixelFormatRGB565,
+	kPixelFormatRGBA8888 = kCCPixelFormatRGBA8888,
+	kRGBA8 = kCCPixelFormatRGBA8888,
 } tPixelFormat;
 
-/** Possible DepthBuffer Formats for the EAGLView.
+/** @typedef tDepthBufferFormat
+ Possible DepthBuffer Formats for the EAGLView.
  Use 16 or 24 bit depth buffers if you are going to use real 3D objects.
  */
 typedef enum {
 	/// A Depth Buffer of 0 bits will be used (default)
-	kDepthBufferNone,
+	kCCDepthBufferNone,
 	/// A depth buffer of 16 bits will be used
-	kDepthBuffer16,
+	kCCDepthBuffer16,
 	/// A depth buffer of 24 bits will be used
-	kDepthBuffer24,
+	kCCDepthBuffer24,
+	
+	// backward compatibility stuff
+	kDepthBuffer16 = kCCDepthBuffer16,
+	kDepthBuffer24 = kCCDepthBuffer24,
 } tDepthBufferFormat;
 
-/** Possible OpenGL projections used by director */
+/** @typedef ccDirectorProjection
+ Possible OpenGL projections used by director
+ */
 typedef enum {
 	/// sets a 2D projection (orthogonal projection)
-	CCDirectorProjection2D,
+	kCCDirectorProjection2D,
 	
 	/// sets a 3D projection with a fovy=60, znear=0.5f and zfar=1500.
-	CCDirectorProjection3D,
+	kCCDirectorProjection3D,
 	
 	/// it does nothing. But if you are using a custom projection set it this value.
-	CCDirectorProjectionCustom,
+	kCCDirectorProjectionCustom,
 	
 	/// Detault projection is 3D projection
-	CCDirectorProjectionDefault = CCDirectorProjection3D,
+	kCCDirectorProjectionDefault = kCCDirectorProjection3D,
+	
+	// backward compatibility stuff
+	CCDirectorProjection2D = kCCDirectorProjection2D,
+	CCDirectorProjection3D = kCCDirectorProjection3D,
+	CCDirectorProjectionCustom = kCCDirectorProjectionCustom,
 
 } ccDirectorProjection;
 
-/** Possible Director Types.
+/** @typedef ccDirectorType
+ Possible Director Types.
  @since v0.8.2
  */
 typedef enum {
@@ -72,7 +101,7 @@ typedef enum {
 	 * - It the slowest director
 	 * - The invertal update is customizable from 1 to 60
 	 */
-	CCDirectorTypeNSTimer,
+	kCCDirectorTypeNSTimer,
 	
 	/** will use a Director that triggers the main loop from a custom main loop.
 	 *
@@ -81,7 +110,7 @@ typedef enum {
 	 * - It doesn't integrate well with UIKit objecgts
 	 * - The interval update can't be customizable
 	 */
-	CCDirectorTypeMainLoop,
+	kCCDirectorTypeMainLoop,
 	
 	/** Will use a Director that triggers the main loop from a thread, but the main loop will be executed on the main thread.
 	 *
@@ -90,7 +119,7 @@ typedef enum {
 	 * - It doesn't integrate well with UIKit objecgts
 	 * - The interval update can't be customizable
 	 */
-	CCDirectorTypeThreadMainLoop,
+	kCCDirectorTypeThreadMainLoop,
 	
 	/** Will use a Director that synchronizes timers with the refresh rate of the display.
 	 *
@@ -101,23 +130,39 @@ typedef enum {
 	 * - Integrates OK with UIKit objects
 	 * - The interval update can be 1/60, 1/30, 1/15
 	 */	
-	CCDirectorTypeDisplayLink,
+	kCCDirectorTypeDisplayLink,
 	
 	/** Default director is the NSTimer directory */
-	CCDirectorTypeDefault = CCDirectorTypeNSTimer,
+	kCCDirectorTypeDefault = kCCDirectorTypeNSTimer,
+	
+	// backward compatibility stuff
+	CCDirectorTypeNSTimer = kCCDirectorTypeNSTimer,
+	CCDirectorTypeMainLoop = kCCDirectorTypeMainLoop,
+	CCDirectorTypeThreadMainLoop = kCCDirectorTypeThreadMainLoop,
+	CCDirectorTypeDisplayLink = kCCDirectorTypeDisplayLink,
+	CCDirectorTypeDefault =kCCDirectorTypeDefault,
+
 
 } ccDirectorType;
 
-/** Possible device orientations */
+/** @typedef ccDeviceOrientation
+ Possible device orientations
+ */
 typedef enum {
 	/// Device oriented vertically, home button on the bottom
-	CCDeviceOrientationPortrait = UIDeviceOrientationPortrait,	
+	kCCDeviceOrientationPortrait = UIDeviceOrientationPortrait,	
 	/// Device oriented vertically, home button on the top
-    CCDeviceOrientationPortraitUpsideDown = UIDeviceOrientationPortraitUpsideDown,
+    kCCDeviceOrientationPortraitUpsideDown = UIDeviceOrientationPortraitUpsideDown,
 	/// Device oriented horizontally, home button on the right
-    CCDeviceOrientationLandscapeLeft = UIDeviceOrientationLandscapeLeft,
+    kCCDeviceOrientationLandscapeLeft = UIDeviceOrientationLandscapeLeft,
 	/// Device oriented horizontally, home button on the left
-    CCDeviceOrientationLandscapeRight = UIDeviceOrientationLandscapeRight,
+    kCCDeviceOrientationLandscapeRight = UIDeviceOrientationLandscapeRight,
+	
+	// Backward compatibility stuff
+	CCDeviceOrientationPortrait = kCCDeviceOrientationPortrait,
+	CCDeviceOrientationPortraitUpsideDown = kCCDeviceOrientationPortraitUpsideDown,
+	CCDeviceOrientationLandscapeLeft = kCCDeviceOrientationLandscapeLeft,
+	CCDeviceOrientationLandscapeRight = kCCDeviceOrientationLandscapeRight,
 } ccDeviceOrientation;
 
 @class CCLabelAtlas;
@@ -146,27 +191,24 @@ and when to execute the Scenes.
 {
 	EAGLView	*openGLView_;
 
-  NSBundle* loadingBundle;
 	// internal timer
-	NSTimeInterval animationInterval;
-	NSTimeInterval oldAnimationInterval;
+	NSTimeInterval animationInterval_;
+	NSTimeInterval oldAnimationInterval_;
 
 	tPixelFormat pixelFormat_;
 	tDepthBufferFormat depthBufferFormat_;
-
-	/* landscape mode ? */
-	BOOL landscape;
 	
 	/* orientation */
 	ccDeviceOrientation	deviceOrientation_;
 	
 	/* display FPS ? */
-	BOOL displayFPS;
-	int frames;
-	ccTime accumDt;
-	ccTime frameRate;
+	BOOL displayFPS_;
+
+	int frames_;
+	ccTime accumDt_;
+	ccTime frameRate_;
 #if	CC_DIRECTOR_FAST_FPS
-	CCLabelAtlas *FPSLabel;
+	CCLabelAtlas *FPSLabel_;
 #endif
 	
 	/* is the running scene paused */
@@ -186,7 +228,7 @@ and when to execute the Scenes.
 	NSMutableArray *scenesStack_;
 	
 	/* last time the main loop was updated */
-	struct timeval lastUpdate;
+	struct timeval lastUpdate_;
 	/* delta time since last tick to main loop */
 	ccTime dt;
 	/* whether or not the next delta time will be zero */
@@ -194,6 +236,22 @@ and when to execute the Scenes.
 	
 	/* projection used */
 	ccDirectorProjection projection_;
+	
+	/* screen, different than surface size */
+	CGSize	screenSize_;
+
+	/* screen, different than surface size */
+	CGSize	surfaceSize_;
+	
+	/* content scale factor */
+	CGFloat	contentScaleFactor_;
+	
+	/* contentScaleFactor could be simulated */
+	BOOL	isContentScaleSupported_;
+
+#if CC_ENABLE_PROFILERS
+	ccTime accumDtForProfiler_;
+#endif
 }
 
 /** The current running Scene. Director can only run one Scene at the time */
@@ -202,10 +260,10 @@ and when to execute the Scenes.
 @property (nonatomic,readwrite, assign) NSTimeInterval animationInterval;
 /** Whether or not to display the FPS on the bottom-left corner */
 @property (nonatomic,readwrite, assign) BOOL displayFPS;
-/** The OpenGL view */
-@property (nonatomic,readonly) EAGLView *openGLView;
+/** The EAGLView, where everything is rendered */
+@property (nonatomic,readwrite,retain) EAGLView *openGLView;
 /** Pixel format used to create the context */
-@property (nonatomic,readonly) tPixelFormat pixelFormat;
+@property (nonatomic,readonly) tPixelFormat pixelFormat DEPRECATED_ATTRIBUTE;
 /** whether or not the next delta time will be zero */
 @property (nonatomic,readwrite,assign) BOOL nextDeltaTimeZero;
 /** The device orientattion */
@@ -222,23 +280,33 @@ and when to execute the Scenes.
  If the new scene replaces the old one, the it will receive the "cleanup" message.
  @since v0.99.0
  */
-@property (nonatomic, readonly) BOOL	sendCleanupToScene;
+@property (nonatomic, readonly) BOOL sendCleanupToScene;
+
+/** The size in pixels of the surface. It could be different than the screen size.
+ High-res devices might have a higher surface size than the screen size.
+ In non High-res device the contentScale will be emulated.
+
+ Warning: Emulation of High-Res on iOS < 4 is an EXPERIMENTAL feature.
+ 
+ @since v0.99.4
+ */
+@property (nonatomic, readwrite) CGFloat contentScaleFactor;
 
 /** returns a shared instance of the director */
 +(CCDirector *)sharedDirector;
 
 /** There are 4 types of Director.
- - CCDirectorTypeNSTimer (default)
- - CCDirectorTypeMainLoop
- - CCDirectorTypeThreadMainLoop
- - CCDirectorTypeDisplayLink
+ - kCCDirectorTypeNSTimer (default)
+ - kCCDirectorTypeMainLoop
+ - kCCDirectorTypeThreadMainLoop
+ - kCCDirectorTypeDisplayLink
  
  Each Director has it's own benefits, limitations.
  If you are using SDK 3.1 or newer it is recommed to use the DisplayLink director
  
  This method should be called before any other call to the director.
 
- It will return NO if the director type is CCDirectorTypeDisplayLink and the running SDK is < 3.1. Otherwise it will return YES.
+ It will return NO if the director type is kCCDirectorTypeDisplayLink and the running SDK is < 3.1. Otherwise it will return YES.
  
  @since v0.8.2
  */
@@ -247,36 +315,52 @@ and when to execute the Scenes.
 
 // iPhone Specific
 
-/** change default pixel format.
- Call this class method before attaching it to a UIWindow/UIView
+/** Uses a new pixel format for the EAGLView.
+ Call this class method before attaching it to a UIView
  Default pixel format: kRGB565. Supported pixel formats: kRGBA8 and kRGB565
+ 
+ @deprecated Set the pixel format when creating the EAGLView. This method will be removed in v1.0
  */
--(void) setPixelFormat: (tPixelFormat) p;
+-(void) setPixelFormat: (tPixelFormat)p DEPRECATED_ATTRIBUTE;
 
-/** change depth buffer format.
+/** Change depth buffer format of the render buffer.
  Call this class method before attaching it to a UIWindow/UIView
- Default depth buffer: 0 (none).  Supported: kDepthBufferNone, kDepthBuffer16, and kDepthBuffer24
+ Default depth buffer: 0 (none).  Supported: kCCDepthBufferNone, kCCDepthBuffer16, and kCCDepthBuffer24
+ 
+ @deprecated Set the depth buffer format when creating the EAGLView. This method will be removed in v1.0
  */
--(void) setDepthBufferFormat: (tDepthBufferFormat) db;
+-(void) setDepthBufferFormat: (tDepthBufferFormat)db DEPRECATED_ATTRIBUTE;
 
 // Integration with UIKit
 /** detach the cocos2d view from the view/window */
--(BOOL)detach;
+-(BOOL)detach DEPRECATED_ATTRIBUTE;
 
-/** attach in UIWindow using the full frame */
--(BOOL)attachInWindow:(UIWindow *)window;
+/** attach in UIWindow using the full frame.
+ It will create a EAGLView.
+ 
+ @deprecated set setOpenGLView instead. Will be removed in v1.0
+ */
+-(BOOL)attachInWindow:(UIWindow *)window DEPRECATED_ATTRIBUTE;
 
-/** attach in UIView using the full frame */
--(BOOL)attachInView:(UIView *)view;
+/** attach in UIView using the full frame.
+ It will create a EAGLView.
+ 
+ @deprecated set setOpenGLView instead. Will be removed in v1.0
+ */
+-(BOOL)attachInView:(UIView *)view DEPRECATED_ATTRIBUTE;
 
-/** attach in UIView using the given frame */
--(BOOL)attachInView:(UIView *)view withFrame:(CGRect)frame;
+/** attach in UIView using the given frame.
+ It will create a EAGLView and use it.
+ 
+ @deprecated set setOpenGLView instead. Will be removed in v1.0
+ */
+-(BOOL)attachInView:(UIView *)view withFrame:(CGRect)frame DEPRECATED_ATTRIBUTE;
 
 // Landscape
 
-/** returns the size of the OpenGL view according to the landspace */
+/** returns the size of the OpenGL view in pixels, according to the landspace */
 - (CGSize) winSize;
-/** returns the display size of the OpenGL view */
+/** returns the display size of the OpenGL view in pixels */
 -(CGSize) displaySize;
 
 /** converts a UIKit coordinate to an OpenGL coordinate
@@ -288,8 +372,8 @@ and when to execute the Scenes.
  */
 -(CGPoint) convertToUI:(CGPoint)p;
 
-// rotates the screen if Landscape mode is activated
--(void) applyLandscape;
+// rotates the screen if an orientation differnent than Portrait is used
+-(void) applyOrientation;
 
 /// XXX: missing description
 -(float) getZEye;
@@ -321,7 +405,9 @@ and when to execute the Scenes.
  */
 -(void) replaceScene: (CCScene*) scene;
 
-/** Ends the execution, releases the running scene */
+/** Ends the execution, releases the running scene.
+ It doesn't remove the OpenGL view from its parent. You have to do it manually.
+ */
 -(void) end;
 
 /** Pauses the running scene.
@@ -347,8 +433,24 @@ and when to execute the Scenes.
  */
 -(void) startAnimation;
 
+/** Draw the scene.
+ This method is called every frame. Don't call it manually.
+ */
+-(void) drawScene;
+
+// Memory Helper
+
+/** Removes cached all cocos2d cached data.
+ It will purge the CCTextureCache, CCSpriteFrameCache, CCBitmapFont cache
+ @since v0.99.3
+ */
+-(void) purgeCachedData;
+ 
 
 // OpenGL Helper
+
+/** sets the OpenGL default values */
+-(void) setGLDefaultValues;
 
 /** enables/disables OpenGL alpha blending */
 - (void) setAlphaBlending: (BOOL) on;

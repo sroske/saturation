@@ -1,16 +1,27 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2008,2009,2010 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
- *
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
+
 
 #import "CCAtlasNode.h"
 #import "ccMacros.h"
@@ -25,7 +36,6 @@
 
 @implementation CCAtlasNode
 
-@synthesize opacity=opacity_, color=color_;
 @synthesize textureAtlas = textureAtlas_;
 @synthesize blendFunc = blendFunc_;
 
@@ -44,14 +54,16 @@
 		itemHeight = h;
 
 		opacity_ = 255;
-		color_ = ccWHITE;
-		opacityModifyRGB_ = NO;
+		color_ = colorUnmodified_ = ccWHITE;
+		opacityModifyRGB_ = YES;
 		
 		blendFunc_.src = CC_BLEND_SRC;
 		blendFunc_.dst = CC_BLEND_DST;
 		
-		// retained
-		self.textureAtlas = [CCTextureAtlas textureAtlasWithFile:tile capacity:c];
+		// double retain to avoid the autorelease pool
+		// also, using: self.textureAtlas supports re-initialization without leaking
+		self.textureAtlas = [[CCTextureAtlas alloc] initWithFile:tile capacity:c];
+		[textureAtlas_ release];
 		
 		[self updateBlendFunc];
 		[self updateOpacityModifyRGB];
@@ -124,24 +136,54 @@
 
 #pragma mark CCAtlasNode - RGBA protocol
 
--(void) setOpacity:(GLubyte)opacity
+- (ccColor3B) color
 {
+	if(opacityModifyRGB_){
+		return colorUnmodified_;
+	}
+	return color_;
+}
+
+-(void) setColor:(ccColor3B)color3
+{
+	color_ = colorUnmodified_ = color3;
+	
+	if( opacityModifyRGB_ ){
+		color_.r = color3.r * opacity_/255;
+		color_.g = color3.g * opacity_/255;
+		color_.b = color3.b * opacity_/255;
+	}	
+}
+
+-(GLubyte) opacity
+{
+	return opacity_;
+}
+
+-(void) setOpacity:(GLubyte) anOpacity
+{
+	opacity_			= anOpacity;
+	
 	// special opacity for premultiplied textures
-	opacity_ = opacity;
 	if( opacityModifyRGB_ )
-		color_.r = color_.g = color_.b = opacity_;	
+		[self setColor: (opacityModifyRGB_ ? colorUnmodified_ : color_ )];	
 }
--(void) updateOpacityModifyRGB
-{
-	opacityModifyRGB_ = [textureAtlas_.texture hasPremultipliedAlpha];
-}
+
 -(void) setOpacityModifyRGB:(BOOL)modify
 {
-	opacityModifyRGB_ = modify;
+	ccColor3B oldColor	= self.color;
+	opacityModifyRGB_	= modify;
+	self.color			= oldColor;
 }
+
 -(BOOL) doesOpacityModifyRGB
 {
 	return opacityModifyRGB_;
+}
+
+-(void) updateOpacityModifyRGB
+{
+	opacityModifyRGB_ = [textureAtlas_.texture hasPremultipliedAlpha];
 }
 
 #pragma mark CCAtlasNode - CocosNodeTexture protocol
@@ -165,6 +207,5 @@
 {
 	return textureAtlas_.texture;
 }
-
 
 @end

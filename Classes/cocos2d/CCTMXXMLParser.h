@@ -1,14 +1,26 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
+ * Copyright (c) 2009-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
- * Copyright (C) 2009 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
  *
  * TMX Tiled Map support:
  * http://www.mapeditor.org
@@ -36,6 +48,7 @@ enum {
 	TMXPropertyLayer,
 	TMXPropertyObjectGroup,
 	TMXPropertyObject,
+	TMXPropertyTile
 };
 
 /* CCTMXLayerInfo contains the information about the layers like:
@@ -56,19 +69,20 @@ enum {
 	BOOL				ownTiles_;
 	unsigned int		minGID_;
 	unsigned int		maxGID_;
-	NSMutableDictionary	*properties_;	
+	NSMutableDictionary	*properties_;
+	CGPoint				offset_;
 }
 
-@property (nonatomic,readwrite,retain) NSString *name;
-@property (nonatomic,readwrite,assign) CGSize layerSize;
-@property (nonatomic,readwrite,assign) unsigned int *tiles;
-@property (nonatomic,readwrite,assign) BOOL visible;
-@property (nonatomic,readwrite,assign) unsigned char opacity;
-@property (nonatomic,readwrite,assign) BOOL ownTiles;
-@property (nonatomic,readwrite,assign) unsigned int minGID;
-@property (nonatomic,readwrite,assign) unsigned int maxGID;
+@property (nonatomic,readwrite,retain)	NSString *name;
+@property (nonatomic,readwrite)			CGSize layerSize;
+@property (nonatomic,readwrite)			unsigned int *tiles;
+@property (nonatomic,readwrite)			BOOL visible;
+@property (nonatomic,readwrite)			unsigned char opacity;
+@property (nonatomic,readwrite)			BOOL ownTiles;
+@property (nonatomic,readwrite)			unsigned int minGID;
+@property (nonatomic,readwrite)			unsigned int maxGID;
 @property (nonatomic,readwrite,retain) NSMutableDictionary *properties;
-
+@property (nonatomic,readwrite)			CGPoint offset;
 @end
 
 /* CCTMXTilesetInfo contains the information about the tilesets like:
@@ -119,12 +133,18 @@ enum {
  This information is obtained from the TMX file.
  
  */
+#ifdef __IPHONE_4_0
+@interface CCTMXMapInfo : NSObject <NSXMLParserDelegate>
+#else
 @interface CCTMXMapInfo : NSObject
+#endif
 {	
-	NSMutableString		*currentString;
+	NSMutableString	*currentString;
     BOOL				storingCharacters;	
 	int					layerAttribs;
 	int					parentElement;
+	unsigned int		parentGID_;
+
 	
 	// tmx filename
 	NSString *filename_;
@@ -149,6 +169,9 @@ enum {
 	
 	// properties
 	NSMutableDictionary *properties_;
+	
+	// tile properties
+	NSMutableDictionary *tileProperties_;
 }
 
 @property (nonatomic,readwrite,assign) int orientation;
@@ -159,6 +182,7 @@ enum {
 @property (nonatomic,readwrite,retain) NSString *filename;
 @property (nonatomic,readwrite,retain) NSMutableArray *objectGroups;
 @property (nonatomic,readwrite,retain) NSMutableDictionary *properties;
+@property (nonatomic,readwrite,retain) NSMutableDictionary *tileProperties;
 
 /** creates a TMX Format with a tmx file */
 +(id) formatWithTMXFile:(NSString*)tmxFile;

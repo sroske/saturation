@@ -1,16 +1,28 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
+ * Copyright (c) 2008-2010 Ricardo Quesada
  *
- * Copyright (C) 2008,2009,2010 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
+
 
 
 #import "CCIntervalAction.h"
@@ -219,48 +231,48 @@
 // Repeat
 //
 #pragma mark -
-#pragma mark Repeat
+#pragma mark CCRepeat
 @implementation CCRepeat
-+(id) actionWithAction: (CCFiniteTimeAction*) action times: (unsigned int) t
++(id) actionWithAction:(CCFiniteTimeAction*)action times:(unsigned int)times
 {
-	return [[[self alloc] initWithAction: action times: t] autorelease];
+	return [[[self alloc] initWithAction:action times:times] autorelease];
 }
 
--(id) initWithAction: (CCFiniteTimeAction*) action times: (unsigned int) t
+-(id) initWithAction:(CCFiniteTimeAction*)action times:(unsigned int)times
 {
-	ccTime d = [action duration] * t;
+	ccTime d = [action duration] * times;
 
 	if( (self=[super initWithDuration: d ]) ) {
-		times = t;
-		other = [action retain];
+		times_ = times;
+		other_ = [action retain];
 
-		total = 0;
+		total_ = 0;
 	}
 	return self;
 }
 
 -(id) copyWithZone: (NSZone*) zone
 {
-	CCAction *copy = [[[self class] allocWithZone:zone] initWithAction:[[other copy] autorelease] times:times];
+	CCAction *copy = [[[self class] allocWithZone:zone] initWithAction:[[other_ copy] autorelease] times:times_];
 	return copy;
 }
 
 -(void) dealloc
 {
-	[other release];
+	[other_ release];
 	[super dealloc];
 }
 
 -(void) startWithTarget:(id)aTarget
 {
-	total = 0;
+	total_ = 0;
 	[super startWithTarget:aTarget];
-	[other startWithTarget:aTarget];
+	[other_ startWithTarget:aTarget];
 }
 
--(void) stop {
-    
-    [other stop];
+-(void) stop
+{    
+    [other_ stop];
 	[super stop];
 }
 
@@ -269,21 +281,22 @@
 // container action like Repeat, Sequence, AccelDeccel, etc..
 -(void) update:(ccTime) dt
 {
-	ccTime t = dt * times;
-	if( t > total+1 ) {
-		[other update:1.0f];
-		total++;
-		[other stop];
-		[other startWithTarget:target];
+	ccTime t = dt * times_;
+	if( t > total_+1 ) {
+		[other_ update:1.0f];
+		total_++;
+		[other_ stop];
+		[other_ startWithTarget:target];
 		
 		// repeat is over ?
-		if( total== times )
+		if( total_== times_ )
 			// so, set it in the original position
-			[other update:0];
-		else
+			[other_ update:0];
+		else {
 			// no ? start next repeat with the right update
 			// to prevent jerk (issue #390)
-			[other update: t-(total+1)];
+			[other_ update: t-total_];
+		}
 
 	} else {
 		
@@ -293,20 +306,20 @@
 		// else it could be 0.
 		if( dt== 1.0f) {
 			r=1.0f;
-			total++; // this is the added line
+			total_++; // this is the added line
 		}
-		[other update: MIN(r,1)];
+		[other_ update: MIN(r,1)];
 	}
 }
 
 -(BOOL) isDone
 {
-	return ( total == times );
+	return ( total_ == times_ );
 }
 
 - (CCIntervalAction *) reverse
 {
-	return [[self class] actionWithAction:[other reverse] times: times];
+	return [[self class] actionWithAction:[other_ reverse] times:times_];
 }
 @end
 
@@ -466,10 +479,9 @@
 
 -(id) initWithDuration: (ccTime) t angle:(float) a
 {
-	if( !(self=[super initWithDuration: t]) )
-		return nil;
-
-	angle = a;
+	if( (self=[super initWithDuration: t]) ) {
+		angle = a;
+	}
 	return self;
 }
 
@@ -512,10 +524,9 @@
 
 -(id) initWithDuration: (ccTime) t position: (CGPoint) p
 {
-	if( !(self=[super initWithDuration: t]) )
-		return nil;
-	
-	endPosition = p;
+	if( (self=[super initWithDuration: t]) ) {	
+		endPosition = p;
+	}
 	return self;
 }
 
@@ -552,10 +563,9 @@
 
 -(id) initWithDuration: (ccTime) t position: (CGPoint) p
 {
-	if( !(self=[super initWithDuration: t]) )
-		return nil;
-
-	delta = p;
+	if( (self=[super initWithDuration: t]) ) {
+		delta = p;
+	}
 	return self;
 }
 
@@ -592,12 +602,11 @@
 
 -(id) initWithDuration: (ccTime) t position: (CGPoint) pos height: (ccTime) h jumps:(int)j
 {
-	if( !(self=[super initWithDuration:t]) )
-		return nil;
-
-	delta = pos;
-	height = h;
-	jumps = j;
+	if( (self=[super initWithDuration:t]) ) {
+		delta = pos;
+		height = h;
+		jumps = j;
+	}
 	return self;
 }
 
@@ -1043,10 +1052,10 @@ static inline float bezierat( float a, float b, float c, float d, ccTime t )
 
 -(id) initWithAction: (CCFiniteTimeAction*) action
 {
-	if( !(self=[super initWithDuration: [action duration]]) )
-		return nil;
+	if( (self=[super initWithDuration: [action duration]]) ) {
 	
-	other = [action retain];
+		other = [action retain];
+	}
 	return self;
 }
 
@@ -1094,28 +1103,28 @@ static inline float bezierat( float a, float b, float c, float d, ccTime t )
 
 @synthesize animation = animation_;
 
-+(id) actionWithAnimation: (id<CCAnimationProtocol>)anim
++(id) actionWithAnimation: (CCAnimation*)anim
 {
 	return [[[self alloc] initWithAnimation:anim restoreOriginalFrame:YES] autorelease];
 }
 
-+(id) actionWithAnimation: (id<CCAnimationProtocol>)anim restoreOriginalFrame:(BOOL)b
++(id) actionWithAnimation: (CCAnimation*)anim restoreOriginalFrame:(BOOL)b
 {
 	return [[[self alloc] initWithAnimation:anim restoreOriginalFrame:b] autorelease];
 }
 
-+(id) actionWithDuration:(ccTime)duration animation: (id<CCAnimationProtocol>)anim restoreOriginalFrame:(BOOL)b
++(id) actionWithDuration:(ccTime)duration animation: (CCAnimation*)anim restoreOriginalFrame:(BOOL)b
 {
 	return [[[self alloc] initWithDuration:duration animation:anim restoreOriginalFrame:b] autorelease];
 }
 
--(id) initWithAnimation: (id<CCAnimationProtocol>)anim
+-(id) initWithAnimation: (CCAnimation*)anim
 {
 	NSAssert( anim!=nil, @"Animate: argument Animation must be non-nil");
 	return [self initWithAnimation:anim restoreOriginalFrame:YES];
 }
 
--(id) initWithAnimation: (id<CCAnimationProtocol>)anim restoreOriginalFrame:(BOOL) b
+-(id) initWithAnimation: (CCAnimation*)anim restoreOriginalFrame:(BOOL) b
 {
 	NSAssert( anim!=nil, @"Animate: argument Animation must be non-nil");
 
@@ -1128,7 +1137,7 @@ static inline float bezierat( float a, float b, float c, float d, ccTime t )
 	return self;
 }
 
--(id) initWithDuration:(ccTime)aDuration animation: (id<CCAnimationProtocol>)anim restoreOriginalFrame:(BOOL) b
+-(id) initWithDuration:(ccTime)aDuration animation: (CCAnimation*)anim restoreOriginalFrame:(BOOL) b
 {
 	NSAssert( anim!=nil, @"Animate: argument Animation must be non-nil");
 	
@@ -1157,7 +1166,7 @@ static inline float bezierat( float a, float b, float c, float d, ccTime t )
 -(void) startWithTarget:(id)aTarget
 {
 	[super startWithTarget:aTarget];
-	id<CCFrameProtocol> sprite = (id<CCFrameProtocol>) target;
+	CCSprite *sprite = target;
 
 	[origFrame release];
 
@@ -1168,7 +1177,7 @@ static inline float bezierat( float a, float b, float c, float d, ccTime t )
 -(void) stop
 {
 	if( restoreOriginalFrame ) {
-		id<CCFrameProtocol> sprite = (id<CCFrameProtocol>) target;
+		CCSprite *sprite = target;
 		[sprite setDisplayFrame:origFrame];
 	}
 	
@@ -1177,19 +1186,15 @@ static inline float bezierat( float a, float b, float c, float d, ccTime t )
 
 -(void) update: (ccTime) t
 {
-	NSUInteger idx=0;
-	
 	NSArray *frames = [animation_ frames];
 	NSUInteger numberOfFrames = [frames count];
-	ccTime slice = 1.0f / numberOfFrames;
 	
-	if(t !=0 )
-		idx = t/ slice;
+	NSUInteger idx = t * numberOfFrames;
 
 	if( idx >= numberOfFrames ) {
 		idx = numberOfFrames -1;
 	}
-	id<CCFrameProtocol> sprite = (id<CCFrameProtocol>) target;
+	CCSprite *sprite = target;
 	if (! [sprite isFrameDisplayed: [frames objectAtIndex: idx]] ) {
 		[sprite setDisplayFrame: [frames objectAtIndex:idx]];
 	}

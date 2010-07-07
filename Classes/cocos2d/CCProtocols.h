@@ -1,16 +1,27 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2008,2009 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
- *
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
+
 
 #import "ccTypes.h"
 #import "CCTexture2D.h"
@@ -33,6 +44,7 @@
 -(GLubyte) opacity;
 /** sets the opacity.
  @warning If the the texture has premultiplied alpha then, the R, G and B channels will be modifed.
+ Values goes from 0 to 255, where 255 means fully opaque.
  */
 -(void) setOpacity: (GLubyte) opacity;
 @optional
@@ -97,40 +109,4 @@
 -(void) setCString:(char*)label;
 @end
 
-#pragma mark -
-#pragma mark CCAnimationProtocol
-
-/// Objects that supports the Animation protocol
-/// @since v0.7.1
-@protocol CCAnimationProtocol <NSObject>
-/** readonly array with the frames. */
--(NSArray*) frames;
-/** set a array of frames */
--(void) setFrames:(NSArray*)array;
-/** delay of between frames in seconds. */
--(float) delay;
-/** name of the animation. */
--(NSString*) name;
-@end
-
-#pragma mark -
-#pragma mark CCFrameProtocol
-
-/// Nodes supports frames protocol
-/// @since v0.7.1
-@class CCSpriteFrame;
-@protocol CCFrameProtocol <NSObject>
-/** sets a new display frame to the node. */
--(void) setDisplayFrame:(CCSpriteFrame*)newFrame;
-/** changes the display frame based on an animation and an index. */
--(void) setDisplayFrame: (NSString*) animationName index:(int) frameIndex;
-/** returns the current displayed frame. */
--(BOOL) isFrameDisplayed:(CCSpriteFrame*)frame;
-/** returns the current displayed frame. */
--(CCSpriteFrame*) displayedFrame;
-/** returns an Animation given it's name. */
--(id<CCAnimationProtocol>)animationByName: (NSString*) animationName;
-/** adds an Animation to the Sprite. */
--(void) addAnimation: (id<CCAnimationProtocol>) animation;
-@end
 

@@ -1,16 +1,28 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2009,2010 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
+
 
 #import "ccConfig.h"
 #import "CCSpriteSheet.h"
@@ -52,7 +64,6 @@ struct transformValues_ {
 @synthesize quad = quad_;
 @synthesize atlasIndex = atlasIndex_;
 @synthesize textureRect = rect_;
-@synthesize opacity=opacity_, color=color_;
 @synthesize blendFunc = blendFunc_;
 @synthesize usesSpriteSheet = usesSpriteSheet_;
 @synthesize textureAtlas = textureAtlas_;
@@ -122,10 +133,16 @@ struct transformValues_ {
 		// if the sprite is added to an SpriteSheet, then it will automatically switch to "SpriteSheet Render"
 		[self useSelfRender];
 		
-		// update texture and blend functions
+		opacityModifyRGB_			= YES;
+		opacity_					= 255;
+		color_ = colorUnmodified_	= ccWHITE;
+		
+		blendFunc_.src = CC_BLEND_SRC;
+		blendFunc_.dst = CC_BLEND_DST;
+		
+		// update texture (calls updateBlendFunc)
 		[self setTexture:nil];
 		
-
 		// clean the Quad
 		bzero(&quad_, sizeof(quad_));
 		
@@ -144,8 +161,6 @@ struct transformValues_ {
 		hasChildren_ = NO;
 		
 		// Atlas: Color
-		opacity_ = 255;
-		color_ = ccWHITE;
 		ccColor4B tmpColor = {255,255,255,255};
 		quad_.bl.colors = tmpColor;
 		quad_.br.colors = tmpColor;
@@ -194,6 +209,8 @@ struct transformValues_ {
 		rect.size = texture.contentSize;
 		return [self initWithTexture:texture rect:rect];
 	}
+
+	[self release];
 	return nil;
 }
 
@@ -204,6 +221,8 @@ struct transformValues_ {
 	CCTexture2D *texture = [[CCTextureCache sharedTextureCache] addImage: filename];
 	if( texture )
 		return [self initWithTexture:texture rect:rect];
+
+	[self release];
 	return nil;
 }
 
@@ -303,7 +322,7 @@ struct transformValues_ {
 
 -(void) initAnimationDictionary
 {
-	animations_ = [[NSMutableDictionary dictionaryWithCapacity:2] retain];
+	animations_ = [[NSMutableDictionary alloc] initWithCapacity:2];
 }
 
 -(void)setTextureRect:(CGRect)rect
@@ -317,6 +336,18 @@ struct transformValues_ {
 
 	[self setContentSize:untrimmedSize];
 	[self updateTextureCoords:rect];
+
+	CGPoint relativeOffset = unflippedOffsetPositionFromCenter_;
+	
+	// issue #732
+	if( flipX_ )
+		relativeOffset.x = - relativeOffset.x;
+	if( flipY_ )
+		relativeOffset.y = - relativeOffset.y;
+	
+	offsetPosition_.x = relativeOffset.x + (contentSize_.width - rect_.size.width) / 2;
+	offsetPosition_.y = relativeOffset.y + (contentSize_.height - rect_.size.height) / 2;
+	
 	
 	// rendering using SpriteSheet
 	if( usesSpriteSheet_ ) {
@@ -430,10 +461,11 @@ struct transformValues_ {
 		}		
 	}
 	
+	
 	//
 	// calculate the Quad based on the Affine Matrix
-	//
-	
+	//	
+
 	CGSize size = rect_.size;
 
 	float x1 = offsetPosition_.x;
@@ -555,11 +587,22 @@ struct transformValues_ {
 
 -(void) reorderChild:(CCSprite*)child z:(int)z
 {
+	NSAssert( child != nil, @"Child must be non-nil");
+	NSAssert( [children_ containsObject:child], @"Child doesn't belong to Sprite" );
+
+	if( z == child.zOrder )
+		return;
+
 	if( usesSpriteSheet_ ) {
-		NSAssert(NO,@"reorderChild not implemented while using Spritesheet. Please open a bug, and if possible attach the patch. Thanks");
+		// XXX: Instead of removing/adding, it is more efficient to reorder manually
+		[child retain];
+		[self removeChild:child cleanup:NO];
+		[self addChild:child z:z];
+		[child release];
 	}
 
-	[super reorderChild:child z:z];
+	else
+		[super reorderChild:child z:z];
 }
 
 -(void)removeChild: (CCSprite *)sprite cleanup:(BOOL)doCleanup
@@ -596,7 +639,8 @@ struct transformValues_ {
 	dirty_ = recursiveDirty_ = b;
 	// recursively set dirty
 	if( hasChildren_ ) {
-		for( CCSprite *child in children_)
+		CCSprite *child;
+		CCARRAY_FOREACH(children_, child)
 			[child setDirtyRecursively:YES];
 	}
 }
@@ -664,7 +708,8 @@ struct transformValues_ {
 		[super setVisible:v];
 		if( usesSpriteSheet_ && ! recursiveDirty_ ) {
 			dirty_ = recursiveDirty_ = YES;
-			for( id child in children_)
+			id child;
+			CCARRAY_FOREACH(children_, child)
 				[child setVisible:v];
 		}
 	}
@@ -700,6 +745,13 @@ struct transformValues_ {
 #pragma mark CCSprite - RGBA protocol
 -(void) updateColor
 {
+	ccColor4B color4 = {color_.r, color_.g, color_.b, opacity_ };
+	
+	quad_.bl.colors = color4;
+	quad_.br.colors = color4;
+	quad_.tl.colors = color4;
+	quad_.tr.colors = color4;
+	
 	// renders using Sprite Manager
 	if( usesSpriteSheet_ ) {
 		if( atlasIndex_ != CCSpriteIndexNotInitialized)
@@ -713,40 +765,48 @@ struct transformValues_ {
 	// do nothing
 }
 
+-(GLubyte) opacity
+{
+	return opacity_;
+}
+
 -(void) setOpacity:(GLubyte) anOpacity
 {
-	opacity_ = anOpacity;
-	
+	opacity_			= anOpacity;
+
 	// special opacity for premultiplied textures
 	if( opacityModifyRGB_ )
-		color_.r = color_.g = color_.b = opacity_;
-
-	ccColor4B color4 = {color_.r, color_.g, color_.b, opacity_ };
-
-	quad_.bl.colors = color4;
-	quad_.br.colors = color4;
-	quad_.tl.colors = color4;
-	quad_.tr.colors = color4;
-
+		[self setColor: (opacityModifyRGB_ ? colorUnmodified_ : color_ )];
+	
 	[self updateColor];
+}
+
+- (ccColor3B) color
+{
+	if(opacityModifyRGB_){
+		return colorUnmodified_;
+	}
+	return color_;
 }
 
 -(void) setColor:(ccColor3B)color3
 {
-	color_ = color3;
+	color_ = colorUnmodified_ = color3;
 	
-	ccColor4B color4 = {color_.r, color_.g, color_.b, opacity_ };
-	quad_.bl.colors = color4;
-	quad_.br.colors = color4;
-	quad_.tl.colors = color4;
-	quad_.tr.colors = color4;
+	if( opacityModifyRGB_ ){
+		color_.r = color3.r * opacity_/255;
+		color_.g = color3.g * opacity_/255;
+		color_.b = color3.b * opacity_/255;
+	}
 	
 	[self updateColor];
 }
 
 -(void) setOpacityModifyRGB:(BOOL)modify
 {
-	opacityModifyRGB_ = modify;
+	ccColor3B oldColor	= self.color;
+	opacityModifyRGB_	= modify;
+	self.color			= oldColor;
 }
 
 -(BOOL) doesOpacityModifyRGB
@@ -761,16 +821,12 @@ struct transformValues_ {
 
 -(void) setDisplayFrame:(CCSpriteFrame*)frame
 {
-	offsetPosition_ = frame.offset;
-	
-	CGRect rect = frame.rect;
-	CGSize origSize = frame.originalSize;
-	offsetPosition_.x += (origSize.width - rect.size.width) / 2;
-	offsetPosition_.y += (origSize.height - rect.size.height) / 2;
+	unflippedOffsetPositionFromCenter_ = frame.offset;
 
+	CCTexture2D *newTexture = [frame texture];
 	// update texture before updating texture rect
-	if ( frame.texture.name != self.texture.name )
-		[self setTexture: frame.texture];
+	if ( newTexture.name != texture_.name )
+		[self setTexture: newTexture];
 	
 	// update rect
 	[self setTextureRect:frame.rect untrimmedSize:frame.originalSize];
@@ -804,7 +860,7 @@ struct transformValues_ {
 	return [CCSpriteFrame frameWithTexture:self.texture rect:rect_ offset:CGPointZero];
 }
 
--(void) addAnimation: (id<CCAnimationProtocol>) anim
+-(void) addAnimation: (CCAnimation*) anim
 {
 	// lazy alloc
 	if( ! animations_ )
@@ -813,7 +869,7 @@ struct transformValues_ {
 	[animations_ setObject:anim forKey:[anim name]];
 }
 
--(id<CCAnimationProtocol>)animationByName: (NSString*) animationName
+-(CCAnimation*)animationByName: (NSString*) animationName
 {
 	NSAssert( animationName != nil, @"animationName parameter must be non nil");
     return [animations_ objectForKey:animationName];
@@ -829,11 +885,11 @@ struct transformValues_ {
 	if( !texture_ || ! [texture_ hasPremultipliedAlpha] ) {
 		blendFunc_.src = GL_SRC_ALPHA;
 		blendFunc_.dst = GL_ONE_MINUS_SRC_ALPHA;
-		opacityModifyRGB_ = NO;
+		[self setOpacityModifyRGB:NO];
 	} else {
 		blendFunc_.src = CC_BLEND_SRC;
 		blendFunc_.dst = CC_BLEND_DST;
-		opacityModifyRGB_ = YES;
+		[self setOpacityModifyRGB:YES];
 	}
 }
 

@@ -1,14 +1,26 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
+ * Copyright (c) 2009-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
- * Copyright (C) 2009 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
  *
  * TMX Tiled Map support:
  * http://www.mapeditor.org
@@ -62,6 +74,7 @@
 		mapOrientation_ = mapInfo.orientation;
 		objectGroups_ = [mapInfo.objectGroups retain];
 		properties_ = [mapInfo.properties retain];
+		tileProperties_ = [mapInfo.tileProperties retain];
 				
 		int idx=0;
 
@@ -90,6 +103,7 @@
 {
 	[objectGroups_ release];
 	[properties_ release];
+	[tileProperties_ release];
 	[super dealloc];
 }
 
@@ -102,48 +116,7 @@
 	// tell the layerinfo to release the ownership of the tiles map.
 	layerInfo.ownTiles = NO;
 
-	// Optimization: quick hack that sets the image size on the tileset
-	tileset.imageSize = [[layer texture] contentSize];
-		
-	// By default all the tiles are aliased
-	// pros:
-	//  - easier to render
-	// cons:
-	//  - difficult to scale / rotate / etc.
-	[[layer texture] setAliasTexParameters];
-
-	CFByteOrder o = CFByteOrderGetCurrent();
-	
-	CGSize s = layerInfo.layerSize;
-	
-	for( unsigned int y=0; y < s.height; y++ ) {
-		for( unsigned int x=0; x < s.width; x++ ) {
-
-			unsigned int pos = x + s.width * y;
-			unsigned int gid = layerInfo.tiles[ pos ];
-
-			// gid are stored in little endian.
-			// if host is big endian, then swap
-			if( o == CFByteOrderBigEndian )
-				gid = CFSwapInt32( gid );
-			
-			// XXX: gid == 0 --> empty tile
-			if( gid != 0 ) {
-				[layer appendTileForGID:gid at:ccp(x,y)];
-				
-				// Optimization: update min and max GID rendered by the layer
-				layerInfo.minGID = MIN(gid, layerInfo.minGID);
-				layerInfo.maxGID = MAX(gid, layerInfo.maxGID);
-			}
-		}
-	}
-	
-	// HACK:
-	// remove all possible tiles from the dirtySprites set, since they don't need to be updated
-//	ccCArrayRemoveAllValues(layer->dirtySprites_);
-	
-	NSAssert( layerInfo.maxGID >= tileset.firstGid &&
-			 layerInfo.minGID >= tileset.firstGid, @"TMX: Only 1 tilset per layer is supported");
+	[layer setupTiles];
 	
 	return layer;
 }
@@ -191,8 +164,10 @@
 -(CCTMXLayer*) layerNamed:(NSString *)layerName 
 {
 	for( CCTMXLayer *layer in children_ ) {
-		if( [layer.layerName isEqual:layerName] )
-			return layer;
+		if([layer isKindOfClass:[CCTMXLayer class]]){
+			if( [layer.layerName isEqual:layerName] )
+				return layer;
+		}
 	}
 	
 	// layer not found
@@ -219,6 +194,9 @@
 -(id) propertyNamed:(NSString *)propertyName 
 {
 	return [properties_ valueForKey:propertyName];
+}
+-(NSDictionary*)propertiesForGID:(unsigned int)GID{
+	return [tileProperties_ objectForKey:[NSNumber numberWithInt:GID]];
 }
 @end
 

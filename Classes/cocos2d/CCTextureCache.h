@@ -1,20 +1,32 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2008,2009 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
 
 #import <Foundation/Foundation.h>
+#import <CoreGraphics/CGImage.h>
 
-#import "CCTexture2D.h"
+@class CCTexture2D;
 
 /** Singleton that handles the loading of textures
  * Once the texture is loaded, the next time it will return
@@ -37,15 +49,15 @@
 
 
 /** Returns a Texture2D object given an file image
- * If the file image was not previously loaded, it will create a new Texture2D
- *  object and it will return it.
+ * If the file image was not previously loaded, it will create a new CCTexture2D
+ *  object and it will return it. It will use the filename as a key.
  * Otherwise it will return a reference of a previosly loaded image.
  * Supported image extensions: .png, .bmp, .tiff, .jpeg, .pvr, .gif
  */
 -(CCTexture2D*) addImage: (NSString*) fileimage;
 
-/** Returns a Texture2D object given an file image
- * If the file image was not previously loaded, it will create a new Texture2D object and it will return it.
+/** Returns a Texture2D object given a file image
+ * If the file image was not previously loaded, it will create a new CCTexture2D object and it will return it.
  * Otherwise it will load a texture in a new thread, and when the image is loaded, the callback will be called with the Texture2D as a parameter.
  * The callback will be called from the main thread, so it is safe to create any cocos2d object from the callback.
  * Supported image extensions: .png, .bmp, .tiff, .jpeg, .pvr, .gif
@@ -54,7 +66,7 @@
 -(void) addImageAsync:(NSString*) filename target:(id)target selector:(SEL)selector;
 
 /** Returns a Texture2D object given an PVRTC RAW filename
- * If the file image was not previously loaded, it will create a new Texture2D
+ * If the file image was not previously loaded, it will create a new CCTexture2D
  *  object and it will return it. Otherwise it will return a reference of a previosly loaded image
  *
  * It can only load square images: width == height, and it must be a power of 2 (128,256,512...)
@@ -64,13 +76,13 @@
 -(CCTexture2D*) addPVRTCImage: (NSString*) fileimage bpp:(int)bpp hasAlpha:(BOOL)alpha width:(int)w;
 
 /** Returns a Texture2D object given an PVRTC filename
- * If the file image was not previously loaded, it will create a new Texture2D
+ * If the file image was not previously loaded, it will create a new CCTexture2D
  *  object and it will return it. Otherwise it will return a reference of a previosly loaded image
  */
 -(CCTexture2D*) addPVRTCImage: (NSString*) filename;
 
 /** Returns a Texture2D object given an CGImageRef image
- * If the image was not previously loaded, it will create a new Texture2D object and it will return it.
+ * If the image was not previously loaded, it will create a new CCTexture2D object and it will return it.
  * Otherwise it will return a reference of a previously loaded image
  * The "key" parameter will be used as the "key" for the cache.
  * If "key" is nil, then a new texture will be created each time.
@@ -93,7 +105,13 @@
  */
 -(void) removeUnusedTextures;
 
-/** Deletes a texture from the cache
+/** Deletes a texture from the cache given a texture
  */
 -(void) removeTexture: (CCTexture2D*) tex;
+
+/** Deletes a texture from the cache given a its key name
+ @since v0.99.4
+ */
+-(void) removeTextureForKey: (NSString*) textureKeyName;
+
 @end

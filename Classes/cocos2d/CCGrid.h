@@ -1,16 +1,28 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
+ * Copyright (c) 2009 On-Core
  *
- * Copyright (C) 2009 On-Core
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
+
 
 #import <UIKit/UIKit.h>
 
@@ -28,9 +40,10 @@
 	BOOL		active_;
 	int			reuseGrid_;
 	ccGridSize	gridSize_;
-	CCTexture2D *	texture_;
+	CCTexture2D *texture_;
 	CGPoint		step_;
-	CCGrabber *	grabber_;
+	CCGrabber	*grabber_;
+	BOOL		isTextureFlipped_;
 }
 
 /** wheter or not the grid is active */
@@ -45,12 +58,20 @@
 @property (nonatomic, retain) CCTexture2D *texture;
 /** grabber used */
 @property (nonatomic, retain) CCGrabber *grabber;
+/** is texture flipped */
+@property (nonatomic, readwrite) BOOL isTextureFlipped;
 
++(id) gridWithSize:(ccGridSize)gridSize texture:(CCTexture2D*)texture flippedTexture:(BOOL)flipped;
++(id) gridWithSize:(ccGridSize)gridSize;
+
+-(id) initWithSize:(ccGridSize)gridSize texture:(CCTexture2D*)texture flippedTexture:(BOOL)flipped;
 -(id)initWithSize:(ccGridSize)gridSize;
 -(void)beforeDraw;
 -(void)afterDraw:(CCNode*)target;
 -(void)blit;
 -(void)reuse;
+
+-(void)calculateVertexPoints;
 
 @end
 
@@ -67,19 +88,12 @@
 	GLushort	*indices;
 }
 
-/** creates a Grid3D (non-tiled) grid with a grid size */
-+(id)gridWithSize:(ccGridSize)gridSize;
-/** initizlies a Grid3D (non-tiled) grid with a grid size */
--(id)initWithSize:(ccGridSize)gridSize;
-
 /** returns the vertex at a given position */
 -(ccVertex3F)vertex:(ccGridSize)pos;
 /** returns the original (non-transformed) vertex at a given position */
 -(ccVertex3F)originalVertex:(ccGridSize)pos;
 /** sets a new vertex at a given position */
 -(void)setVertex:(ccGridSize)pos vertex:(ccVertex3F)vertex;
-
--(void)calculateVertexPoints;
 
 @end
 
@@ -97,18 +111,11 @@
 	GLushort	*indices;
 }
 
-/** creates a TiledGrid3D with a grid size */
-+(id)gridWithSize:(ccGridSize)gridSize;
-/** initializes a TiledGrid3D with a grid size */
--(id)initWithSize:(ccGridSize)gridSize;
-
 /** returns the tile at the given position */
 -(ccQuad3)tile:(ccGridSize)pos;
 /** returns the original tile (untransformed) at the given position */
 -(ccQuad3)originalTile:(ccGridSize)pos;
 /** sets a new tile */
 -(void)setTile:(ccGridSize)pos coords:(ccQuad3)coords;
-
--(void)calculateVertexPoints;
 
 @end

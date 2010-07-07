@@ -65,30 +65,42 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 
 //CONSTANTS:
 
-/** Possible texture pixel formats */
+/** @typedef CCTexture2DPixelFormat
+ Possible texture pixel formats
+ */
 typedef enum {
-	kTexture2DPixelFormat_Automatic = 0,
+	kCCTexture2DPixelFormat_Automatic = 0,
 	//! 32-bit texture: RGBA8888
-	kTexture2DPixelFormat_RGBA8888,
+	kCCTexture2DPixelFormat_RGBA8888,
 	//! 16-bit texture: used with images that have alpha pre-multiplied
-	kTexture2DPixelFormat_RGB565,
+	kCCTexture2DPixelFormat_RGB565,
 	//! 8-bit textures used as masks
-	kTexture2DPixelFormat_A8,
+	kCCTexture2DPixelFormat_A8,
 	//! 16-bit textures: RGBA4444
-	kTexture2DPixelFormat_RGBA4444,
+	kCCTexture2DPixelFormat_RGBA4444,
 	//! 16-bit textures: RGB5A1
-	kTexture2DPixelFormat_RGB5A1,
-} Texture2DPixelFormat;
+	kCCTexture2DPixelFormat_RGB5A1,	
 
-/// Default pixel format: RGBA8888
-#define kTexture2DPixelFormat_Default kTexture2DPixelFormat_RGBA8888
+	//! Default texture format: RGBA8888
+	kCCTexture2DPixelFormat_Default = kCCTexture2DPixelFormat_RGBA8888,
+
+	// backward compatibility stuff
+	kTexture2DPixelFormat_Automatic = kCCTexture2DPixelFormat_Automatic,
+	kTexture2DPixelFormat_RGBA8888 = kCCTexture2DPixelFormat_RGBA8888,
+	kTexture2DPixelFormat_RGB565 = kCCTexture2DPixelFormat_RGB565,
+	kTexture2DPixelFormat_A8 = kCCTexture2DPixelFormat_A8,
+	kTexture2DPixelFormat_RGBA4444 = kCCTexture2DPixelFormat_RGBA4444,
+	kTexture2DPixelFormat_RGB5A1 = kCCTexture2DPixelFormat_RGB5A1,
+	kTexture2DPixelFormat_Default = kCCTexture2DPixelFormat_Default
+	
+} CCTexture2DPixelFormat;
 
 //CLASS INTERFACES:
 
-/** CCTexture2D class
+/** CCTexture2D class.
  * This class allows to easily create OpenGL 2D textures from images, text or raw data.
- * The created Texture2D object will always have power-of-two dimensions. 
- * Depending on how you create the Texture2D object, the actual image area of the texture might be smaller than the texture dimensions i.e. "contentSize" != (pixelsWide, pixelsHigh) and (maxS, maxT) != (1.0, 1.0).
+ * The created CCTexture2D object will always have power-of-two dimensions. 
+ * Depending on how you create the CCTexture2D object, the actual image area of the texture might be smaller than the texture dimensions i.e. "contentSize" != (pixelsWide, pixelsHigh) and (maxS, maxT) != (1.0, 1.0).
  * Be aware that the content of the generated textures will be upside-down!
  */
 @interface CCTexture2D : NSObject
@@ -97,16 +109,16 @@ typedef enum {
 	CGSize						_size;
 	NSUInteger					_width,
 								_height;
-	Texture2DPixelFormat		_format;
+	CCTexture2DPixelFormat		_format;
 	GLfloat						_maxS,
 								_maxT;
 	BOOL						_hasPremultipliedAlpha;
 }
 /** Intializes with a texture2d with data */
-- (id) initWithData:(const void*)data pixelFormat:(Texture2DPixelFormat)pixelFormat pixelsWide:(NSUInteger)width pixelsHigh:(NSUInteger)height contentSize:(CGSize)size;
+- (id) initWithData:(const void*)data pixelFormat:(CCTexture2DPixelFormat)pixelFormat pixelsWide:(NSUInteger)width pixelsHigh:(NSUInteger)height contentSize:(CGSize)size;
 
-/** pixelFormat */
-@property(nonatomic,readonly) Texture2DPixelFormat pixelFormat;
+/** pixel format of the texture */
+@property(nonatomic,readonly) CCTexture2DPixelFormat pixelFormat;
 /** width in pixels */
 @property(nonatomic,readonly) NSUInteger pixelsWide;
 /** hight in pixels */
@@ -158,7 +170,7 @@ Note that the generated textures are of type A8 - use the blending mode (GL_SRC_
 
 /**
  Extensions to make it easy to create a CCTexture2D object from a PVRTC file
- Note that the generated textures are don't have their alpha premultiplied - use the blending mode (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA).
+ Note that the generated textures don't have their alpha premultiplied - use the blending mode (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA).
  */
 @interface CCTexture2D (PVRTC)
 /** Initializes a texture from a PVRTC buffer */
@@ -178,27 +190,31 @@ typedef struct _ccTexParams {
 } ccTexParams;
 
 @interface CCTexture2D (GLFilter)
-/** sets the min filter, mag filter, wrap s and wrap t texture parameters
+/** sets the min filter, mag filter, wrap s and wrap t texture parameters.
+ If the texture size is NPOT (non power of 2), then in can only use GL_CLAMP_TO_EDGE in GL_TEXTURE_WRAP_{S,T}.
  @since v0.8
  */
 -(void) setTexParameters: (ccTexParams*) texParams;
 
 /** sets antialias texture parameters:
- TEXTURE_MIN_FILTER = LINEAR
- TEXTURE_MAG_FILTER = LINEAR
+  - GL_TEXTURE_MIN_FILTER = GL_LINEAR
+  - GL_TEXTURE_MAG_FILTER = GL_LINEAR
+
  @since v0.8
  */
 - (void) setAntiAliasTexParameters;
 
 /** sets alias texture parameters:
- TEXTURE_MIN_FILTER = NEAREST
- TEXTURE_MAG_FILTER = NEAREST
+  - GL_TEXTURE_MIN_FILTER = GL_NEAREST
+  - GL_TEXTURE_MAG_FILTER = GL_NEAREST
+ 
  @since v0.8
  */
 - (void) setAliasTexParameters;
 
 
-/** Generates mipmap images for the texture
+/** Generates mipmap images for the texture.
+ It only works if the texture size is POT (power of 2).
  @since v0.99.0
  */
 -(void) generateMipmap;
@@ -209,22 +225,24 @@ typedef struct _ccTexParams {
 @interface CCTexture2D (PixelFormat)
 /** sets the default pixel format for UIImages that contains alpha channel.
  If the UIImage contains alpha channel, then the options are:
-    - generate 32-bit textures: RGBA8 (kTexture2DPixelFormat_RGBA8888)
-    - generate 16-bit textures: RGBA4 (default: kTexture2DPixelFormat_RGBA4444)
-    - generate 16-bit textures: RGB5A1 (kTexture2DPixelFormat_RGB5A1)
- You can also use the following option, but you will lose the alpha channel:
-    - generate 16-bit textures: RGB565 (kTexture2DPixelFormat_RGB565)
+	- generate 32-bit textures: kCCTexture2DPixelFormat_RGBA8888 (default one)
+	- generate 16-bit textures: kCCTexture2DPixelFormat_RGBA4444
+	- generate 16-bit textures: kCCTexture2DPixelFormat_RGB5A1
+	- generate 16-bit textures: kCCTexture2DPixelFormat_RGB565
+	- generate 8-bit textures: kCCTexture2DPixelFormat_A8 (only use it if you use just 1 color)
+
+ How does it work ?
+   - If the image is an RGBA (with Alpha) then the default pixel format will be used (it can be a 8-bit, 16-bit or 32-bit texture)
+   - If the image is an RGB (without Alpha) then an RGB565 texture will be used (16-bit texture)
  
- To use this function you MUST disable the "compres .PNG files" in XCode, otherwise all your .PNG images
- will be pre-multiplied wihtout alpha channel.
  @since v0.8
  */
-+(void) setDefaultAlphaPixelFormat:(Texture2DPixelFormat)format;
++(void) setDefaultAlphaPixelFormat:(CCTexture2DPixelFormat)format;
 
 /** returns the alpha pixel format
  @since v0.8
  */
-+(Texture2DPixelFormat) defaultAlphaPixelFormat;
++(CCTexture2DPixelFormat) defaultAlphaPixelFormat;
 @end
 
 

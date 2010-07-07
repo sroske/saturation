@@ -1,17 +1,28 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2008, 2009 Jason Booth
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
- *
- *
- *
+ * Copyright (c) 2008, 2009 Jason Booth
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+/*
  * A ribbon is a dynamically generated list of polygons drawn as a single or series
  * of triangle strips. The primary use of Ribbon is as the drawing class of Motion Streak,
  * but it is quite useful on it's own. When manually drawing a ribbon, you can call addPointAt
@@ -52,24 +63,24 @@
 	if (self)
 	{
 		
-		mSegments = [[NSMutableArray alloc] init];
-		dSegments = [[NSMutableArray alloc] init];
+		segments_ = [[NSMutableArray alloc] init];
+		deletedSegments_ = [[NSMutableArray alloc] init];
 
 		/* 1 initial segment */
 		CCRibbonSegment* seg = [[CCRibbonSegment alloc] init];
-		[mSegments addObject:seg];
+		[segments_ addObject:seg];
 		[seg release];
 		
 		textureLength_ = l;
 		
 		color_ = color;
-		mFadeTime = fade;
-		mLastLocation = CGPointZero;
-		mLastWidth = w/2;
-		mTexVPos = 0.0f;
+		fadeTime_ = fade;
+		lastLocation_ = CGPointZero;
+		lastWidth_ = w/2;
+		texVPos_ = 0.0f;
 		
-		mCurTime = 0;
-		mPastFirstPoint = NO;
+		curTime_ = 0;
+		pastFirstPoint_ = NO;
 		
 		/* XXX:
 		 Ribbon, by default uses this blend function, which might not be correct
@@ -90,8 +101,8 @@
 
 -(void)dealloc
 {
-	[mSegments release];
-	[dSegments release];
+	[segments_ release];
+	[deletedSegments_ release];
 	[texture_ release];
 	[super dealloc];
 }
@@ -107,8 +118,8 @@
 
 -(void)update:(ccTime)delta
 {
-	mCurTime+= delta;
-	mDelta = delta;
+	curTime_+= delta;
+	delta_ = delta;
 }
 
 -(float)sideOfLine:(CGPoint)p l1:(CGPoint)l1 l2:(CGPoint)l2
@@ -123,51 +134,52 @@
 {
 	w=w*0.5f;
 	// if this is the first point added, cache it and return
-	if (!mPastFirstPoint)
+	if (!pastFirstPoint_)
 	{
-		mLastWidth = w;
-		mLastLocation = location;
-		mPastFirstPoint = YES;
+		lastWidth_ = w;
+		lastLocation_ = location;
+		pastFirstPoint_ = YES;
 		return;
 	}
 
-	CGPoint sub = ccpSub(mLastLocation, location);
+	CGPoint sub = ccpSub(lastLocation_, location);
 	float r = ccpToAngle(sub) + (float)M_PI_2;
 	CGPoint p1 = ccpAdd([self rotatePoint:ccp(-w, 0) rotation:r], location);
 	CGPoint p2 = ccpAdd([self rotatePoint:ccp(w, 0) rotation:r], location);
-	float len = sqrtf(powf(mLastLocation.x - location.x, 2) + powf(mLastLocation.y - location.y, 2));
-	float tend = mTexVPos + len/textureLength_;
+	float len = sqrtf(powf(lastLocation_.x - location.x, 2) + powf(lastLocation_.y - location.y, 2));
+	float tend = texVPos_ + len/textureLength_;
 	CCRibbonSegment* seg;
 	// grab last segment
-	seg = [mSegments objectAtIndex:[mSegments count]-1];
+	seg = [segments_ lastObject];
 	// lets kill old segments
-	for (CCRibbonSegment* seg2 in mSegments)
+	for (CCRibbonSegment* seg2 in segments_)
 	{
 		if (seg2 != seg && seg2->finished)
 		{
-			[dSegments addObject:seg2];
+			[deletedSegments_ addObject:seg2];
 		}
 	}
-	[mSegments removeObjectsInArray:dSegments];
+	[segments_ removeObjectsInArray:deletedSegments_];
 	// is the segment full?
 	if (seg->end >= 50)
-		[mSegments removeObjectsInArray:dSegments];
-	// grab last segment and appent to it if it's not full
-	seg = [mSegments objectAtIndex:[mSegments count]-1];
+		[segments_ removeObjectsInArray:deletedSegments_];
+	// grab last segment and append to it if it's not full
+	seg = [segments_ lastObject];
 	// is the segment full?
 	if (seg->end >= 50)
 	{
 		CCRibbonSegment* newSeg;
 		// grab it from the cache if we can
-		if ([dSegments count] > 0)
+		if ([deletedSegments_ count] > 0)
 		{
-			newSeg = [dSegments objectAtIndex:0];
-			[dSegments removeObject:newSeg];
+			newSeg = [deletedSegments_ objectAtIndex:0];
+			[newSeg retain];							// will be released later
+			[deletedSegments_ removeObject:newSeg];
 			[newSeg reset];
 		}
 		else
 		{
-			newSeg = [[[CCRibbonSegment alloc] init] autorelease];
+			newSeg = [[CCRibbonSegment alloc] init]; // will be released later
 		}
 		
 		newSeg->creationTime[0] = seg->creationTime[seg->end - 1];
@@ -186,14 +198,16 @@
 		newSeg->coords[3] = seg->coords[c+3];	  
 		newSeg->end++;
 		seg = newSeg;
-		[mSegments addObject:seg];
+		[segments_ addObject:seg];
+		[newSeg release];	 // it was retained before
+		
 	}  
 	if (seg->end == 0)
 	{
 		// first edge has to get rotation from the first real polygon
-		CGPoint lp1 = ccpAdd([self rotatePoint:ccp(-mLastWidth, 0) rotation:r], mLastLocation);
-		CGPoint lp2 = ccpAdd([self rotatePoint:ccp(+mLastWidth, 0) rotation:r], mLastLocation);
-		seg->creationTime[0] = mCurTime - mDelta;
+		CGPoint lp1 = ccpAdd([self rotatePoint:ccp(-lastWidth_, 0) rotation:r], lastLocation_);
+		CGPoint lp2 = ccpAdd([self rotatePoint:ccp(+lastWidth_, 0) rotation:r], lastLocation_);
+		seg->creationTime[0] = curTime_ - delta_;
 		seg->verts[0] = lp1.x;
 		seg->verts[1] = lp1.y;
 		seg->verts[2] = 0.0f;
@@ -201,16 +215,16 @@
 		seg->verts[4] = lp2.y;
 		seg->verts[5] = 0.0f;
 		seg->coords[0] = 0.0f;
-		seg->coords[1] = mTexVPos;
+		seg->coords[1] = texVPos_;
 		seg->coords[2] = 1.0f;
-		seg->coords[3] = mTexVPos;
+		seg->coords[3] = texVPos_;
 		seg->end++;
 	}
 
 	int v = seg->end*6;
 	int c = seg->end*4;
 	// add new vertex
-	seg->creationTime[seg->end] = mCurTime;
+	seg->creationTime[seg->end] = curTime_;
 	seg->verts[v] = p1.x;
 	seg->verts[v+1] = p1.y;
 	seg->verts[v+2] = 0.0f;
@@ -224,17 +238,17 @@
 	seg->coords[c+2] = 1.0f;
 	seg->coords[c+3] = tend;
 
-	mTexVPos = tend;
-	mLastLocation = location;
-	mLastPoint1 = p1;
-	mLastPoint2 = p2;
-	mLastWidth = w;
+	texVPos_ = tend;
+	lastLocation_ = location;
+	lastPoint1_ = p1;
+	lastPoint2_ = p2;
+	lastWidth_ = w;
 	seg->end++;
 }
 
 -(void) draw
 {
-	if ([mSegments count] > 0)
+	if ([segments_ count] > 0)
 	{
 		// Default GL states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
 		// Needed states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_TEXTURE_COORD_ARRAY
@@ -249,8 +263,8 @@
 			glBlendFunc( blendFunc_.src, blendFunc_.dst );
 		}
 
-		for (CCRibbonSegment* seg in mSegments)
-			[seg draw:mCurTime fadeTime:mFadeTime color:color_];
+		for (CCRibbonSegment* seg in segments_)
+			[seg draw:curTime_ fadeTime:fadeTime_ color:color_];
 
 		if( newBlend )
 			glBlendFunc(CC_BLEND_SRC, CC_BLEND_DST);
@@ -299,7 +313,7 @@
 
 - (void) dealloc
 {
-	CCLOG(@"cocos2d: deallocing %@", self);
+	CCLOGINFO(@"cocos2d: deallocing %@", self);
 	[super dealloc];
 }
 
@@ -319,7 +333,7 @@
 
 	if (begin < 50)
 	{
-		// the motion streak class will call update and cause time to change, thus, if mCurTime != 0
+		// the motion streak class will call update and cause time to change, thus, if curTime_ != 0
 		// we have to generate alpha for the ribbon each frame.
 		if (curTime == 0)
 		{

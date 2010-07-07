@@ -1,78 +1,166 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2008,2009 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
+
 
 #import "CCProtocols.h"
 #import "CCNode.h"
 #import "ccTypes.h"
+#import "ccConfig.h"
 
+#if CC_ENABLE_PROFILERS
+@class CCProfilingTimer;
+#endif
+
+//* @enum
 enum {
-	kParticleStartSizeEqualToEndSize = -1,
-	kParticleDurationInfinity = -1,
+	/** The Particle emitter lives forever */
+	kCCParticleDurationInfinity = -1,
+
+	/** The starting size of the particle is equal to the ending size */
+	kCCParticleStartSizeEqualToEndSize = -1,
+	
+	/** The starting radius of the particle is equal to the ending radius */
+	kCCParticleStartRadiusEqualToEndRadius = -1,
+
+	// backward compatible
+	kParticleStartSizeEqualToEndSize = kCCParticleStartSizeEqualToEndSize,
+	kParticleDurationInfinity = kCCParticleDurationInfinity,
 };
 
-/** possible types of particle positions */
-typedef enum {
-	kPositionTypeFree,
-	kPositionTypeGrouped
-} tPositionType;
+//* @enum
+enum {
+	/** Gravity mode (A mode) */
+	kCCParticleModeGravity,
+	
+	/** Radius mode (B mode) */
+	kCCParticleModeRadius,	
+};
 
-/** Structure that contains the values of each particle
+
+/** @typedef tCCPositionType
+ possible types of particle positions
  */
-typedef struct sParticle
-{
-	CGPoint	pos;
-	CGPoint startPos;
-	CGPoint	dir;
-	float	radialAccel;
-	float	tangentialAccel;
+typedef enum {
+	/** If the emitter is repositioned, the living particles won't be repositioned */
+	kCCPositionTypeFree,
+	/** If the emitter is repositioned, the living particles will be repositioned too */
+	kCCPositionTypeGrouped,
+}tCCPositionType;
+
+// backward compatible
+enum {
+	kPositionTypeFree = kCCPositionTypeFree,
+	kPositionTypeGrouped = kCCPositionTypeGrouped,
+}; 
+
+/** @struct tCCParticle
+ Structure that contains the values of each particle
+ */
+typedef struct sCCParticle {
+	CGPoint				pos;
+	CGPoint				startPos;
+
 	ccColor4F	color;
 	ccColor4F	deltaColor;
-	float	size;
-	float	deltaSize;
-	float	angle;
-	float	deltaAngle;
-	float	life;
-} Particle;
+
+	float		size;
+	float		deltaSize;
+
+	float		rotation;
+	float		deltaRotation;
+
+	ccTime		timeToLive;
+
+	union {
+		// Mode A: gravity, direction, radial accel, tangential accel
+		struct {
+			CGPoint		dir;
+			float		radialAccel;
+			float		tangentialAccel;
+		} A;
+	
+		// Mode B: radius mode
+		struct {
+			float		angle;
+			float		degreesPerSecond;
+			float		radius;
+			float		deltaRadius;
+		} B;
+	} mode;
+
+}tCCParticle;
+
+typedef void (*CC_UPDATE_PARTICLE_IMP)(id, SEL, tCCParticle*, CGPoint);
 
 @class CCTexture2D;
 
 /** Particle System base class
  Attributes of a Particle System:
-  * duration
-  * gravity
-  * emmision rate
-  * total max particles
-  * angle +- variance
-  * speed +-  variance
-  * tangential acceleration +- variance
-  * radial acceleration +- variance
-  * start size +- variance
-  * end size +- variance
-  * start color +- variance
-  * end color +- variance
-  * life +- variance
-  * blend additive or not
-  * one texture
+	- emmision rate of the particles
+	- Gravity Mode (Mode A):
+		- gravity
+		- direction
+		- speed +-  variance
+		- tangential acceleration +- variance
+		- radial acceleration +- variance
+	- Radius Mode (Mode B):
+		- startRadius +- variance
+		- endRadius +- variance
+		- rotate +- variance
+	- Properties common to all modes:
+		- life +- life variance
+		- start spin +- variance
+		- end spin +- variance
+		- start size +- variance
+		- end size +- variance
+		- start color +- variance
+		- end color +- variance
+		- life +- variance
+		- blending function
+	- texture
+
+ cocos2d also supports particles generated by Particle Designer (http://particledesigner.71squared.com/).
+ 'Radius Mode' in Particle Designer uses a fixed emit rate of 30 hz. Since that can't be guarateed in cocos2d,
+ cocos2d uses a another approach, but the results are almost identical. 
  
- Limitations:
-  * size can't be bigger than 64
-  * the system can't be scaled since the particles are rendered using GL_POINT_SPRITE
+ cocos2d supports all the variables used by Particle Designer plus a bit more:
+	- spinning particles (supported when using CCQuadParticleSystem)
+	- tangential acceleration (Gravity mode)
+	- radial acceleration (Gravity mode)
+	- radius direction (Radius mode) (Particle Designer supports outwards to inwards direction only)
+ 
+ It is possible to customize any of the above mentioned properties in runtime. Example:
+ 
+ @code
+	emitter.radialAccel = 15;
+	emitter.startSpin = 0;
+ @endcode
+ 
  */
 @interface CCParticleSystem : CCNode <CCTextureProtocol>
-{
-	int id;
-	
+{	
 	// is the particle system active ?
 	BOOL active;
 	// duration in seconds of the system. -1 is infinity
@@ -80,9 +168,6 @@ typedef struct sParticle
 	// time elapsed since the start of the system (in seconds)
 	float elapsed;
 	
-	/// Gravity of the particles
-	CGPoint gravity;
-
 	// position is from "superclass" CocosNode
 	// Emitter centerOfGravity position
 	CGPoint centerOfGravity;
@@ -94,20 +179,48 @@ typedef struct sParticle
 	// Angle variance measured in degrees;
 	float angleVar;
 	
-	// The speed the particles will have.
-	float speed;
-	// The speed variance
-	float speedVar;
+	// Different modes
 	
-	// Tangential acceleration
-	float tangentialAccel;
-	// Tangential acceleration variance
-	float tangentialAccelVar;
+	int emitterMode_;
+	union {
+		// Mode A:Gravity + Tangential Accel + Radial Accel
+		struct {
+			// gravity of the particles
+			CGPoint gravity;
 
-	// Radial acceleration
-	float radialAccel;
-	// Radial acceleration variance
-	float radialAccelVar;
+			// The speed the particles will have.
+			float speed;
+			// The speed variance
+			float speedVar;
+
+			// Tangential acceleration
+			float tangentialAccel;
+			// Tangential acceleration variance
+			float tangentialAccelVar;
+
+			// Radial acceleration
+			float radialAccel;
+			// Radial acceleration variance
+			float radialAccelVar;
+			} A;
+
+		// Mode B: circular movement (gravity, radial accel and tangential accel don't are not used in this mode)
+		struct {
+	
+			// The starting radius of the particles
+			float startRadius;
+			// The starting radius variance of the particles
+			float startRadiusVar;
+			// The ending radius of the particles
+			float endRadius;
+			// The ending radius variance of the particles
+			float endRadiusVar;			
+			// Number of degress to rotate a particle around the source pos per second
+			float rotatePerSecond;
+			// Variance in degrees for rotatePerSecond
+			float rotatePerSecondVar;
+		} B;
+	} mode;
 	
 	// start ize of the particles
 	float startSize;
@@ -139,19 +252,18 @@ typedef struct sParticle
 	// End angle of the particle
 	float endSpin;
 	// end angle ariance
-	float endSpinVar;	
+	float endSpinVar;
+	
 	
 	// Array of particles
-	Particle *particles;
+	tCCParticle *particles;
 	// Maximum particles
 	int totalParticles;
 	// Count of active particles
 	int particleCount;
 	
-	// additive color or blend
-	BOOL blendAdditive;
 	// color modulate
-	BOOL colorModulate;
+//	BOOL colorModulate;
 	
 	// How many particles can be emitted per second
 	float emissionRate;
@@ -163,21 +275,28 @@ typedef struct sParticle
 	ccBlendFunc	blendFunc_;
 
 	// movment type: free or grouped
-	tPositionType	positionType_;
+	tCCPositionType	positionType_;
 
 	// Whether or not the node will be auto-removed when there are not particles
 	BOOL	autoRemoveOnFinish_;
 
 	//  particle idx
 	int particleIdx;
+	
+	// Optimization
+	CC_UPDATE_PARTICLE_IMP	updateParticleImp;
+	SEL						updateParticleSel;
+	
+// profiling
+#if CC_ENABLE_PROFILERS
+	CCProfilingTimer* _profilingTimer;
+#endif
 }
 
 /** Is the emitter active */
 @property (nonatomic,readonly) BOOL active;
 /** Quantity of particles that are being simulated at the moment */
 @property (nonatomic,readonly) int	particleCount;
-/** Gravity value */
-@property (nonatomic,readwrite,assign) CGPoint gravity;
 /** How many seconds the emitter wil run. -1 means 'forever' */
 @property (nonatomic,readwrite,assign) float duration;
 /** centerOfGravity of the emitter */
@@ -192,18 +311,35 @@ typedef struct sParticle
 @property (nonatomic,readwrite,assign) float angle;
 /** angle variance of each particle */
 @property (nonatomic,readwrite,assign) float angleVar;
-/** speed of each particle */
+
+/** Gravity value. Only available in 'Gravity' mode. */
+@property (nonatomic,readwrite,assign) CGPoint gravity;
+/** speed of each particle. Only available in 'Gravity' mode.  */
 @property (nonatomic,readwrite,assign) float speed;
-/** speed variance of each particle */
+/** speed variance of each particle. Only available in 'Gravity' mode. */
 @property (nonatomic,readwrite,assign) float speedVar;
-/** tangential acceleration of each particle */
+/** tangential acceleration of each particle. Only available in 'Gravity' mode. */
 @property (nonatomic,readwrite,assign) float tangentialAccel;
-/** tangential acceleration variance of each particle */
+/** tangential acceleration variance of each particle. Only available in 'Gravity' mode. */
 @property (nonatomic,readwrite,assign) float tangentialAccelVar;
-/** radial acceleration of each particle */
+/** radial acceleration of each particle. Only available in 'Gravity' mode. */
 @property (nonatomic,readwrite,assign) float radialAccel;
-/** radial acceleration variance of each particle */
+/** radial acceleration variance of each particle. Only available in 'Gravity' mode. */
 @property (nonatomic,readwrite,assign) float radialAccelVar;
+
+/** The starting radius of the particles. Only available in 'Radius' mode. */
+@property (nonatomic,readwrite,assign) float startRadius;
+/** The starting radius variance of the particles. Only available in 'Radius' mode. */
+@property (nonatomic,readwrite,assign) float startRadiusVar;
+/** The ending radius of the particles. Only available in 'Radius' mode. */
+@property (nonatomic,readwrite,assign) float endRadius;
+/** The ending radius variance of the particles. Only available in 'Radius' mode. */
+@property (nonatomic,readwrite,assign) float endRadiusVar;			
+/** Number of degress to rotate a particle around the source pos per second. Only available in 'Radius' mode. */
+@property (nonatomic,readwrite,assign) float rotatePerSecond;
+/** Variance in degrees for rotatePerSecond. Only available in 'Radius' mode. */
+@property (nonatomic,readwrite,assign) float rotatePerSecondVar;
+
 /** start size in pixels of each particle */
 @property (nonatomic,readwrite,assign) float startSize;
 /** size variance in pixels of each particle */
@@ -236,24 +372,54 @@ typedef struct sParticle
 @property (nonatomic,readwrite, retain) CCTexture2D * texture;
 /** conforms to CocosNodeTexture protocol */
 @property (nonatomic,readwrite) ccBlendFunc blendFunc;
-/** whether or not the particles are using blend additive */
+/** whether or not the particles are using blend additive.
+ If enabled, the following blending function will be used.
+ @code
+	source blend function = GL_SRC_ALPHA;
+	dest blend function = GL_ONE;
+ @endcode
+ */
 @property (nonatomic,readwrite) BOOL blendAdditive;
 /** particles movement type: Free or Grouped
  @since v0.8
  */
-@property (nonatomic,readwrite) tPositionType positionType;
+@property (nonatomic,readwrite) tCCPositionType positionType;
 /** whether or not the node will be auto-removed when it has no particles left.
  By default it is NO.
  @since v0.8
  */
 @property (nonatomic,readwrite) BOOL autoRemoveOnFinish;
+/** Switch between different kind of emitter modes:
+   - kCCParticleModeGravity: uses gravity, speed, radial and tangential acceleration
+   - kCCParticleModeRadius: uses radius movement + rotation
+ */
+@property (nonatomic,readwrite) int emitterMode;
+
+/** creates an initializes a CCParticleSystem from a plist file.
+ This plist files can be creted manually or with Particle Designer:
+	http://particledesigner.71squared.com/
+ @since v0.99.3
+ */
++(id) particleWithFile:(NSString*)plistFile;
+
+/** initializes a CCParticleSystem from a plist file.
+ This plist files can be creted manually or with Particle Designer:
+	http://particledesigner.71squared.com/
+ @since v0.99.3
+ */
+-(id) initWithFile:(NSString*) plistFile;
+
+/** initializes a CCQuadParticleSystem from a NSDictionary.
+ @since v0.99.3
+ */
+-(id) initWithDictionary:(NSDictionary*)dictionary;
 
 //! Initializes a system with a fixed number of particles
 -(id) initWithTotalParticles:(int) numberOfParticles;
 //! Add a particle to the emitter
 -(BOOL) addParticle;
 //! Initializes a particle
--(void) initParticle: (Particle*) particle;
+-(void) initParticle: (tCCParticle*) particle;
 //! stop emitting particles. Running particles will continue to run until they die
 -(void) stopSystem;
 //! Kill all living particles.
@@ -262,7 +428,7 @@ typedef struct sParticle
 -(BOOL) isFull;
 
 //! should be overriden by subclasses
--(void) updateQuadWithParticle:(Particle*)particle position:(CGPoint)position;
+-(void) updateQuadWithParticle:(tCCParticle*)particle newPosition:(CGPoint)pos;
 //! should be overriden by subclasses
 -(void) postStep;
 

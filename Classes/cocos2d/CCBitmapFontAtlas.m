@@ -1,14 +1,25 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2009 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  * Portions of this code are based and inspired on:
  *   http://www.71squared.co.uk/2009/04/iphone-game-programming-tutorial-4-bitmap-font-class
@@ -19,16 +30,16 @@
  *   http://www.n4te.com/hiero/hiero.jnlp
  *   http://slick.cokeandcode.com/demos/hiero.jnlp
  *   http://www.angelcode.com/products/bmfont/
- *
  */
 
 #import "ccConfig.h"
 #import "CCBitmapFontAtlas.h"
 #import "CCSprite.h"
 #import "CCDrawingPrimitives.h"
+#import "CCConfiguration.h"
 #import "Support/CCFileUtils.h"
 #import "Support/CGPointExtension.h"
-#import "Support/ccHashSet.h"
+#import "Support/uthash.h"
 
 #pragma mark -
 #pragma mark FNTConfig Cache - free functions
@@ -59,19 +70,11 @@ void FNTConfigRemoveCache( void )
 
 // Equal function for targetSet.
 typedef struct _KerningHashElement
-{
-	unichar			first;
-	unichar			second;
+{	
+	int				key;		// key for the hash. 16-bit for 1st element, 16-bit for 2nd element
 	int				amount;
+	UT_hash_handle	hh;
 } tKerningHashElement;
-
-static int
-targetSetEql(void *ptr, void *elt)
-{
-	tKerningHashElement *one = (tKerningHashElement*) ptr;
-	tKerningHashElement *two = (tKerningHashElement*) elt;
-	return ( (one->first == two->first) && (one->second == two->second));
-}
 
 #pragma mark -
 #pragma mark BitmapFontConfiguration
@@ -82,8 +85,10 @@ targetSetEql(void *ptr, void *elt)
 -(void) parseCharacterDefinition:(NSString*)line charDef:(ccBitmapFontDef*)characterDefinition;
 -(void) parseInfoArguments:(NSString*)line;
 -(void) parseCommonArguments:(NSString*)line;
+-(void) parseImageFileName:(NSString*)line fntFile:(NSString*)fntFile;
 -(void) parseKerningCapacity:(NSString*)line;
 -(void) parseKerningEntry:(NSString*)line;
+-(void) purgeKerningDictionary;
 @end
 
 @implementation CCBitmapFontConfiguration
@@ -96,6 +101,9 @@ targetSetEql(void *ptr, void *elt)
 -(id) initWithFNTfile:(NSString*)fntFile
 {
 	if((self=[super init])) {
+		
+		kerningDictionary = NULL;
+
 		[self parseConfigFile:fntFile];
 	}
 	return self;
@@ -103,10 +111,29 @@ targetSetEql(void *ptr, void *elt)
 
 - (void) dealloc
 {
-	CCLOG( @"cocos2d: deallocing %@", self);
-	if(kerningDictionary)
-		ccHashSetFree(kerningDictionary);
+	CCLOGINFO( @"cocos2d: deallocing %@", self);
+	[self purgeKerningDictionary];
+	[atlasName release];
 	[super dealloc];
+}
+
+- (NSString*) description
+{
+	return [NSString stringWithFormat:@"<%@ = %08X | Kernings:%d | Image = %@>", [self class], self,
+			HASH_COUNT(kerningDictionary),
+			[[atlasName pathComponents] lastObject] ];
+}
+
+
+-(void) purgeKerningDictionary
+{
+	tKerningHashElement *current;
+	
+	while(kerningDictionary) {
+		current = kerningDictionary; 
+		HASH_DEL(kerningDictionary,current);
+		free(current);
+	}
 }
 
 - (void)parseConfigFile:(NSString*)fntFile
@@ -136,6 +163,9 @@ targetSetEql(void *ptr, void *elt)
 		else if([line hasPrefix:@"common lineHeight"]) {
 			[self parseCommonArguments:line];
 		}
+		else if([line hasPrefix:@"page id"]) {
+			[self parseImageFileName:line fntFile:fntFile];
+		}
 		else if([line hasPrefix:@"chars c"]) {
 			// Ignore this line
 		}
@@ -156,6 +186,36 @@ targetSetEql(void *ptr, void *elt)
 	}
 	// Finished with lines so release it
 	[lines release];	
+}
+
+-(void) parseImageFileName:(NSString*)line fntFile:(NSString*)fntFile
+{
+	NSString *propertyValue = nil;
+
+	// Break the values for this line up using =
+	NSArray *values = [line componentsSeparatedByString:@"="];
+	
+	// Get the enumerator for the array of components which has been created
+	NSEnumerator *nse = [values objectEnumerator];
+	
+	// We need to move past the first entry in the array before we start assigning values
+	[nse nextObject];
+	
+	// page ID. Sanity check
+	propertyValue = [nse nextObject];
+	NSAssert( [propertyValue intValue] == 0, @"XXX: BitmapFontAtlas only supports 1 page");
+	
+	// file 
+	propertyValue = [nse nextObject];
+	NSArray *array = [propertyValue componentsSeparatedByString:@"\""];
+	propertyValue = [array objectAtIndex:1];
+	NSAssert(propertyValue,@"BitmapFontAtlas file could not be found");
+	
+	NSString *textureAtlasName = [CCFileUtils fullPathFromRelativePath:propertyValue];
+	NSString *relDirPathOfTextureAtlas = [fntFile stringByDeletingLastPathComponent];
+	
+	atlasName = [relDirPathOfTextureAtlas stringByAppendingPathComponent:textureAtlasName];	
+	[atlasName retain];
 }
 
 -(void) parseInfoArguments:(NSString*)line
@@ -248,17 +308,18 @@ targetSetEql(void *ptr, void *elt)
 	// base (ignore)
 	[nse nextObject];
 	
+	
 	// scaleW. sanity check
-	propertyValue = [nse nextObject];
-	NSAssert( [propertyValue intValue] <= 1024, @"BitmapFontAtlas: page can't be larger than 1024x1024");
+	propertyValue = [nse nextObject];	
+	NSAssert( [propertyValue intValue] <= [[CCConfiguration sharedConfiguration] maxTextureSize], @"CCBitmapFontAtlas: page can't be larger than supported");
 	
 	// scaleH. sanity check
 	propertyValue = [nse nextObject];
-	NSAssert( [propertyValue intValue] <= 1024, @"BitmapFontAtlas: page can't be larger than 1024x1024");
+	NSAssert( [propertyValue intValue] <= [[CCConfiguration sharedConfiguration] maxTextureSize], @"CCBitmapFontAtlas: page can't be larger than supported");
 	
 	// pages. sanity check
 	propertyValue = [nse nextObject];
-	NSAssert( [propertyValue intValue] == 1, @"BitfontAtlas: only supports 1 page");
+	NSAssert( [propertyValue intValue] == 1, @"CCBitfontAtlas: only supports 1 page");
 	
 	// packed (ignore) What does this mean ??
 }
@@ -276,7 +337,7 @@ targetSetEql(void *ptr, void *elt)
 	propertyValue = [nse nextObject];
 	propertyValue = [propertyValue substringToIndex: [propertyValue rangeOfString: @" "].location];
 	characterDefinition->charID = [propertyValue intValue];
-	NSAssert(characterDefinition->charID < kBitmapFontAtlasMaxChars, @"BitmpaFontAtlas: CharID bigger than supported");
+	NSAssert(characterDefinition->charID < kCCBitmapFontAtlasMaxChars, @"BitmpaFontAtlas: CharID bigger than supported");
 
 	// Character x
 	propertyValue = [nse nextObject];
@@ -303,22 +364,24 @@ targetSetEql(void *ptr, void *elt)
 
 -(void) parseKerningCapacity:(NSString*) line
 {
-	NSAssert(!kerningDictionary, @"dictionary already initialized");
-	
-	// Break the values for this line up using =
-	NSArray *values = [line componentsSeparatedByString:@"="];
-	NSEnumerator *nse = [values objectEnumerator];	
-	NSString *propertyValue;
-	
-	// We need to move past the first entry in the array before we start assigning values
-	[nse nextObject];
-	
-	// count
-	propertyValue = [nse nextObject];
-	int capacity = [propertyValue intValue];
-	
-	if( capacity != -1 )
-		kerningDictionary = ccHashSetNew(capacity, targetSetEql);
+	// When using uthash there is not need to parse the capacity.
+
+//	NSAssert(!kerningDictionary, @"dictionary already initialized");
+//	
+//	// Break the values for this line up using =
+//	NSArray *values = [line componentsSeparatedByString:@"="];
+//	NSEnumerator *nse = [values objectEnumerator];	
+//	NSString *propertyValue;
+//	
+//	// We need to move past the first entry in the array before we start assigning values
+//	[nse nextObject];
+//	
+//	// count
+//	propertyValue = [nse nextObject];
+//	int capacity = [propertyValue intValue];
+//	
+//	if( capacity != -1 )
+//		kerningDictionary = ccHashSetNew(capacity, targetSetEql);
 }
 
 -(void) parseKerningEntry:(NSString*) line
@@ -342,12 +405,10 @@ targetSetEql(void *ptr, void *elt)
 	propertyValue = [nse nextObject];
 	int amount = [propertyValue intValue];
 
-	tKerningHashElement *element = malloc( sizeof( *element ) );
-	element->first = first;
-	element->second = second;
+	tKerningHashElement *element = calloc( sizeof( *element ), 1 );
 	element->amount = amount;
-	unsigned int key = (first<<16) | (second&0xffff);
-	ccHashSetInsert(kerningDictionary, CC_HASH_INT(key), element, nil);	
+	element->key = (first<<16) | (second&0xffff);
+	HASH_ADD_INT(kerningDictionary,key, element);
 }
 
 @end
@@ -366,6 +427,12 @@ targetSetEql(void *ptr, void *elt)
 
 @synthesize opacity=opacity_, color=color_;
 
+#pragma mark BitmapFontAtlas - Purge Cache
++(void) purgeCachedData
+{
+	FNTConfigRemoveCache();
+}
+
 #pragma mark BitmapFontAtlas - Creation & Init
 +(id) bitmapFontAtlasWithString:(NSString*)string fntFile:(NSString*)fntFile
 {
@@ -374,10 +441,17 @@ targetSetEql(void *ptr, void *elt)
 
 
 -(id) initWithString:(NSString*)theString fntFile:(NSString*)fntFile
-{
-	NSString *textureAtlasName = [self atlasNameFromFntFile:fntFile];
+{	
 	
-	if ((self=[super initWithFile:textureAtlasName capacity:[theString length]])) {
+	[configuration_ release]; // allow re-init
+
+	configuration_ = FNTConfigLoadFile(fntFile);
+	[configuration_ retain];
+
+	NSAssert( configuration_, @"Error creating config for BitmapFontAtlas");
+
+	
+	if ((self=[super initWithFile:configuration_->atlasName capacity:[theString length]])) {
 
 		opacity_ = 255;
 		color_ = ccWHITE;
@@ -388,8 +462,6 @@ targetSetEql(void *ptr, void *elt)
 
 		anchorPoint_ = ccp(0.5f, 0.5f);
 
-		configuration = FNTConfigLoadFile(fntFile);
-		[configuration retain];
 		[self setString:theString];
 	}
 
@@ -399,56 +471,8 @@ targetSetEql(void *ptr, void *elt)
 -(void) dealloc
 {
 	[string_ release];
-	[configuration release];
+	[configuration_ release];
 	[super dealloc];
-}
-
-//
-// obtain the texture atlas image
-//
--(NSString*) atlasNameFromFntFile:(NSString*)fntFile
-{
-	NSString *fullpath = [CCFileUtils fullPathFromRelativePath:fntFile];
-	NSString *contents = [NSString stringWithContentsOfFile:fullpath encoding:NSUTF8StringEncoding error:nil];
-
-	NSArray *lines = [[NSArray alloc] initWithArray:[contents componentsSeparatedByString:@"\n"]];
-	NSEnumerator *nse = [lines objectEnumerator];
-	NSString *line;
-	NSString *propertyValue = nil; // ret value
-	
-	// Loop through all the lines in the lines array processing each one
-	while( (line = [nse nextObject]) ) {
-		// Check to see if the start of the line is something we are interested in
-		if([line hasPrefix:@"page id="]) {
-			
-			// Break the values for this line up using =
-			NSArray *values = [line componentsSeparatedByString:@"="];
-			
-			// Get the enumerator for the array of components which has been created
-			NSEnumerator *nse = [values objectEnumerator];
-			
-			// We need to move past the first entry in the array before we start assigning values
-			[nse nextObject];
-			
-			// page ID. Sanity check
-			propertyValue = [nse nextObject];
-			NSAssert( [propertyValue intValue] == 0, @"XXX: BitmapFontAtlas only supports 1 page");
-			
-			// file 
-			propertyValue = [nse nextObject];
-			NSArray *array = [propertyValue componentsSeparatedByString:@"\""];
-			propertyValue = [array objectAtIndex:1];
-			break;
-		}
-	}
-	// Finished with lines so release it
-	[lines release];	
-	
-	NSAssert(propertyValue,@"BitmapFontAtlas file could not be found");
-
-	NSString *textureAtlasName = [CCFileUtils fullPathFromRelativePath:propertyValue];
-	NSString *relDirPathOfTextureAtlas = [fntFile stringByDeletingLastPathComponent];
-	return [relDirPathOfTextureAtlas stringByAppendingPathComponent:textureAtlasName];
 }
 
 #pragma mark BitmapFontAtlas - Atlas generation
@@ -456,14 +480,11 @@ targetSetEql(void *ptr, void *elt)
 -(int) kerningAmountForFirst:(unichar)first second:(unichar)second
 {
 	int ret = 0;
-	tKerningHashElement elementTmp;
-	elementTmp.first = first;
-	elementTmp.second = second;
 	unsigned int key = (first<<16) | (second & 0xffff);
 	
-	if( configuration->kerningDictionary ) {
-		tKerningHashElement *element = ccHashSetFind(configuration->kerningDictionary, CC_HASH_INT(key), &elementTmp);
-		
+	if( configuration_->kerningDictionary ) {
+		tKerningHashElement *element = NULL;
+		HASH_FIND_INT(configuration_->kerningDictionary, &key, element);		
 		if(element)
 			ret = element->amount;
 	}
@@ -482,11 +503,11 @@ targetSetEql(void *ptr, void *elt)
 	NSUInteger l = [string_ length];
 	for(NSUInteger i=0; i<l; i++) {
 		unichar c = [string_ characterAtIndex:i];
-		NSAssert( c < kBitmapFontAtlasMaxChars, @"BitmapFontAtlas: character outside bounds");
+		NSAssert( c < kCCBitmapFontAtlasMaxChars, @"BitmapFontAtlas: character outside bounds");
 		
 		kerningAmount = [self kerningAmountForFirst:prev second:c];
 		
-		ccBitmapFontDef fontDef = configuration->bitmapFontArray[c];
+		ccBitmapFontDef fontDef = configuration_->bitmapFontArray[c];
 		
 		CGRect rect = fontDef.rect;
 		
@@ -508,17 +529,17 @@ targetSetEql(void *ptr, void *elt)
 		}
 
 		fontChar.position = ccp( nextFontPositionX + fontDef.xOffset + fontDef.rect.size.width / 2.0f ,
-								(configuration->commonHeight - fontDef.yOffset) - rect.size.height/2.0f );		
+								(configuration_->commonHeight - fontDef.yOffset) - rect.size.height/2.0f );		
 		
 //		NSLog(@"position.y: %f", fontChar.position.y);
 		
 		// update kerning
 		fontChar.position = ccpAdd( fontChar.position, ccp(kerningAmount,0));
-		nextFontPositionX += configuration->bitmapFontArray[c].xAdvance + kerningAmount;
+		nextFontPositionX += configuration_->bitmapFontArray[c].xAdvance + kerningAmount;
 		prev = c;
 		
-		tmpSize.width += configuration->bitmapFontArray[c].xAdvance + kerningAmount;
-		tmpSize.height = configuration->commonHeight;
+		tmpSize.width += configuration_->bitmapFontArray[c].xAdvance + kerningAmount;
+		tmpSize.height = configuration_->commonHeight;
 		
 		// Apply label properties
 		[fontChar setOpacityModifyRGB:opacityModifyRGB_];
@@ -540,7 +561,8 @@ targetSetEql(void *ptr, void *elt)
 	[string_ release];
 	string_ = [newString retain];
 
-	for( CCNode *child in children_ )
+	CCNode *child;
+	CCARRAY_FOREACH(children_, child)
 		child.visible = NO;
 
 	[self createFontChars];
@@ -551,7 +573,8 @@ targetSetEql(void *ptr, void *elt)
 -(void) setColor:(ccColor3B)color
 {
 	color_ = color;
-	for( CCSprite* child in children_ )
+	CCSprite *child;
+	CCARRAY_FOREACH(children_, child)
 		[child setColor:color_];
 }
 
@@ -559,15 +582,18 @@ targetSetEql(void *ptr, void *elt)
 {
 	opacity_ = opacity;
 
- 	for( id<CCRGBAProtocol> child in children_ )
+	id<CCRGBAProtocol> child;
+	CCARRAY_FOREACH(children_, child)
 		[child setOpacity:opacity_];
 }
 -(void) setOpacityModifyRGB:(BOOL)modify
 {
 	opacityModifyRGB_ = modify;
- 	for( id<CCRGBAProtocol> child in children_ )
+	id<CCRGBAProtocol> child;
+	CCARRAY_FOREACH(children_, child)
 		[child setOpacityModifyRGB:modify];
 }
+
 -(BOOL) doesOpacityModifyRGB
 {
 	return opacityModifyRGB_;

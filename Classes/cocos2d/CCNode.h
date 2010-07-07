@@ -1,17 +1,28 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2008,2009,2010 Ricardo Quesada
- * Copyright (C) 2009 Valentin Milea
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
- *
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * Copyright (c) 2009 Valentin Milea
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
+
 
 #import <OpenGLES/ES1/gl.h>
 
@@ -19,7 +30,8 @@
 #import "ccTypes.h"
 #import "CCTexture2D.h"
 #import "CCProtocols.h"
-
+#import "ccConfig.h"
+#import "Support/CCArray.h"
 
 enum {
 	kCCNodeTagInvalid = -1,
@@ -32,7 +44,7 @@ enum {
  The most popular CCNodes are: CCScene, CCLayer, CCSprite, CCMenu.
  
  The main features of a CCNode are:
- - They can contain other CCnode nodes (addChild, getChildByTag, removeChild, etc)
+ - They can contain other CCNode nodes (addChild, getChildByTag, removeChild, etc)
  - They can schedule periodic callback (schedule, unschedule, etc)
  - They can execute actions (runAction, stopAction, etc)
  
@@ -46,9 +58,9 @@ enum {
  Features of CCNode:
  - position
  - scale (x, y)
- - rotation (in degrees)
- - Camera ( using spherical coordinates )
- - GridBase (to do mesh transformations)
+ - rotation (in degrees, clockwise)
+ - CCCamera (an interface to gluLookAt )
+ - CCGridBase (to do mesh transformations)
  - anchor point
  - size
  - visible
@@ -66,18 +78,18 @@ enum {
  - A CCNode is a "void" object. It doesn't have a texture
  
  Order in transformations with grid disabled
- - 1) The node will be translated (position)
- - 2) The node will be rotated (rotation)
- - 3) The node will be scaled (scale)
- - 4) The node will be moved according to the camera values (camera)
+ -# The node will be translated (position)
+ -# The node will be rotated (rotation)
+ -# The node will be scaled (scale)
+ -# The node will be moved according to the camera values (camera)
  
  Order in transformations with grid enabled
- - 1) The node will be translated (position)
- - 2) The node will be rotated (rotation)
- - 3) The node will be scaled (scale)
- - 4) The grid will capture the screen
- - 5) The node will be moved according to the camera values (camera)
- - 6) The grid will render the captured screen
+ -# The node will be translated (position)
+ -# The node will be rotated (rotation)
+ -# The node will be scaled (scale)
+ -# The grid will capture the screen
+ -# The node will be moved according to the camera values (camera)
+ -# The grid will render the captured screen
  
  Camera:
  - Each node has a camera. By default it points to the center of the CCNode.
@@ -110,6 +122,9 @@ enum {
 	
 	// transform
 	CGAffineTransform transform_, inverse_;
+#if	CC_NODE_TRANSFORM_USING_AFFINE_MATRIX
+	GLfloat	transformGL_[16];
+#endif
 
 	// openGL real Z vertex
 	float vertexZ_;
@@ -124,7 +139,7 @@ enum {
 	int zOrder_;
 	
 	// array of children
-	NSMutableArray *children_;
+	CCArray *children_;
 	
 	// weakref to parent
 	CCNode *parent_;
@@ -134,9 +149,6 @@ enum {
     
 	// user data field
 	void *userData;
-	
-	// scheduled selectors
-	NSMutableDictionary *scheduledSelectors_;
 
 	// Is running
 	BOOL isRunning_;
@@ -144,6 +156,9 @@ enum {
 	// To reduce memory, place BOOLs that are not properties here:
 	BOOL isTransformDirty_:1;
 	BOOL isInverseDirty_:1;
+#if	CC_NODE_TRANSFORM_USING_AFFINE_MATRIX
+	BOOL isTransformGLDirty_:1;
+#endif
 }
 
 /** The z order of the node relative to it's "brothers": children of the same parent */
@@ -167,10 +182,13 @@ enum {
 @property(nonatomic,readwrite,assign) float scaleY;
 /** Position (x,y) of the node in OpenGL coordinates. (0,0) is the left-bottom corner. */
 @property(nonatomic,readwrite,assign) CGPoint position;
-/** A Camera object that lets you move the node using camera coordinates.
- * If you use the Camera then position, scale & rotation won't be used */
-@property(nonatomic,readonly) CCCamera* camera;
-/** A Grid object that is used when applying Effects */
+/** A CCCamera object that lets you move the node using a gluLookAt
+*/
+
+@property(nonatomic,readonly) CCArray *children;
+
+ @property(nonatomic,readonly) CCCamera* camera;
+/** A CCGrid object that is used when applying effects */
 @property(nonatomic,readwrite,retain) CCGridBase* grid;
 /** Whether of not the node is visible. Default is YES */
 @property(nonatomic,readwrite,assign) BOOL visible;
@@ -257,6 +275,12 @@ enum {
 
 // composition: REMOVE
 
+/** Remove itself from its parent node. If cleanup is YES, then also remove all actions and callbacks.
+ If the node orphan, then nothing happens.
+ @since v0.99.3
+ */
+-(void) removeFromParentAndCleanup:(BOOL)cleanup;
+
 /** Removes a child from the container. It will also cleanup all running actions depending on the cleanup parameter.
  @since v0.7.1
  */
@@ -279,9 +303,6 @@ enum {
  */
 -(CCNode*) getChildByTag:(int) tag;
 
-/** Returns the array that contains all the children */
-- (NSArray *)children;
-
 /** Reorders a child according to a new z value.
  * The child MUST be already added.
  */
@@ -294,7 +315,17 @@ enum {
 
 // draw
 
-/** override this method to draw your own node. */
+/** Override this method to draw your own node.
+ The following GL states will be enabled by default:
+	- glEnableClientState(GL_VERTEX_ARRAY);
+	- glEnableClientState(GL_COLOR_ARRAY);
+	- glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	- glEnable(GL_TEXTURE_2D);
+ 
+   AND YOU SHOULD NOT DISABLE THEM AFTER DRAWING YOUR NODE
+ 
+ But if you enable any other GL state, you should disable it after drawing your node.
+ */
 -(void) draw;
 /** recursive method that visit its children and draw them */
 -(void) visit;
@@ -311,8 +342,8 @@ enum {
  */
 -(void) transformAncestors;
 
-/** returns an axis aligned bounding box of the node.
- It takes into account any kind of transformation.
+/** returns a "local" axis aligned bounding box of the node.
+ The returned box is relative only to its parent.
  
  @since v0.8.2
  */
@@ -353,41 +384,71 @@ enum {
 /** check whether a selector is scheduled. */
 //-(BOOL) isScheduled: (SEL) selector;
 
+/** schedules the "update" method. It will use the order number 0. This method will be called every frame.
+ Scheduled methods with a lower order value will be called before the ones that have a higher order value.
+ Only one "udpate" method could be scheduled per node.
+ 
+ @since v0.99.3
+ */
+-(void) scheduleUpdate;
+
+/** schedules the "update" selector with a custom priority. This selector will be called every frame.
+ Scheduled selectors with a lower priority will be called before the ones that have a higher value.
+ Only one "udpate" selector could be scheduled per node (You can't have 2 'update' selectors).
+
+ @since v0.99.3
+ */
+-(void) scheduleUpdateWithPriority:(int)priority;
+
+/* unschedules the "update" method.
+ 
+ @since v0.99.3
+ */
+-(void) unscheduleUpdate;
+
+
 /** schedules a selector.
  The scheduled selector will be ticked every frame
  */
 -(void) schedule: (SEL) s;
-/** schedules a selector with an interval time in seconds.
+/** schedules a custom selector with an interval time in seconds.
  If time is 0 it will be ticked every frame.
+ If tiem is 0, it is recommended to use 'scheduleUpdate' instead.
  */
 -(void) schedule: (SEL) s interval:(ccTime)seconds;
-/** unschedule a selector */
+/** unschedules a custom selector.*/
 -(void) unschedule: (SEL) s;
-/** activate all scheduled timers.
+
+/** unschedule all scheduled selectors: custom selectors, and the 'update' selector.
+ Actions are not affected by this method.
+@since v0.99.3
+ */
+-(void) unscheduleAllSelectors;
+
+/** resumes all scheduled selectors and actions.
  Called internally by onEnter
  */
--(void) activateTimers;
-/** deactivate all scheduled timers.
+-(void) resumeSchedulerAndActions;
+/** pauses all scheduled selectors and actions.
  Called internally by onExit
  */
--(void) deactivateTimers;
+-(void) pauseSchedulerAndActions;
 
 // transformation methods
 
-/** actual affine transforms used
- @todo nodeToParentTransform needs documentation
+/** Returns the local affine transform matrix
  @since v0.7.1
  */
 - (CGAffineTransform)nodeToParentTransform;
-/** @todo parentToNodeTransform needs documentation
+/** Returns the inverse local affine transform matrix
  @since v0.7.1
  */
 - (CGAffineTransform)parentToNodeTransform;
-/** @todo nodeToWorldTransform needs documentation
+/** Retrusn the world affine transform matrix
  @since v0.7.1
  */
 - (CGAffineTransform)nodeToWorldTransform;
-/** @todo worldToNodeTransform needs documentation
+/** Returns the inverse world affine transform matrix
  @since v0.7.1
  */
 - (CGAffineTransform)worldToNodeTransform;
@@ -410,11 +471,10 @@ enum {
  */
 - (CGPoint)convertToWorldSpaceAR:(CGPoint)nodePoint;
 /** convenience methods which take a UITouch instead of CGPoint
- @todo convertTouchToNodeSpace needs documentation
  @since v0.7.1
  */
 - (CGPoint)convertTouchToNodeSpace:(UITouch *)touch;
-/** @todo convertTouchToNodeSpaceAR needs documentation
+/** converts a UITouch (world coordinates) into a local coordiante. This method is AR (Anchor Relative).
  @since v0.7.1
  */
 - (CGPoint)convertTouchToNodeSpaceAR:(UITouch *)touch;

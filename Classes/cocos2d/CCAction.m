@@ -1,23 +1,36 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
+ * Copyright (c) 2008-2010 Ricardo Quesada
  *
- * Copyright (C) 2008,2009,2010 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
+
 
 
 #import "CCAction.h"
 #import "ccMacros.h"
 
 #import "CCIntervalAction.h"
-
+#import "CCDirector.h"
+#import "Support/CGPointExtension.h"
 //
 // Action Base Class
 //
@@ -36,14 +49,14 @@
 {
 	if( (self=[super init]) ) {	
 		originalTarget = target = nil;
-		tag = kActionTagInvalid;
+		tag = kCCActionTagInvalid;
 	}
 	return self;
 }
 
 -(void) dealloc
 {
-	CCLOG(@"cocos2d: deallocing %@", self);
+	CCLOGINFO(@"cocos2d: deallocing %@", self);
 	[super dealloc];
 }
 
@@ -178,11 +191,10 @@
 
 -(id) initWithAction: (CCIntervalAction*) action speed:(float)r
 {
-	if( !(self=[super init]) )
-		return nil;
-	
-	other = [action retain];
-	speed = r;
+	if( (self=[super init]) ) {
+		other = [action retain];
+		speed = r;
+	}
 	return self;
 }
 
@@ -226,5 +238,121 @@
 }
 @end
 
+//
+// Follow
+//
+#pragma mark -
+#pragma mark Follow
+@implementation CCFollow
+
+@synthesize boundarySet;
+
++(id) actionWithTarget:(CCNode *) fNode
+{
+	return [[[self alloc] initWithTarget:fNode] autorelease];
+}
+
++(id) actionWithTarget:(CCNode *) fNode worldBoundary:(CGRect)rect
+{
+	return [[[self alloc] initWithTarget:fNode worldBoundary:rect] autorelease];
+}
+
+-(id) initWithTarget:(CCNode *)fNode
+{
+	if( (self=[super init]) ) {
+	
+		followedNode_ = [fNode retain];
+		boundarySet = FALSE;
+		boundaryFullyCovered = FALSE;
+		
+		fullScreenSize = CGPointMake([CCDirector sharedDirector].winSize.width, [CCDirector sharedDirector].winSize.height);
+		halfScreenSize = ccpMult(fullScreenSize, .5f);
+	}
+	
+	return self;
+}
+
+-(id) initWithTarget:(CCNode *)fNode worldBoundary:(CGRect)rect
+{
+	if( (self=[super init]) ) {
+	
+		followedNode_ = [fNode retain];
+		boundarySet = TRUE;
+		boundaryFullyCovered = FALSE;
+		
+		CGSize winSize = [[CCDirector sharedDirector] winSize];
+		fullScreenSize = CGPointMake(winSize.width, winSize.height);
+		halfScreenSize = ccpMult(fullScreenSize, .5f);
+		
+		leftBoundary = -((rect.origin.x+rect.size.width) - fullScreenSize.x);
+		rightBoundary = -rect.origin.x ;
+		topBoundary = -rect.origin.y;
+		bottomBoundary = -((rect.origin.y+rect.size.height) - fullScreenSize.y);
+		
+		if(rightBoundary < leftBoundary)
+		{
+			// screen width is larger than world's boundary width
+			//set both in the middle of the world
+			rightBoundary = leftBoundary = (leftBoundary + rightBoundary) / 2;
+		}
+		if(topBoundary < bottomBoundary)
+		{
+			// screen width is larger than world's boundary width
+			//set both in the middle of the world
+			topBoundary = bottomBoundary = (topBoundary + bottomBoundary) / 2;
+		}
+		
+		if( (topBoundary == bottomBoundary) && (leftBoundary == rightBoundary) )
+			boundaryFullyCovered = TRUE;
+	}
+	
+	return self;
+}
+
+-(id) copyWithZone: (NSZone*) zone
+{
+	CCAction *copy = [[[self class] allocWithZone: zone] init];
+	copy.tag = tag;
+	return copy;
+}
+
+-(void) step:(ccTime) dt
+{
+#define CLAMP(x,y,z) MIN(MAX(x,y),z)
+	
+	if(boundarySet)
+	{
+		// whole map fits inside a single screen, no need to modify the position - unless map boundaries are increased
+		if(boundaryFullyCovered)
+			return;
+		
+		CGPoint tempPos = ccpSub( halfScreenSize, followedNode_.position);
+		[target setPosition:ccp(CLAMP(tempPos.x,leftBoundary,rightBoundary), CLAMP(tempPos.y,bottomBoundary,topBoundary))];
+	}
+	else
+		[target setPosition:ccpSub( halfScreenSize, followedNode_.position )];
+	
+#undef CLAMP
+}
+
+
+-(BOOL) isDone
+{
+	return ( ! followedNode_.isRunning );
+}
+
+-(void) stop
+{
+	target = nil;
+	[super stop];
+}
+
+-(void) dealloc
+{
+	[followedNode_ release];
+	[super dealloc];
+}
+
+@end
 
 

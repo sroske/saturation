@@ -1,14 +1,25 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2008,2009 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
 
@@ -67,7 +78,11 @@ enum {
 			invocation = [NSInvocation invocationWithMethodSignature:sig];
 			[invocation setTarget:rec];
 			[invocation setSelector:cb];
+#if NS_BLOCKS_AVAILABLE
+			if ([sig numberOfArguments] == 3) 
+#endif
 			[invocation setArgument:&self atIndex:2];
+			
 			[invocation retain];
 		}
 		
@@ -78,9 +93,27 @@ enum {
 	return self;
 }
 
+#if NS_BLOCKS_AVAILABLE
+
++(id) itemWithBlock:(void(^)(id sender))block {
+	return [[[self alloc] initWithBlock:block] autorelease];
+}
+
+-(id) initWithBlock:(void(^)(id sender))block {
+	block_ = BLOCK_RETAIN(block);
+	return [self initWithTarget:block_ selector:@selector(ccCallbackBlockWithSender:)];
+}
+
+#endif // NS_BLOCKS_AVAILABLE
+
 -(void) dealloc
 {
 	[invocation release];
+
+#if NS_BLOCKS_AVAILABLE
+	[block_ release];
+#endif
+	
 	[super dealloc];
 }
 
@@ -134,12 +167,26 @@ enum {
 -(id) initWithLabel:(CCNode<CCLabelProtocol,CCRGBAProtocol>*)label target:(id)target selector:(SEL)selector
 {
 	if( (self=[super initWithTarget:target selector:selector]) ) {
-		self.label = label;
+		originalScale_ = 1;
 		colorBackup = ccWHITE;
 		disabledColor_ = ccc3( 126,126,126);
+		self.label = label;
 	}
 	return self;
 }
+
+#if NS_BLOCKS_AVAILABLE
+
++(id) itemWithLabel:(CCNode<CCLabelProtocol,CCRGBAProtocol>*)label block:(void(^)(id sender))block {
+	return [[[self alloc] initWithLabel:label block:block] autorelease];
+}
+
+-(id) initWithLabel:(CCNode<CCLabelProtocol,CCRGBAProtocol>*)label block:(void(^)(id sender))block {
+	block_ = BLOCK_RETAIN(block);
+	return [self initWithLabel:label target:block_ selector:@selector(ccCallbackBlockWithSender:)];
+}
+
+#endif // NS_BLOCKS_AVAILABLE
 
 -(CCNode<CCLabelProtocol, CCRGBAProtocol>*) label
 {
@@ -168,7 +215,7 @@ enum {
 	if(isEnabled_) {
 		[self stopAllActions];
         
-		self.scale = 1.0f;
+		self.scale = originalScale_;
         
 		[super activate];
 	}
@@ -180,7 +227,8 @@ enum {
 	if(isEnabled_) {	
 		[super selected];
 		[self stopActionByTag:kZoomActionTag];
-		CCAction *zoomAction = [CCScaleTo actionWithDuration:0.1f scale:1.2f];
+		originalScale_ = self.scale;
+		CCAction *zoomAction = [CCScaleTo actionWithDuration:0.1f scale:originalScale_ * 1.2f];
 		zoomAction.tag = kZoomActionTag;
 		[self runAction:zoomAction];
 	}
@@ -192,7 +240,7 @@ enum {
 	if(isEnabled_) {
 		[super unselected];
 		[self stopActionByTag:kZoomActionTag];
-		CCAction *zoomAction = [CCScaleTo actionWithDuration:0.1f scale:1.0f];
+		CCAction *zoomAction = [CCScaleTo actionWithDuration:0.1f scale:originalScale_];
 		zoomAction.tag = kZoomActionTag;
 		[self runAction:zoomAction];
 	}
@@ -264,6 +312,17 @@ enum {
 	return self;
 }
 
+#if NS_BLOCKS_AVAILABLE
++(id) itemFromString:(NSString*)value charMapFile:(NSString*)charMapFile itemWidth:(int)itemWidth itemHeight:(int)itemHeight startCharMap:(char)startCharMap block:(void(^)(id sender))block {
+	return [[[self alloc] initFromString:value charMapFile:charMapFile itemWidth:itemWidth itemHeight:itemHeight startCharMap:startCharMap block:block] autorelease];
+}
+
+-(id) initFromString:(NSString*)value charMapFile:(NSString*)charMapFile itemWidth:(int)itemWidth itemHeight:(int)itemHeight startCharMap:(char)startCharMap block:(void(^)(id sender))block {
+	block_ = BLOCK_RETAIN(block);
+	return [self initFromString:value charMapFile:charMapFile itemWidth:itemWidth itemHeight:itemHeight startCharMap:startCharMap target:block_ selector:@selector(ccCallbackBlockWithSender:)];
+}
+#endif // NS_BLOCKS_AVAILABLE
+
 -(void) dealloc
 {
 	[super dealloc];
@@ -323,6 +382,17 @@ enum {
 	return self;
 }
 
+#if NS_BLOCKS_AVAILABLE
++(id) itemFromString: (NSString*) value block:(void(^)(id sender))block {
+	return [[[self alloc] initFromString:value block:block] autorelease];
+}
+
+-(id) initFromString: (NSString*) value block:(void(^)(id sender))block {
+	block_ = BLOCK_RETAIN(block);
+	return [self initFromString:value target:block_ selector:@selector(ccCallbackBlockWithSender:)];
+}
+#endif // NS_BLOCKS_AVAILABLE
+
 -(void) dealloc
 {
 	[super dealloc];
@@ -359,6 +429,22 @@ enum {
 	}
 	return self;	
 }
+
+#if NS_BLOCKS_AVAILABLE
++(id) itemFromNormalSprite:(CCNode<CCRGBAProtocol>*)normalSprite selectedSprite:(CCNode<CCRGBAProtocol>*)selectedSprite block:(void(^)(id sender))block {
+	return [self itemFromNormalSprite:normalSprite selectedSprite:selectedSprite disabledSprite:nil block:block];
+}
+
++(id) itemFromNormalSprite:(CCNode<CCRGBAProtocol>*)normalSprite selectedSprite:(CCNode<CCRGBAProtocol>*)selectedSprite disabledSprite:(CCNode<CCRGBAProtocol>*)disabledSprite block:(void(^)(id sender))block {
+	return [[[self alloc] initFromNormalSprite:normalSprite selectedSprite:selectedSprite disabledSprite:disabledSprite block:block] autorelease];
+}
+
+-(id) initFromNormalSprite:(CCNode<CCRGBAProtocol>*)normalSprite selectedSprite:(CCNode<CCRGBAProtocol>*)selectedSprite disabledSprite:(CCNode<CCRGBAProtocol>*)disabledSprite block:(void(^)(id sender))block {
+	block_ = BLOCK_RETAIN(block);
+	return [self initFromNormalSprite:normalSprite selectedSprite:selectedSprite disabledSprite:disabledSprite target:block_ selector:@selector(ccCallbackBlockWithSender:)];
+}
+#endif // NS_BLOCKS_AVAILABLE
+
 
 -(void) dealloc
 {
@@ -448,6 +534,24 @@ enum {
 
 	return [self initFromNormalSprite:normalImage selectedSprite:selectedImage disabledSprite:disabledImage target:t selector:sel];
 }
+
+#if NS_BLOCKS_AVAILABLE
+
++(id) itemFromNormalImage: (NSString*)value selectedImage:(NSString*) value2 block:(void(^)(id sender))block {
+	return [self itemFromNormalImage:value selectedImage:value2 disabledImage:nil block:block];
+}
+
++(id) itemFromNormalImage: (NSString*)value selectedImage:(NSString*) value2 disabledImage:(NSString*) value3 block:(void(^)(id sender))block {
+	return [[[self alloc] initFromNormalImage:value selectedImage:value2 disabledImage:value3 block:block] autorelease];
+}
+
+-(id) initFromNormalImage: (NSString*) value selectedImage:(NSString*)value2 disabledImage:(NSString*) value3 block:(void(^)(id sender))block {
+	block_ = BLOCK_RETAIN(block);
+	return [self initFromNormalImage:value selectedImage:value2 disabledImage:value3 target:block_ selector:@selector(ccCallbackBlockWithSender:)];
+}
+
+#endif // NS_BLOCKS_AVAILABLE
+
 @end
 
 #pragma mark -
@@ -492,6 +596,25 @@ enum {
 	
 	return self;
 }
+
+#if NS_BLOCKS_AVAILABLE
+								  
++(id) itemWithBlock:(void(^)(id sender))block items:(CCMenuItem*)item, ... {
+	va_list args;
+	va_start(args, item);
+	
+	id s = [[[self alloc] initWithBlock:block items:item vaList:args] autorelease];
+	
+	va_end(args);
+	return s;
+}
+
+-(id) initWithBlock:(void (^)(id))block items:(CCMenuItem*)item vaList:(va_list)args {
+	block_ = BLOCK_RETAIN(block);
+	return [self initWithTarget:block_ selector:@selector(ccCallbackBlockWithSender:) items:item vaList:args];
+}
+
+#endif // NS_BLOCKS_AVAILABLE
 
 -(void) dealloc
 {

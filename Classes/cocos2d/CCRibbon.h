@@ -1,17 +1,28 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2008, 2009 Jason Booth
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
- *
+ * Copyright (c) 2008, 2009 Jason Booth
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
+
 
 #import "CCNode.h"
 #import "CCTexture2D.h"
@@ -20,12 +31,12 @@
 
 /**
  * A CCRibbon is a dynamically generated list of polygons drawn as a single or series
- * of triangle strips. The primary use of Ribbon is as the drawing class of Motion Streak,
+ * of triangle strips. The primary use of CCRibbon is as the drawing class of Motion Streak,
  * but it is quite useful on it's own. When manually drawing a ribbon, you can call addPointAt
  * and pass in the parameters for the next location in the ribbon. The system will automatically
  * generate new polygons, texture them accourding to your texture width, etc, etc.
  *
- * Ribbon data is stored in a RibbonSegment class. This class statically allocates enough verticies and
+ * CCRibbon data is stored in a CCRibbonSegment class. This class statically allocates enough verticies and
  * texture coordinates for 50 locations (100 verts or 48 triangles). The ribbon class will allocate
  * new segments when they are needed, and reuse old ones if available. The idea is to avoid constantly
  * allocating new memory and prefer a more static method. However, since there is no way to determine
@@ -35,20 +46,20 @@
  */
 @interface CCRibbon : CCNode <CCTextureProtocol>
 {
-	NSMutableArray* mSegments;
-	NSMutableArray* dSegments;
+	NSMutableArray*	segments_;
+	NSMutableArray*	deletedSegments_;
 
-	CGPoint			mLastPoint1;
-	CGPoint			mLastPoint2;
-	CGPoint			mLastLocation;
-	int				mVertCount;
-	float			mTexVPos;
-	float			mCurTime;
-	float			mFadeTime;
-	float			mDelta;
-	float			mLastWidth;
-	float			mLastSign;
-	BOOL			mPastFirstPoint;
+	CGPoint			lastPoint1_;
+	CGPoint			lastPoint2_;
+	CGPoint			lastLocation_;
+	int					vertCount_;
+	float				texVPos_;
+	float				curTime_;
+	float				fadeTime_;
+	float				delta_;
+	float				lastWidth_;
+	float				lastSign_;
+	BOOL				pastFirstPoint_;
 
 	// Texture used
 	CCTexture2D*		texture_;
@@ -92,13 +103,13 @@
 @interface CCRibbonSegment : NSObject
 {
 @public
-	GLfloat verts[50*6];
-	GLfloat coords[50*4];
-	GLubyte colors[50*8];
-	float creationTime[50];
-	bool finished;
-	uint end;
-	uint begin;
+	GLfloat	verts[50*6];
+	GLfloat	coords[50*4];
+	GLubyte	colors[50*8];
+	float		creationTime[50];
+	BOOL		finished;
+	uint		end;
+	uint		begin;
 }
 -(id)init;
 -(void)reset;

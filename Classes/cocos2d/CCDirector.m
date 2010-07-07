@@ -1,20 +1,33 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2008,2009,2010 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
- *
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
+
 
 /* Idea of decoupling Window from Director taken from OC3D project: http://code.google.com/p/oc3d/
  */
  
+#import <unistd.h>
+
 // cocos2d imports
 #import "CCDirector.h"
 #import "CCTouchDelegateProtocol.h"
@@ -30,6 +43,7 @@
 #import "CCTouchDispatcher.h"
 #import "CCSpriteFrameCache.h"
 #import "CCTexture2D.h"
+#import "CCBitmapFontAtlas.h"
 
 // support imports
 #import "Support/glu.h"
@@ -37,6 +51,10 @@
 #import "Support/CGPointExtension.h"
 
 #import "CCLayer.h"
+
+#if CC_ENABLE_PROFILERS
+#import "Support/CCProfiling.h"
+#endif
 
 #define kDefaultFPS		60.0	// 60 frames per second
 
@@ -47,30 +65,31 @@ extern NSString * cocos2dVersion(void);
 -(BOOL)isOpenGLAttached;
 -(BOOL)initOpenGLViewWithView:(UIView *)view withFrame:(CGRect)rect;
 
--(void) initGLDefaultValues;
-
 -(void) preMainLoop;
--(void) mainLoop;
 -(void) setNextScene;
 // shows the FPS in the screen
 -(void) showFPS;
 // calculates delta time since last time it was called
 -(void) calculateDeltaTime;
+-(void) updateContentScaleFactor;
 
+#if CC_ENABLE_PROFILERS
+- (void) showProfilers;
+#endif
 
 @end
 
 @implementation CCDirector
 
-@synthesize animationInterval;
+@synthesize animationInterval=animationInterval_;
 @synthesize runningScene = runningScene_;
-@synthesize displayFPS;
-@synthesize openGLView=openGLView_;
+@synthesize displayFPS = displayFPS_;
 @synthesize pixelFormat=pixelFormat_;
 @synthesize nextDeltaTimeZero=nextDeltaTimeZero_;
 @synthesize deviceOrientation=deviceOrientation_;
 @synthesize isPaused=isPaused_;
 @synthesize sendCleanupToScene=sendCleanupToScene_;
+
 //
 // singleton stuff
 //
@@ -138,25 +157,29 @@ static CCDirector *_sharedDirector = nil;
 		CCLOG(@"cocos2d: Using Director Type:%@", [self class]);
 		
 		// default values
-		pixelFormat_ = kPixelFormatDefault;
+		pixelFormat_ = kCCPixelFormatDefault;
 		depthBufferFormat_ = 0;
 
 		// scenes
 		runningScene_ = nil;
 		nextScene_ = nil;
 		
-		oldAnimationInterval = animationInterval = 1.0 / kDefaultFPS;
-		scenesStack_ = [[NSMutableArray arrayWithCapacity:10] retain];
+		oldAnimationInterval_ = animationInterval_ = 1.0 / kDefaultFPS;
+		scenesStack_ = [[NSMutableArray alloc] initWithCapacity:10];
 		
 		// landscape
 		deviceOrientation_ = CCDeviceOrientationPortrait;
 
 		// FPS
-		displayFPS = NO;
-		frames = 0;
+		displayFPS_ = NO;
+		frames_ = 0;
 		
 		// paused ?
 		isPaused_ = NO;
+		
+		contentScaleFactor_ = 1;
+		screenSize_ = surfaceSize_ = CGSizeZero;
+		isContentScaleSupported_ = NO;
 	}
 
 	return self;
@@ -164,10 +187,10 @@ static CCDirector *_sharedDirector = nil;
 
 - (void) dealloc
 {
-	CCLOG( @"cocos2d: deallocing %@", self);
+	CCLOGINFO(@"cocos2d: deallocing %@", self);
 
 #if CC_DIRECTOR_FAST_FPS
-	[FPSLabel release];
+	[FPSLabel_ release];
 #endif
 	[runningScene_ release];
 	[scenesStack_ release];
@@ -177,28 +200,32 @@ static CCDirector *_sharedDirector = nil;
 	[super dealloc];
 }
 
--(void) initGLDefaultValues
+-(void) setGLDefaultValues
 {
 	// This method SHOULD be called only after openGLView_ was initialized
 	NSAssert( openGLView_, @"openGLView_ must be initialized");
 
 	[self setAlphaBlending: YES];
 	[self setDepthTest: YES];
-	[self setProjection: CCDirectorProjectionDefault];
+	[self setProjection: kCCDirectorProjectionDefault];
 	
 	// set other opengl default values
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	
 #if CC_DIRECTOR_FAST_FPS
-    if (!FPSLabel)
-        FPSLabel = [[CCLabelAtlas labelAtlasWithString:@"00.0" charMapFile:@"fps_images.png" itemWidth:16 itemHeight:24 startCharMap:'.'] retain];
-#endif	
+    if (!FPSLabel_) {
+		CCTexture2DPixelFormat currentFormat = [CCTexture2D defaultAlphaPixelFormat];
+		[CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGBA4444];
+		FPSLabel_ = [[CCLabelAtlas labelAtlasWithString:@"00.0" charMapFile:@"fps_images.png" itemWidth:16 itemHeight:24 startCharMap:'.'] retain];
+		[CCTexture2D setDefaultAlphaPixelFormat:currentFormat];		
+	}
+#endif	// CC_DIRECTOR_FAST_FPS
 }
 
 //
-// main loop
+// Draw the Scene
 //
-- (void) mainLoop
+- (void) drawScene
 {    
 	/* calculate "global" dt */
 	[self calculateDeltaTime];
@@ -217,20 +244,24 @@ static CCDirector *_sharedDirector = nil;
 	
 	glPushMatrix();
 	
-	[self applyLandscape];
+	[self applyOrientation];
 	
 	// By default enable VertexArray, ColorArray, TextureCoordArray and Texture2D
 	CC_ENABLE_DEFAULT_GL_STATES();
 
 	/* draw the scene */
 	[runningScene_ visit];
-	if( displayFPS )
+	if( displayFPS_ )
 		[self showFPS];
+	
+#if CC_ENABLE_PROFILERS
+	[self showProfilers];
+#endif
 	
 	CC_DISABLE_DEFAULT_GL_STATES();
 	
 	glPopMatrix();
-
+	
 	/* swap buffers */
 	[openGLView_ swapBuffers];	
 }
@@ -250,11 +281,11 @@ static CCDirector *_sharedDirector = nil;
 		dt = 0;
 		nextDeltaTimeZero_ = NO;
 	} else {
-		dt = (now.tv_sec - lastUpdate.tv_sec) + (now.tv_usec - lastUpdate.tv_usec) / 1000000.0f;
+		dt = (now.tv_sec - lastUpdate_.tv_sec) + (now.tv_usec - lastUpdate_.tv_usec) / 1000000.0f;
 		dt = MAX(0,dt);
 	}
 	
-	lastUpdate = now;	
+	lastUpdate_ = now;	
 }
 
 #pragma mark Director Scene iPhone Specific
@@ -271,7 +302,16 @@ static CCDirector *_sharedDirector = nil;
    depthBufferFormat_ = format;
 }
 
-#pragma mark Director Scene OpenGL Helper
+#pragma mark Director - Memory Helper
+
+-(void) purgeCachedData
+{
+	[CCBitmapFontAtlas purgeCachedData];	
+	[CCSpriteFrameCache purgeSharedSpriteFrameCache];
+	[CCTextureCache purgeSharedTextureCache];	
+}
+
+#pragma mark Director - Scene OpenGL Helper
 
 -(ccDirectorProjection) projection
 {
@@ -280,22 +320,22 @@ static CCDirector *_sharedDirector = nil;
 
 -(float) getZEye
 {
-	return ( openGLView_.frame.size.height / 1.1566f );
+	return ( surfaceSize_.height / 1.1566f );
 }
 
 -(void) setProjection:(ccDirectorProjection)projection
 {
-	CGSize size = openGLView_.frame.size;
+	CGSize size = surfaceSize_;
 	switch (projection) {
-		case CCDirectorProjection2D:
+		case kCCDirectorProjection2D:
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			glOrthof(0, size.width, 0, size.height, -1, 1);
+			glOrthof(0, size.width, 0, size.height, -1000, 1000);
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();			
 			break;
 
-		case CCDirectorProjection3D:
+		case kCCDirectorProjection3D:
 			glViewport(0, 0, size.width, size.height);
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
@@ -308,7 +348,7 @@ static CCDirector *_sharedDirector = nil;
 					  0.0f, 1.0f, 0.0f);			
 			break;
 			
-		case CCDirectorProjectionCustom:
+		case kCCDirectorProjectionCustom:
 			// if custom, ignore it. The user is resposible for setting the correct projection
 			break;
 			
@@ -325,6 +365,7 @@ static CCDirector *_sharedDirector = nil;
 	if (on) {
 		glEnable(GL_BLEND);
 		glBlendFunc(CC_BLEND_SRC, CC_BLEND_DST);
+		
 	} else
 		glDisable(GL_BLEND);
 }
@@ -403,19 +444,19 @@ static CCDirector *_sharedDirector = nil;
 		NSString	*pFormat = nil;
 	    GLuint		depthFormat = 0;
 		
-		if(pixelFormat_==kPixelFormatRGBA8888)
+		if(pixelFormat_==kCCPixelFormatRGBA8888)
 			pFormat = kEAGLColorFormatRGBA8;
-		else if(pixelFormat_== kPixelFormatRGB565)
+		else if(pixelFormat_== kCCPixelFormatRGB565)
 			pFormat = kEAGLColorFormatRGB565;
 		else {
 			CCLOG(@"cocos2d: Director: Unknown pixel format.");
 		}
 		
-		if(depthBufferFormat_ == kDepthBuffer16)
+		if(depthBufferFormat_ == kCCDepthBuffer16)
 			depthFormat = GL_DEPTH_COMPONENT16_OES;
-		else if(depthBufferFormat_ == kDepthBuffer24)
+		else if(depthBufferFormat_ == kCCDepthBuffer24)
 			depthFormat = GL_DEPTH_COMPONENT24_OES;
-		else if(depthBufferFormat_ == kDepthBufferNone)
+		else if(depthBufferFormat_ == kCCDepthBufferNone)
 			depthFormat = 0;
 		else {
 			CCLOG(@"cocos2d: Director: Unknown buffer depth.");
@@ -423,18 +464,22 @@ static CCDirector *_sharedDirector = nil;
 		
 		// alloc and init the opengl view
 		openGLView_ = [[EAGLView alloc] initWithFrame:rect pixelFormat:pFormat depthFormat:depthFormat preserveBackbuffer:NO];
-
+		
 		// check if the view was alloced and initialized
 		NSAssert( openGLView_, @"FATAL: Could not alloc and init the OpenGL view. ");
-		
-		// set autoresizing enabled when attaching the glview to another view
-		[openGLView_ setAutoresizesEAGLSurface:YES];		
+
+		// opaque by default (faster)
+		openGLView_.opaque = YES;		
 	}
 	else
 	{
 		// set the (new) frame of the glview
 		[openGLView_ setFrame:rect];
 	}
+	
+	screenSize_ = rect.size;
+	surfaceSize_ = CGSizeMake(screenSize_.width * contentScaleFactor_, screenSize_.height * contentScaleFactor_);
+
 	
 	// set the touch delegate of the glview to self
 	[openGLView_ setTouchDelegate: [CCTouchDispatcher sharedDispatcher]];
@@ -465,24 +510,82 @@ static CCDirector *_sharedDirector = nil;
 	// add the glview to his (new) superview
 	[view addSubview:openGLView_];
 	
-	// set the background color of the glview
-	//	[backgroundColor setOpenGLClearColor];
-	
-	
+		
 	NSAssert( [self isOpenGLAttached], @"FATAL: Director: Could not attach OpenGL view");
 
-	[self initGLDefaultValues];
+	[self setGLDefaultValues];
 	return YES;
+}
+
+-(EAGLView*) openGLView
+{
+	return openGLView_;
+}
+
+-(void) setOpenGLView:(EAGLView *)view
+{
+	NSAssert( view, @"EAGView must be non-nil");
+
+	if( view != openGLView_ ) {
+		[openGLView_ release];
+		openGLView_ = [view retain];
+		
+		// set size
+		screenSize_ = [view bounds].size;
+		surfaceSize_ = CGSizeMake(screenSize_.width * contentScaleFactor_, screenSize_.height *contentScaleFactor_);
+		
+		
+		CCTouchDispatcher *touchDispatcher = [CCTouchDispatcher sharedDispatcher];
+		[openGLView_ setTouchDelegate: touchDispatcher];
+		[touchDispatcher setDispatchEvents: YES];
+
+		if( contentScaleFactor_ != 1 )
+			[self updateContentScaleFactor];
+
+		[self setGLDefaultValues];
+	}
+}
+
+-(void) updateContentScaleFactor
+{
+	// Based on code snippet from: http://developer.apple.com/iphone/prerelease/library/snippets/sp2010/sp28.html
+	if ([openGLView_ respondsToSelector:@selector(setContentScaleFactor:)])
+	{
+		// XXX: To avoid compile warning when using Xcode 3.2.2
+		typedef void (*CC_CONTENT_SCALE)(id, SEL, float);
+		
+		SEL selector = @selector(setContentScaleFactor:);
+		CC_CONTENT_SCALE method = (CC_CONTENT_SCALE) [openGLView_ methodForSelector:selector];
+		method(openGLView_,selector, contentScaleFactor_);
+		
+		// In Xcode 3.2.3 SDK 4.0, use this one:
+//		[openGLView_ setContentScaleFactor: scaleFactor];
+		
+		isContentScaleSupported_ = YES;
+		
+	}
+	else
+	{
+		CCLOG(@"cocos2d: WARNING: calling setContentScaleFactor on iOS < 4. Using fallback mechanism");
+		/* on pre-4.0 iOS, use bounds/transform */
+		openGLView_.bounds = CGRectMake(0, 0,
+										openGLView_.bounds.size.width * contentScaleFactor_,
+										openGLView_.bounds.size.height * contentScaleFactor_);
+		openGLView_.transform = CGAffineTransformScale(openGLView_.transform, 1 / contentScaleFactor_, 1 / contentScaleFactor_); 
+		
+		isContentScaleSupported_ = NO;
+	}
 }
 
 #pragma mark Director Scene Landscape
 
 -(CGPoint)convertToGL:(CGPoint)uiPoint
 {
-	float newY = openGLView_.frame.size.height - uiPoint.y;
-	float newX = openGLView_.frame.size.width -uiPoint.x;
+	CGSize s = screenSize_;
+	float newY = s.height - uiPoint.y;
+	float newX = s.width - uiPoint.x;
 	
-	CGPoint ret;
+	CGPoint ret = CGPointZero;
 	switch ( deviceOrientation_) {
 		case CCDeviceOrientationPortrait:
 			 ret = ccp( uiPoint.x, newY );
@@ -499,42 +602,48 @@ static CCDirector *_sharedDirector = nil;
 			ret.y = newX;
 			break;
 		}
+
+	if( contentScaleFactor_ != 1 && isContentScaleSupported_ )
+		ret = ccpMult(ret, contentScaleFactor_);
 	return ret;
 }
 
 -(CGPoint)convertToUI:(CGPoint)glPoint
 {
-	CGSize winSize = [self winSize];
+	CGSize winSize = surfaceSize_;
 	int oppositeX = winSize.width - glPoint.x;
 	int oppositeY = winSize.height - glPoint.y;
-	CGPoint uiPoint;
+	CGPoint uiPoint = CGPointZero;
 	switch ( deviceOrientation_) {
 		case CCDeviceOrientationPortrait:
-			 uiPoint = ccp(glPoint.x, glPoint.y);
+			uiPoint = ccp(glPoint.x, oppositeY);
 			break;
 		case CCDeviceOrientationPortraitUpsideDown:
-			uiPoint = ccp(oppositeX, oppositeY);
+			uiPoint = ccp(oppositeX, glPoint.y);
 			break;
 		case CCDeviceOrientationLandscapeLeft:
-			uiPoint = ccp(glPoint.y, oppositeX);
+			uiPoint = ccp(glPoint.y, glPoint.x);
 			break;
 		case CCDeviceOrientationLandscapeRight:
-			uiPoint = ccp(oppositeY, glPoint.x);
+			// Can't use oppositeX/Y because x/y are flipped
+			uiPoint = ccp(winSize.width-glPoint.y, winSize.height-glPoint.x);
 			break;
 	}
-	 	
+	
+	uiPoint = ccpMult(uiPoint, 1/contentScaleFactor_);
 	return uiPoint;
 }
-
 
 // get the current size of the glview
 -(CGSize)winSize
 {
-	CGSize s = openGLView_.frame.size;
+	CGSize s = surfaceSize_;
+	
 	if( deviceOrientation_ == CCDeviceOrientationLandscapeLeft || deviceOrientation_ == CCDeviceOrientationLandscapeRight ) {
 		// swap x,y in landscape mode
-		s.width = openGLView_.frame.size.height;
-		s.height = openGLView_.frame.size.width;
+		CGSize tmp = s;
+		s.width = tmp.height;
+		s.height = tmp.width;
 	}
 	return s;
 }
@@ -542,7 +651,7 @@ static CCDirector *_sharedDirector = nil;
 // return  the current frame size
 -(CGSize)displaySize
 {
-	return openGLView_.frame.size;
+	return surfaceSize_;
 }
 
 - (void) setDeviceOrientation:(ccDeviceOrientation) orientation
@@ -554,7 +663,7 @@ static CCDirector *_sharedDirector = nil;
 				[[UIApplication sharedApplication] setStatusBarOrientation: UIInterfaceOrientationPortrait animated:NO];
 				break;
 			case CCDeviceOrientationPortraitUpsideDown:
-				[[UIApplication sharedApplication] setStatusBarOrientation: UIInterfaceOrientationPortrait animated:NO];
+				[[UIApplication sharedApplication] setStatusBarOrientation: UIDeviceOrientationPortraitUpsideDown animated:NO];
 				break;
 			case CCDeviceOrientationLandscapeLeft:
 				[[UIApplication sharedApplication] setStatusBarOrientation: UIInterfaceOrientationLandscapeRight animated:NO];
@@ -569,9 +678,9 @@ static CCDirector *_sharedDirector = nil;
 	}
 }
 
--(void) applyLandscape
+-(void) applyOrientation
 {	
-	CGSize s = [openGLView_ frame].size;
+	CGSize s = surfaceSize_;
 	float w = s.width / 2;
 	float h = s.height / 2;
 
@@ -608,7 +717,7 @@ static CCDirector *_sharedDirector = nil;
 	NSAssert( runningScene_ == nil, @"You can't run an scene if another Scene is running. Use replaceScene or pushScene instead");
 	
 	[self pushScene:scene];
-	[self startAnimation];
+	[self startAnimation];	
 }
 
 -(void) replaceScene: (CCScene*) scene
@@ -664,12 +773,14 @@ static CCDirector *_sharedDirector = nil;
 	[[CCTouchDispatcher sharedDispatcher] removeAllDelegates];
 	
 	[self stopAnimation];
-	[self detach];
 	
 #if CC_DIRECTOR_FAST_FPS
-	[FPSLabel release];
-	FPSLabel = nil;
+	[FPSLabel_ release];
+	FPSLabel_ = nil;
 #endif	
+
+	// Purge bitmap cache
+	[CCBitmapFontAtlas purgeCachedData];
 
 	// Purge all managers
 	[CCSpriteFrameCache purgeSharedSpriteFrameCache];
@@ -679,6 +790,11 @@ static CCDirector *_sharedDirector = nil;
 	
 	
 	// OpenGL view
+	
+	// Since the director doesn't attach the openglview to the window
+	// it shouldn't remove it from the window too.
+//	[openGLView_ removeFromSuperview];
+
 	[openGLView_ release];
 	openGLView_ = nil;
 }
@@ -715,7 +831,7 @@ static CCDirector *_sharedDirector = nil;
 	if( isPaused_ )
 		return;
 
-	oldAnimationInterval = animationInterval;
+	oldAnimationInterval_ = animationInterval_;
 	
 	// when paused, don't consume CPU
 	[self setAnimationInterval:1/4.0];
@@ -727,9 +843,9 @@ static CCDirector *_sharedDirector = nil;
 	if( ! isPaused_ )
 		return;
 	
-	[self setAnimationInterval: oldAnimationInterval];
+	[self setAnimationInterval: oldAnimationInterval_];
 
-	if( gettimeofday( &lastUpdate, NULL) != 0 ) {
+	if( gettimeofday( &lastUpdate_, NULL) != 0 ) {
 		CCLOG(@"cocos2d: Director: Error in gettimeofday");
 	}
 	
@@ -758,23 +874,23 @@ static CCDirector *_sharedDirector = nil;
 // updates the FPS every frame
 -(void) showFPS
 {
-	frames++;
-	accumDt += dt;
+	frames_++;
+	accumDt_ += dt;
 	
-	if ( accumDt > CC_DIRECTOR_FPS_INTERVAL)  {
-		frameRate = frames/accumDt;
-		frames = 0;
-		accumDt = 0;
+	if ( accumDt_ > CC_DIRECTOR_FPS_INTERVAL)  {
+		frameRate_ = frames_/accumDt_;
+		frames_ = 0;
+		accumDt_ = 0;
 
 //		sprintf(format,"%.1f",frameRate);
 //		[FPSLabel setCString:format];
 
-		NSString *str = [[NSString alloc] initWithFormat:@"%.1f", frameRate];
-		[FPSLabel setString:str];
+		NSString *str = [[NSString alloc] initWithFormat:@"%.1f", frameRate_];
+		[FPSLabel_ setString:str];
 		[str release];
 	}
 		
-	[FPSLabel draw];
+	[FPSLabel_ draw];
 }
 #else
 // display the FPS using a manually generated Texture (very slow)
@@ -811,6 +927,36 @@ static CCDirector *_sharedDirector = nil;
 }
 #endif
 
+#if CC_ENABLE_PROFILERS
+- (void) showProfilers {
+	accumDtForProfiler += dt;
+	if (accumDtForProfiler > 1.0f) {
+		accumDtForProfiler = 0;
+		[[CCProfiler sharedProfiler] displayTimers];
+	}
+}
+#endif
+
+-(CGFloat) contentScaleFactor
+{
+	return contentScaleFactor_;
+}
+
+-(void) setContentScaleFactor:(CGFloat)scaleFactor
+{
+	if( scaleFactor != contentScaleFactor_ ) {
+
+		contentScaleFactor_ = scaleFactor;
+		surfaceSize_ = CGSizeMake( screenSize_.width * scaleFactor, screenSize_.height * scaleFactor );
+
+		if( openGLView_ )
+			[self updateContentScaleFactor];
+
+		// update projection
+		[self setProjection:projection_];
+	}
+}
+
 @end
 
 #pragma mark -
@@ -821,11 +967,11 @@ static CCDirector *_sharedDirector = nil;
 {
 	NSAssert( animationTimer == nil, @"animationTimer must be nil. Calling startAnimation twice?");
 	
-	if( gettimeofday( &lastUpdate, NULL) != 0 ) {
+	if( gettimeofday( &lastUpdate_, NULL) != 0 ) {
 		CCLOG(@"cocos2d: Director: Error in gettimeofday");
 	}
 	
-	animationTimer = [NSTimer scheduledTimerWithTimeInterval:animationInterval target:self selector:@selector(mainLoop) userInfo:nil repeats:YES];
+	animationTimer = [NSTimer scheduledTimerWithTimeInterval:animationInterval_ target:self selector:@selector(drawScene) userInfo:nil repeats:YES];
 	
 	//
 	//	If you want to attach the opengl view into UIScrollView
@@ -844,7 +990,7 @@ static CCDirector *_sharedDirector = nil;
 
 - (void)setAnimationInterval:(NSTimeInterval)interval
 {
-	animationInterval = interval;
+	animationInterval_ = interval;
 	
 	if(animationTimer) {
 		[self stopAnimation];
@@ -895,7 +1041,7 @@ static CCDirector *_sharedDirector = nil;
 	[autoreleasePool release];
 	autoreleasePool = nil;
 
-	if ( gettimeofday( &lastUpdate, NULL) != 0 ) {
+	if ( gettimeofday( &lastUpdate_, NULL) != 0 ) {
 		CCLOG(@"cocos2d: Director: Error in gettimeofday");
 	}
 	
@@ -936,7 +1082,7 @@ static CCDirector *_sharedDirector = nil;
 			usleep(250000); // Sleep for a quarter of a second (250,000 microseconds) so that the framerate is 4 fps.
 		}
 		
-		[self mainLoop];
+		[self drawScene];
 
 #if CC_DIRECTOR_DISPATCH_FAST_EVENTS
 		while( CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.004f, FALSE) == kCFRunLoopRunHandledSource);
@@ -975,7 +1121,7 @@ static CCDirector *_sharedDirector = nil;
 - (void) startAnimation
 {
 	
-	if ( gettimeofday( &lastUpdate, NULL) != 0 ) {
+	if ( gettimeofday( &lastUpdate_, NULL) != 0 ) {
 		CCLOG(@"cocos2d: ThreadedFastDirector: Error on gettimeofday");
 	}
 
@@ -990,7 +1136,7 @@ static CCDirector *_sharedDirector = nil;
 {
 	while( ![[NSThread currentThread] isCancelled] ) {
 		if( isRunning )
-			[self performSelectorOnMainThread:@selector(mainLoop) withObject:nil waitUntilDone:YES];
+			[self performSelectorOnMainThread:@selector(drawScene) withObject:nil waitUntilDone:YES];
 		
 		if (isPaused_) {
 			usleep(250000); // Sleep for a quarter of a second (250,000 microseconds) so that the framerate is 4 fps.
@@ -1026,7 +1172,7 @@ static CCDirector *_sharedDirector = nil;
 
 - (void)setAnimationInterval:(NSTimeInterval)interval
 {
-	animationInterval = interval;
+	animationInterval_ = interval;
 	if(displayLink){
 		[self stopAnimation];
 		[self startAnimation];
@@ -1035,13 +1181,13 @@ static CCDirector *_sharedDirector = nil;
 
 - (void) startAnimation
 {
-	if ( gettimeofday( &lastUpdate, NULL) != 0 ) {
+	if ( gettimeofday( &lastUpdate_, NULL) != 0 ) {
 		CCLOG(@"cocos2d: DisplayLinkDirector: Error on gettimeofday");
 	}
 	
 	// approximate frame rate
 	// assumes device refreshes at 60 fps
-	int frameInterval	= (int) floor(animationInterval * 60.0f);
+	int frameInterval = (int) floor(animationInterval_ * 60.0f);
 	
 	CCLOG(@"cocos2d: Frame interval: %d", frameInterval);
 
@@ -1052,7 +1198,7 @@ static CCDirector *_sharedDirector = nil;
 
 -(void) preMainLoop:(id)sender
 {
-	[self mainLoop];
+	[self drawScene];
 }
 
 - (void) stopAnimation

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface BGSKulerParser : NSObject 
+@interface BGSKulerParser : NSObject <NSXMLParserDelegate>
 {
 	BOOL success;
 	NSURL *url;

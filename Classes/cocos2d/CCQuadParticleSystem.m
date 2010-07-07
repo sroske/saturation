@@ -1,17 +1,29 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2009 Leonardo Kasperavičius
- * Copyright (C) 2009 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * Copyright (c) 2009 Leonardo Kasperavičius
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
+
 
 // opengl
 #import <OpenGLES/ES1/gl.h>
@@ -20,12 +32,14 @@
 #import "CCQuadParticleSystem.h"
 #import "CCTextureCache.h"
 #import "ccMacros.h"
+#import "CCSpriteFrame.h"
 
 // support
 #import "Support/OpenGL_Internal.h"
 #import "Support/CGPointExtension.h"
 
 @implementation CCQuadParticleSystem
+
 
 // overriding the init method
 -(id) initWithTotalParticles:(int) numberOfParticles
@@ -38,16 +52,18 @@
 		indices = malloc( sizeof(indices[0]) * totalParticles * 6 );
 		
 		if( !quads || !indices) {
-			NSLog(@"Particle system: not enough memory");
+			NSLog(@"cocos2d: Particle system: not enough memory");
 			if( quads )
 				free( quads );
 			if(indices)
 				free(indices);
+			
+			[self release];
 			return nil;
 		}
 		
 		// initialize only once the texCoords and the indices
-		[self initTexCoords];
+		[self initTexCoordsWithRect:CGRectMake(0, 0, 1, 1)];
 		[self initIndices];
 
 		// create the VBO buffer
@@ -71,23 +87,73 @@
 	[super dealloc];
 }
 
--(void) initTexCoords
+// rect should be in Texture coordinates, not pixel coordinates
+-(void) initTexCoordsWithRect:(CGRect)rect
 {
+	float bottomLeftX = rect.origin.x;
+	float bottomLeftY = rect.origin.y;
+	
+	float bottomRightX = bottomLeftX + rect.size.width;
+	float bottomRightY = bottomLeftY;
+	
+	float topLeftX = bottomLeftX;
+	float topLeftY = bottomLeftY + rect.size.height;
+	
+	float topRightX = bottomRightX;
+	float topRightY = topLeftY;
+	
+	// Important. Texture in cocos2d are inverted, so the Y component should be inverted
+	CC_SWAP( topRightY, bottomRightY);
+	CC_SWAP( topLeftY, bottomLeftY );
+	
 	for(int i=0; i<totalParticles; i++) {
-		// top-left vertex:
-		quads[i].bl.texCoords.u = 0;
-		quads[i].bl.texCoords.v = 0;
 		// bottom-left vertex:
-		quads[i].br.texCoords.u = 1;
-		quads[i].br.texCoords.v = 0;
+		quads[i].bl.texCoords.u = bottomLeftX;
+		quads[i].bl.texCoords.v = bottomLeftY;
+		// bottom-right vertex:
+		quads[i].br.texCoords.u = bottomRightX;
+		quads[i].br.texCoords.v = bottomRightY;
+		// top-left vertex:
+		quads[i].tl.texCoords.u = topLeftX;
+		quads[i].tl.texCoords.v = topLeftY;
 		// top-right vertex:
-		quads[i].tl.texCoords.u = 0;
-		quads[i].tl.texCoords.v = 1;
-		// top-right vertex:
-		quads[i].tr.texCoords.u = 1;
-		quads[i].tr.texCoords.v = 1;
+		quads[i].tr.texCoords.u = topRightX;
+		quads[i].tr.texCoords.v = topRightY;
 	}
-}	
+}
+
+-(void) setTexture:(CCTexture2D *)texture withRect:(CGRect)rect
+{
+	// Only update the texture if is different from the current one
+	if( [texture name] != [texture_ name] )
+		[super setTexture:texture];
+	
+	// convert to Tex coords
+	
+	float wide = [texture pixelsWide];
+	float high = [texture pixelsHigh];
+	rect.origin.x = rect.origin.x / wide;
+	rect.origin.y = rect.origin.y / high;
+	rect.size.width = rect.size.width / wide;
+	rect.size.height = rect.size.height / high;
+	[self initTexCoordsWithRect:rect];
+}
+
+-(void) setTexture:(CCTexture2D *)texture
+{
+	[self setTexture:texture withRect:CGRectMake(0,0, [texture pixelsWide], [texture pixelsHigh] )];
+}
+
+-(void) setDisplayFrame:(CCSpriteFrame *)spriteFrame
+{
+
+	NSAssert( CGPointEqualToPoint( spriteFrame.offset , CGPointZero ), @"QuadParticle only supports SpriteFrames with no offsets");
+
+	// update texture before updating texture rect
+	if ( spriteFrame.texture.name != texture_.name )
+		[self setTexture: spriteFrame.texture];	
+}
+
 -(void) initIndices
 {
 	for( int i=0;i< totalParticles;i++) {
@@ -101,16 +167,8 @@
 	}
 }
 
-
-// XXX
-// XXX: All subclasses of ParticleSystem share this code
-// XXX: so some parts of this coded should be moved to the base class
-// XXX
-// XXX: BUT the change shall NOT DROP a single FPS
-// XXX:
-
--(void) updateQuadWithParticle:(Particle*)p position:(CGPoint)newPos;
-{				
+-(void) updateQuadWithParticle:(tCCParticle*)p newPosition:(CGPoint)newPos
+{
 	// colors
 	quads[particleIdx].bl.colors = p->color;
 	quads[particleIdx].br.colors = p->color;
@@ -119,16 +177,16 @@
 	
 	// vertices
 	float size_2 = p->size/2;
-	if( p->angle ) {
+	if( p->rotation ) {
 		float x1 = -size_2;
 		float y1 = -size_2;
 		
-		float x2 = x1 + p->size;
-		float y2 = y1 + p->size;
+		float x2 = size_2;
+		float y2 = size_2;
 		float x = newPos.x;
 		float y = newPos.y;
 		
-		float r = (float)-CC_DEGREES_TO_RADIANS(p->angle);
+		float r = (float)-CC_DEGREES_TO_RADIANS(p->rotation);
 		float cr = cosf(r);
 		float sr = sinf(r);
 		float ax = x1 * cr - y1 * sr + x;
@@ -140,14 +198,15 @@
 		float dx = x1 * cr - y2 * sr + x;
 		float dy = x1 * sr + y2 * cr + y;
 		
+		// bottom-left
 		quads[particleIdx].bl.vertices.x = ax;
 		quads[particleIdx].bl.vertices.y = ay;
 		
-		// bottom-left vertex:
+		// bottom-right vertex:
 		quads[particleIdx].br.vertices.x = bx;
 		quads[particleIdx].br.vertices.y = by;
 		
-		// top-right vertex:
+		// top-left vertex:
 		quads[particleIdx].tl.vertices.x = dx;
 		quads[particleIdx].tl.vertices.y = dy;
 		
@@ -155,15 +214,15 @@
 		quads[particleIdx].tr.vertices.x = cx;
 		quads[particleIdx].tr.vertices.y = cy;
 	} else {
-		// top-left vertex:
+		// bottom-left vertex:
 		quads[particleIdx].bl.vertices.x = newPos.x - size_2;
 		quads[particleIdx].bl.vertices.y = newPos.y - size_2;
 		
-		// bottom-left vertex:
+		// bottom-right vertex:
 		quads[particleIdx].br.vertices.x = newPos.x + size_2;
 		quads[particleIdx].br.vertices.y = newPos.y - size_2;
 		
-		// top-right vertex:
+		// top-left vertex:
 		quads[particleIdx].tl.vertices.x = newPos.x - size_2;
 		quads[particleIdx].tl.vertices.y = newPos.y + size_2;
 		
@@ -201,9 +260,7 @@
 	
 	
 	BOOL newBlend = NO;
-	if( blendAdditive )
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	else if( blendFunc_.src != CC_BLEND_SRC || blendFunc_.dst != CC_BLEND_DST ) {
+	if( blendFunc_.src != CC_BLEND_SRC || blendFunc_.dst != CC_BLEND_DST ) {
 		newBlend = YES;
 		glBlendFunc( blendFunc_.src, blendFunc_.dst );
 	}
@@ -223,7 +280,7 @@
 	glDrawElements(GL_TRIANGLES, particleIdx*6, GL_UNSIGNED_SHORT, indices);	
 	
 	// restore blend state
-	if( blendAdditive || newBlend )
+	if( newBlend )
 		glBlendFunc( CC_BLEND_SRC, CC_BLEND_DST );
 	
 #if 0

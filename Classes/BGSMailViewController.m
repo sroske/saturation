@@ -217,7 +217,7 @@
 		const CGFloat *components = CGColorGetComponents(color.CGColor);
 		int red = components[0]*255;
 		int green = components[1]*255;
-		int blue = components[1]*255;
+		int blue = components[2]*255;
 		[swatchEntry replaceOccurrencesOfString:@"{{swatchRedValue}}" 
 									 withString:[NSString stringWithFormat:@"%i", red] 
 										options:NSCaseInsensitiveSearch 

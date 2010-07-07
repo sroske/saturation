@@ -1,16 +1,28 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2009,2010 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
+
 
 #import "CCNode.h"
 #import "CCProtocols.h"
@@ -18,6 +30,7 @@
 
 @class CCSpriteSheet;
 @class CCSpriteFrame;
+@class CCAnimation;
 
 #pragma mark CCSprite
 
@@ -45,15 +58,17 @@ typedef enum {
 
 } ccHonorParentTransform;
 
-/** CCSprite is a CCNode object that implements the CCFrameProtocol and CCRGBAProtocol protocols.
+/** CCSprite is a 2d image ( http://en.wikipedia.org/wiki/Sprite_(computer_graphics) )
  *
- * If the parent is a CCSpriteSheet then the following features/limitations are valid
- *	- Features when the parent is a CCSpriteSheet
- *		- It is MUCH faster if you render multiptle sprites at the same time (eg: 50 or more CCSprite nodes)
+ * CCSprite can be created with an image, or with a sub-rectangle of an image.
+ *
+ * If the parent or any of its ancestors is a CCSpriteSheet then the following features/limitations are valid
+ *	- Features when the parent is a CCSpriteSheet:
+ *		- MUCH faster rendering, specially if the CCSpriteSheet has many children. All the children will be drawn in a single batch.
  *
  *	- Limitations
- *		- Camera is not supported yet (eg: OrbitCamera action doesn't work)
- *		- GridBase actions are not supported (eg: Lens, Ripple, Twirl)
+ *		- Camera is not supported yet (eg: CCOrbitCamera action doesn't work)
+ *		- GridBase actions are not supported (eg: CCLens, CCRipple, CCTwirl)
  *		- The Alias/Antialias property belongs to CCSpriteSheet, so you can't individually set the aliased property.
  *		- The Blending function property belongs to CCSpriteSheet, so you can't individually set the blending function property.
  *		- Parallax scroller is not supported, but can be simulated with a "proxy" sprite.
@@ -61,10 +76,10 @@ typedef enum {
  *  If the parent is an standard CCNode, then CCSprite behaves like any other CCNode:
  *    - It supports blending functions
  *    - It supports aliasing / antialiasing
- *    - But the rendering will be slower
+ *    - But the rendering will be slower: 1 draw per children.
  *
  */
-@interface CCSprite : CCNode <CCFrameProtocol, CCRGBAProtocol, CCTextureProtocol>
+@interface CCSprite : CCNode <CCRGBAProtocol, CCTextureProtocol>
 {
 	
 	//
@@ -95,7 +110,8 @@ typedef enum {
 	CGRect rect_;
 	
 	// Offset Position (used by Zwoptex)
-	CGPoint	offsetPosition_;
+	CGPoint	offsetPosition_;	// absolute
+	CGPoint unflippedOffsetPositionFromCenter_;
 
 	// vertex coords, texture coords and color info
 	ccV3F_C4B_T2F_Quad quad_;
@@ -103,6 +119,7 @@ typedef enum {
 	// opacity and RGB protocol
 	GLubyte		opacity_;
 	ccColor3B	color_;
+	ccColor3B	colorUnmodified_;
 	BOOL		opacityModifyRGB_;
 	
 	// image is flipped
@@ -130,7 +147,7 @@ typedef enum {
 	sprite.scaleX *= -1;
  */
 @property (nonatomic,readwrite) BOOL flipX;
-/** whether or not the sprite is flipped vertically\ 
+/** whether or not the sprite is flipped vertically.
  It only flips the texture of the sprite, and not the texture of the sprite's children.
  Also, flipping the texture doesn't alter the anchorPoint.
  If you want to flip the anchorPoint too, and/or to flip the children too use:
@@ -139,9 +156,9 @@ typedef enum {
  */
 @property (nonatomic,readwrite) BOOL flipY;
 /** opacity: conforms to CCRGBAProtocol protocol */
-@property (nonatomic,readonly) GLubyte opacity;
+@property (nonatomic,readwrite) GLubyte opacity;
 /** RGB colors: conforms to CCRGBAProtocol protocol */
-@property (nonatomic,readonly) ccColor3B color;
+@property (nonatomic,readwrite) ccColor3B color;
 /** whether or not the Sprite is rendered using a CCSpriteSheet */
 @property (nonatomic,readwrite) BOOL usesSpriteSheet;
 /** weak reference of the CCTextureAtlas used when the sprite is rendered using a CCSpriteSheet */
@@ -157,9 +174,11 @@ typedef enum {
 /** offset position of the sprite. Calculated automatically by editors like Zwoptex.
  @since v0.99.0
  */
-@property (nonatomic,readwrite) CGPoint	offsetPosition;
+@property (nonatomic,readonly) CGPoint	offsetPosition;
 /** conforms to CCTextureProtocol protocol */
 @property (nonatomic,readwrite) ccBlendFunc blendFunc;
+
+#pragma mark CCSprite - Initializers
 
 /** Creates an sprite with a texture.
  The rect used will be the size of the texture.
@@ -201,7 +220,7 @@ typedef enum {
 /** Creates an sprite with a CGImageRef.
  @deprecated Use spriteWithCGImage:key: instead. Will be removed in v1.0 final
  */
-+(id) spriteWithCGImage: (CGImageRef)image __attribute__((deprecated));
++(id) spriteWithCGImage: (CGImageRef)image DEPRECATED_ATTRIBUTE;
 
 /** Creates an sprite with a CGImageRef and a key.
  The key is used by the CCTextureCache to know if a texture was already created with this CGImage.
@@ -253,7 +272,7 @@ typedef enum {
 /** Initializes an sprite with a CGImageRef
  @deprecated Use spriteWithCGImage:key: instead. Will be removed in v1.0 final
  */
--(id) initWithCGImage: (CGImageRef)image __attribute__((deprecated));
+-(id) initWithCGImage: (CGImageRef)image DEPRECATED_ATTRIBUTE;
 
 /** Initializes an sprite with a CGImageRef and a key
  The key is used by the CCTextureCache to know if a texture was already created with this CGImage.
@@ -266,6 +285,9 @@ typedef enum {
 /** Initializes an sprite with an CCSpriteSheet and a rect
  */
 -(id) initWithSpriteSheet:(CCSpriteSheet*)spritesheet rect:(CGRect)rect;
+
+
+#pragma mark CCSprite - SpriteSheet methods
 
 /** updates the quad according the the rotation, position, scale values.
  */
@@ -284,5 +306,28 @@ typedef enum {
  @since v0.99.0
  */
 -(void) useSpriteSheetRender:(CCSpriteSheet*)spriteSheet;
+
+
+#pragma mark CCSprite - Frames
+
+/** sets a new display frame to the CCSprite. */
+-(void) setDisplayFrame:(CCSpriteFrame*)newFrame;
+
+/** returns whether or not a CCSpriteFrame is being displayed */
+-(BOOL) isFrameDisplayed:(CCSpriteFrame*)frame;
+
+/** returns the current displayed frame. */
+-(CCSpriteFrame*) displayedFrame;
+
+#pragma mark CCSprite - Animation
+
+/** changes the display frame based on an animation and an index. */
+-(void) setDisplayFrame: (NSString*) animationName index:(int) frameIndex;
+
+/** returns an Animation given it's name. */
+-(CCAnimation*)animationByName: (NSString*) animationName;
+
+/** adds an Animation to the Sprite. */
+-(void) addAnimation: (CCAnimation*) animation;
 
 @end

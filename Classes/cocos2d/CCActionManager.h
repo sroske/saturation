@@ -1,21 +1,33 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * Copyright (c) 2009 Valentin Milea
  *
- * Copyright (C) 2008,2009 Ricardo Quesada
- * Copyright (C) 2009 Valentin Milea
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
 
+
 #import "CCAction.h"
-#import "Support/ccArray.h"
-#import "Support/ccHashSet.h"
+#import "Support/ccCArray.h"
+#import "Support/uthash.h"
 
 typedef struct _hashElement
 {
@@ -25,6 +37,7 @@ typedef struct _hashElement
 	CCAction		*currentAction;
 	BOOL			currentActionSalvaged;
 	BOOL			paused;	
+	UT_hash_handle	hh;
 } tHashElement;
 
 
@@ -40,8 +53,8 @@ typedef struct _hashElement
  */
 @interface CCActionManager : NSObject {
 
-	ccHashSet		* targets;
-	tHashElement	* currentTarget;
+	tHashElement	*targets;
+	tHashElement	*currentTarget;
 	BOOL			currentTargetSalvaged;
 }
 
@@ -55,10 +68,10 @@ typedef struct _hashElement
 
 // actions
 
-/** Adds an action with a target. The action can be added paused or unpaused.
- The action will be run "against" the target.
- If the action is added paused, then it will be queued, but it won't be "ticked" until it is resumed.
- If the action is added unpaused, then it will be queued, and it will be "ticked" in every frame.
+/** Adds an action with a target.
+ If the target is already present, then the action will be added to the existing target.
+ If the target is not present, a new instance of this target will be created either paused or paused, and the action will be added to the newly created target.
+ When the target is paused, the queued actions won't be 'ticked'.
  */
 -(void) addAction: (CCAction*) action target:(id)target paused:(BOOL)paused;
 /** Removes all actions from all the targers.
@@ -84,14 +97,22 @@ typedef struct _hashElement
  *    If you are running 7 Sequences of 2 actions, it will return 7.
  */
 -(int) numberOfRunningActionsInTarget:(id)target;
-/** Pauses all actions for a certain target.
- When the actions are paused, they won't be "ticked".
+
+/** Pauses the target: all running actions and newly added actions will be paused.
  */
--(void) pauseAllActionsForTarget:(id)target;
-/** Resumes all actions for a certain target.
- Once the actions are resumed, they will be "ticked" in every frame.
+-(void) pauseTarget:(id)target;
+/** Resumes the target. All queued actions will be resumed.
  */
--(void) resumeAllActionsForTarget:(id)target;
+-(void) resumeTarget:(id)target;
+
+/** Resumes the target. All queued actions will be resumed.
+ @deprecated Use resumeTarget: instead. Will be removed in v1.0.
+ */
+-(void) resumeAllActionsForTarget:(id)target DEPRECATED_ATTRIBUTE;
+/** Pauses the target: all running actions and newly added actions will be paused.
+ */
+-(void) pauseAllActionsForTarget:(id)target DEPRECATED_ATTRIBUTE;
+
 
 @end
 

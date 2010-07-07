@@ -1,16 +1,28 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
+ * Copyright (c) 2008-2010 Ricardo Quesada
  *
- * Copyright (C) 2008,2009,2010 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
+
 
 #import <UIKit/UIKit.h>
 #include <sys/time.h>
@@ -19,7 +31,7 @@
 
 enum {
 	//! Default tag
-	kActionTagInvalid = -1,
+	kCCActionTagInvalid = -1,
 };
 
 /** Base class for CCAction objects.
@@ -124,3 +136,52 @@ enum {
 /** initializes the action */
 -(id) initWithAction: (CCIntervalAction*) action speed:(float)rate;
 @end
+
+@class CCNode;
+/** CCFollow is an action that "follows" a node.
+ 
+ Eg:
+	[layer runAction: [CCFollow actionWithTarget:hero]];
+ 
+ Instead of using CCCamera as a "follower", use this action instead.
+ @since v0.99.2
+ */
+@interface CCFollow : CCAction <NSCopying>
+{
+	/* node to follow */
+	CCNode	*followedNode_;
+	
+	/* whether camera should be limited to certain area */
+	BOOL boundarySet;
+	
+	/* if screensize is bigger than the boundary - update not needed */
+	BOOL boundaryFullyCovered;
+	
+	/* fast access to the screen dimensions */
+	CGPoint halfScreenSize;
+	CGPoint fullScreenSize;
+	
+	/* world boundaries */
+	float leftBoundary;
+	float rightBoundary;
+	float topBoundary;
+	float bottomBoundary;
+}
+
+/** alter behavior - turn on/off boundary */
+@property (nonatomic,readwrite) BOOL boundarySet;
+
+/** creates the action with no boundary set */
++(id) actionWithTarget:(CCNode *)followedNode;
+
+/** creates the action with a set boundary */
++(id) actionWithTarget:(CCNode *)followedNode worldBoundary:(CGRect)rect;
+
+/** initializes the action */
+-(id) initWithTarget:(CCNode *)followedNode;
+
+/** initializes the action with a set boundary */
+-(id) initWithTarget:(CCNode *)followedNode worldBoundary:(CGRect)rect;
+
+@end
+

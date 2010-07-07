@@ -1,17 +1,29 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
+ * Copyright (c) 2009-2010 Ricardo Quesada
  * Copyright (C) 2009 Matt Oswald
- * Copyright (C) 2009 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
+
 
 #import "ccConfig.h"
 #import "CCSprite.h"
@@ -73,14 +85,14 @@ const int defaultCapacity = 29;
 		blendFunc_.src = CC_BLEND_SRC;
 		blendFunc_.dst = CC_BLEND_DST;
 		textureAtlas_ = [[CCTextureAtlas alloc] initWithTexture:tex capacity:capacity];
-
+		
 		[self updateBlendFunc];
-
+		
 		// no lazy alloc in this node
-		children_ = [[NSMutableArray alloc] initWithCapacity:capacity];
-		descendants_ = [[NSMutableArray alloc] initWithCapacity:capacity];
+		children_ = [[CCArray alloc] initWithCapacity:capacity];
+		descendants_ = [[CCArray alloc] initWithCapacity:capacity];
 	}
-
+	
 	return self;
 }
 
@@ -112,7 +124,7 @@ const int defaultCapacity = 29;
 // Don't call visit on it's children
 -(void) visit
 {
-
+	
 	// CAREFUL:
 	// This visit is almost identical to CocosNode#visit
 	// with the exception that it doesn't call visit on it's children
@@ -145,7 +157,7 @@ const int defaultCapacity = 29;
 {
 	CCSprite *sprite = [CCSprite spriteWithTexture:textureAtlas_.texture rect:rect];
 	[sprite useSpriteSheetRender:self];
-
+	
 	return sprite;
 }
 
@@ -162,48 +174,29 @@ const int defaultCapacity = 29;
 	NSAssert( child != nil, @"Argument must be non-nil");
 	NSAssert( [child isKindOfClass:[CCSprite class]], @"CCSpriteSheet only supports CCSprites as children");
 	NSAssert( child.texture.name == textureAtlas_.texture.name, @"CCSprite is not using the same texture id");
-
+	
 	id ret = [super addChild:child z:z tag:aTag];
-
+	
 	NSUInteger index = [self atlasIndexForChild:child atZ:z];
 	[self insertChild:child inAtlasAtIndex:index];
-
+	
 	return ret;
 }
 
 // override reorderChild
 -(void) reorderChild:(CCSprite*)child z:(int)z
 {
-	// reorder child in the children array
-	[super reorderChild:child z:z];
+	NSAssert( child != nil, @"Child must be non-nil");
+	NSAssert( [children_ containsObject:child], @"Child doesn't belong to Sprite" );
 	
+	if( z == child.zOrder )
+		return;
 	
-	// What's the new atlas index ?
-	NSUInteger newAtlasIndex = 0;
-	for( CCSprite *sprite in children_) {
-		if( [sprite isEqual:child] )
-			break;
-		newAtlasIndex++;
-	}
-	
-	if( newAtlasIndex != child.atlasIndex ) {
-		
-		[textureAtlas_ insertQuadFromIndex:child.atlasIndex atIndex:newAtlasIndex];
-		
-		// update descendats (issue #708)
-		[child retain];
-		[descendants_ removeObjectAtIndex: child.atlasIndex];
-		[descendants_ insertObject:child atIndex:newAtlasIndex];
-		[child release];
-		
-		// update atlas index
-		NSUInteger count = MAX( newAtlasIndex, child.atlasIndex);
-		NSUInteger index = MIN( newAtlasIndex, child.atlasIndex);
-		for( ; index < count+1 ; index++ ) {
-			CCSprite *sprite = (CCSprite *)[children_ objectAtIndex:index];
-			[sprite setAtlasIndex: index];
-		}
-	}
+	// XXX: Instead of removing/adding, it is more efficient to reorder manually
+	[child retain];
+	[self removeChild:child cleanup:NO];
+	[self addChild:child z:z];
+	[child release];
 }
 
 // override removeChild:
@@ -212,9 +205,9 @@ const int defaultCapacity = 29;
 	// explicit nil handling
 	if (sprite == nil)
 		return;
-
+	
 	NSAssert([children_ containsObject:sprite], @"CCSpriteSheet doesn't contain the sprite. Can't remove it");
-
+	
 	// cleanup before removing
 	[self removeSpriteFromAtlas:sprite];
 	
@@ -238,11 +231,12 @@ const int defaultCapacity = 29;
 }
 
 #pragma mark CCSpriteSheet - draw
+#pragma mark CCSpriteSheet - draw
 -(void) draw
 {
 	if( textureAtlas_.totalQuads == 0 )
 		return;
-
+	
 	// Optimization: Fast Dispatch
 	typedef BOOL (*DIRTY_IMP)(id, SEL);
 	typedef BOOL (*UPDATE_IMP)(id, SEL);
@@ -251,13 +245,22 @@ const int defaultCapacity = 29;
 	DIRTY_IMP dirtyMethod = nil;
 	UPDATE_IMP updateMethod = nil;
 	
-	for( CCSprite *child in descendants_ )
-	{
-		if( ! dirtyMethod ) {
-			// Optimization: Fast Dispatch
-			dirtyMethod = (DIRTY_IMP) [child methodForSelector:selDirty];
-			updateMethod = (UPDATE_IMP) [child methodForSelector:selUpdate];
-		}
+	ccArray *array = descendants_->data;
+	CCSprite *child;
+	
+	// is there any child ?. compare with array->num
+	// if so, compile the isDirty and update methods
+	if( array->num > 0 ) {
+		child = array->arr[0];
+		dirtyMethod = (DIRTY_IMP) [child methodForSelector:selDirty];
+		updateMethod = (UPDATE_IMP) [child methodForSelector:selUpdate];
+	}
+	
+	// itera
+	id *arr = array->arr;
+	NSUInteger i = array->num;
+	while (i-- > 0) {
+		child = *arr++;
 		
 		// fast dispatch
 		if( dirtyMethod(child, selDirty) )
@@ -272,15 +275,12 @@ const int defaultCapacity = 29;
 			ccp(rect.origin.x,rect.origin.y+rect.size.height),
 		};
 		ccDrawPoly(vertices, 4, YES);
-#endif // CC_SPRITESHEET_DEBUG_DRAW		
+#endif // CC_SPRITESHEET_DEBUG_DRAW
 	}
-
-
+	
 	// Default GL states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
 	// Needed states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
 	// Unneeded states: -
-	
-	
 	
 	BOOL newBlend = NO;
 	if( blendFunc_.src != CC_BLEND_SRC || blendFunc_.dst != CC_BLEND_DST ) {
@@ -290,7 +290,7 @@ const int defaultCapacity = 29;
 	
 	[textureAtlas_ drawQuads];
 	if( newBlend )
-		glBlendFunc(CC_BLEND_SRC, CC_BLEND_DST);		
+		glBlendFunc(CC_BLEND_SRC, CC_BLEND_DST);
 }
 
 #pragma mark CCSpriteSheet - private
@@ -300,14 +300,14 @@ const int defaultCapacity = 29;
 	// all the previously initialized sprites will need to redo their texture coords
 	// this is likely computationally expensive
 	NSUInteger quantity = (textureAtlas_.capacity + 1) * 4 / 3;
-
-	CCLOG(@"cocos2d: Resizing TextureAtlas capacity, from [%d] to [%d].", textureAtlas_.capacity, quantity);
-
-
+	
+	CCLOG(@"cocos2d: CCSpriteSheet: resizing TextureAtlas capacity from [%d] to [%d].", textureAtlas_.capacity, quantity);
+	
+	
 	if( ! [textureAtlas_ resizeCapacity:quantity] ) {
 		// serious problems
 		CCLOG(@"cocos2d: WARNING: Not enough memory to resize the atlas");
-		NSAssert(NO,@"XXX: SpriteSheet#increateAtlasCapacity SHALL handle this assert");
+		NSAssert(NO,@"XXX: SpriteSheet#increaseAtlasCapacity SHALL handle this assert");
 	}	
 }
 
@@ -316,7 +316,8 @@ const int defaultCapacity = 29;
 
 -(NSUInteger) rebuildIndexInOrder:(CCSprite*)node atlasIndex:(NSUInteger)index
 {
-	for( CCSprite *sprite in node.children ) {
+	CCSprite *sprite;
+	CCARRAY_FOREACH(node.children, sprite){
 		if( sprite.zOrder < 0 )
 			index = [self rebuildIndexInOrder:sprite atlasIndex:index];
 	}
@@ -327,7 +328,7 @@ const int defaultCapacity = 29;
 		index++;
 	}
 	
-	for( CCSprite *sprite in node.children ) {
+	CCARRAY_FOREACH(node.children, sprite){
 		if( sprite.zOrder >= 0 )
 			index = [self rebuildIndexInOrder:sprite atlasIndex:index];
 	}
@@ -337,24 +338,28 @@ const int defaultCapacity = 29;
 
 -(NSUInteger) highestAtlasIndexInChild:(CCSprite*)sprite
 {
-	if( [[sprite children] count] == 0 )
+	CCArray *array = [sprite children];
+	int count = [array count];
+	if( count == 0 )
 		return sprite.atlasIndex;
 	else
-		return [self highestAtlasIndexInChild:[sprite.children lastObject]];
+		return [self highestAtlasIndexInChild:[array lastObject]];
 }
 
 -(NSUInteger) lowestAtlasIndexInChild:(CCSprite*)sprite
 {
-	if( [[sprite children] count] == 0 )
+	CCArray *array = [sprite children];
+	int count = [array count];
+	if( count == 0 )
 		return sprite.atlasIndex;
 	else
-		return [self lowestAtlasIndexInChild:[sprite.children objectAtIndex:0] ];
+		return [self lowestAtlasIndexInChild:[array objectAtIndex:0] ];
 }
 
 
 -(NSUInteger)atlasIndexForChild:(CCSprite*)sprite atZ:(int)z
 {
-	NSArray *brothers = [[sprite parent] children];
+	CCArray *brothers = [[sprite parent] children];
 	NSUInteger childIndex = [brothers indexOfObject:sprite];
 	
 	// ignore parent Z if parent is spriteSheet
@@ -363,9 +368,6 @@ const int defaultCapacity = 29;
 	if( childIndex > 0 )
 		previous = [brothers objectAtIndex:childIndex-1];
 	
-//	if( childIndex < [brothers count] -1 )
-//		next = [brothers objectAtIndex:childIndex+1];
-
 	// first child of the sprite sheet
 	if( ignoreParent ) {
 		if( childIndex == 0 )
@@ -380,7 +382,7 @@ const int defaultCapacity = 29;
 	if( childIndex == 0 )
 	{
 		CCSprite *p = (CCSprite*) sprite.parent;
-
+		
 		// less than parent and brothers
 		if( z < 0 )
 			return p.atlasIndex;
@@ -396,7 +398,7 @@ const int defaultCapacity = 29;
 		return p.atlasIndex + 1;
 	}
 	
-	NSAssert( YES, @"Should not happen. Error calculating Z on SpriteSheet");
+	NSAssert( NO, @"Should not happen. Error calculating Z on SpriteSheet");
 	return 0;
 }
 
@@ -414,19 +416,20 @@ const int defaultCapacity = 29;
 	ccV3F_C4B_T2F_Quad quad = [sprite quad];
 	[textureAtlas_ insertQuad:&quad atIndex:index];
 	
-	[descendants_ insertObject:sprite atIndex:index];
+	ccArray *descendantsData = descendants_->data;
+	
+	ccArrayInsertObjectAtIndex(descendantsData, sprite, index);
 	
 	// update indices
-	NSUInteger i=0;
-	for( CCSprite *child in descendants_ ) {
-		if( i > index )
-			child.atlasIndex = child.atlasIndex + 1;
-		
-		i++;
+	NSUInteger i = index+1;
+	CCSprite *child;
+	for(; i<descendantsData->num; i++){
+		child = descendantsData->arr[i];
+		child.atlasIndex = child.atlasIndex + 1;
 	}
 	
 	// add children recursively
-	for( CCSprite *child in sprite.children ) {
+	CCARRAY_FOREACH(sprite.children, child){
 		NSUInteger index = [self atlasIndexForChild:child atZ: child.zOrder];
 		[self insertChild:child inAtlasAtIndex:index];
 	}
@@ -440,25 +443,26 @@ const int defaultCapacity = 29;
 	
 	// Cleanup sprite. It might be reused (issue #569)
 	[sprite useSelfRender];
-
-	NSUInteger index = [descendants_ indexOfObject:sprite];
+	
+	ccArray *descendantsData = descendants_->data;
+	NSUInteger index = ccArrayGetIndexOfObject(descendantsData, sprite);
 	if( index != NSNotFound ) {
-		[descendants_ removeObjectAtIndex:index];
+		ccArrayRemoveObjectAtIndex(descendantsData, index);
 		
 		// update all sprites beyond this one
-		NSUInteger count = [descendants_ count];
+		NSUInteger count = descendantsData->num;
 		
 		for(; index < count; index++)
 		{
-			CCSprite *s = [descendants_ objectAtIndex:index];
+			CCSprite *s = descendantsData->arr[index];
 			s.atlasIndex = s.atlasIndex - 1;
 		}
 	}
 	
 	// remove children recursively
-	for( CCSprite *child in sprite.children ) {
+	CCSprite *child;
+	CCARRAY_FOREACH(sprite.children, child)
 		[self removeSpriteFromAtlas:child];
-	}	
 }
 
 #pragma mark CCSpriteSheet - CocosNodeTexture protocol

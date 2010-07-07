@@ -1,17 +1,26 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
- *
- * Copyright (C) 2008,2009,2010 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
- *
+ * Copyright (c) 2008-2010 Ricardo Quesada
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
-
 
 /** @mainpage cocos2d for iPhone API reference
  *
@@ -29,12 +38,15 @@
  */
 
 // 0x00 HI ME LO
-// 00   00 99 00
-#define COCOS2D_VERSION 0x00009900
+// 00   00 99 04
+#define COCOS2D_VERSION 0x00009904
 
 //
 // all cocos2d include files
 //
+#import "ccConfig.h"	// should be included first
+
+#import "CCBlockSupport.h"
 #import "CCAction.h"
 #import "CCCamera.h"
 #import "CCCameraAction.h"
@@ -87,8 +99,10 @@
 #import "CCTexture2D.h"
 #import "CCPVRTexture.h"
 #import "CCTouchHandler.h"
-#import "ccConfig.h"
 #import "CCConfiguration.h"
+#import "CCRadialTransition.h"
+#import "CCProgressTimerActions.h"
+#import "CCPropertyAction.h"
 
 //
 // cocos2d macros
@@ -103,7 +117,12 @@
 #import "Support/EAGLView.h"
 #import "Support/CCFileUtils.h"
 #import "Support/CGPointExtension.h"
-#import "Support/ccArray.h"
+#import "Support/ccCArray.h"
+#import "Support/CCArray.h"
+
+#if CC_ENABLE_PROFILERS
+#import "Support/CCProfiling.h"
+#endif // CC_ENABLE_PROFILERS
 
 
 // compatibility with v0.8

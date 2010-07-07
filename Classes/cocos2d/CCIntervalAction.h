@@ -1,16 +1,28 @@
-/* cocos2d for iPhone
+/*
+ * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * http://www.cocos2d-iphone.org
+ * Copyright (c) 2008-2010 Ricardo Quesada
  *
- * Copyright (C) 2008,2009,2010 Ricardo Quesada
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the 'cocos2d for iPhone' license.
- *
- * You will find a copy of this license within the cocos2d for iPhone
- * distribution inside the "LICENSE" file.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  */
+
 
 #import "CCNode.h"
 #import "CCAction.h"
@@ -75,9 +87,9 @@ Example:
  */
 @interface CCRepeat : CCIntervalAction <NSCopying>
 {
-	unsigned int times;
-	unsigned int total;
-	CCFiniteTimeAction *other;
+	unsigned int times_;
+	unsigned int total_;
+	CCFiniteTimeAction *other_;
 }
 /** creates a CCRepeat action. Times is an unsigned integer between 1 and pow(2,30) */
 +(id) actionWithAction:(CCFiniteTimeAction*)action times: (unsigned int)times;
@@ -352,23 +364,23 @@ typedef struct _ccBezierConfig {
 @property (readwrite,nonatomic,retain) CCAnimation * animation;
 
 /** creates the action with an Animation and will restore the original frame when the animation is over */
-+(id) actionWithAnimation:(id<CCAnimationProtocol>) a;
++(id) actionWithAnimation:(CCAnimation*) a;
 /** initializes the action with an Animation and will restore the original frame when the animtion is over */
--(id) initWithAnimation:(id<CCAnimationProtocol>) a;
+-(id) initWithAnimation:(CCAnimation*) a;
 /** creates the action with an Animation */
-+(id) actionWithAnimation:(id<CCAnimationProtocol>) a restoreOriginalFrame:(BOOL)b;
++(id) actionWithAnimation:(CCAnimation*) a restoreOriginalFrame:(BOOL)b;
 /** initializes the action with an Animation */
--(id) initWithAnimation:(id<CCAnimationProtocol>) a restoreOriginalFrame:(BOOL)b;
+-(id) initWithAnimation:(CCAnimation*) a restoreOriginalFrame:(BOOL)b;
 /** creates an action with a duration, animation and depending of the restoreOriginalFrame, it will restore the original frame or not.
  The 'delay' parameter of the animation will be overrided by the duration parameter.
  @since v0.99.0
  */
-+(id) actionWithDuration:(ccTime)duration animation:(id<CCAnimationProtocol>)animation restoreOriginalFrame:(BOOL)b;
++(id) actionWithDuration:(ccTime)duration animation:(CCAnimation*)animation restoreOriginalFrame:(BOOL)b;
 /** initializes an action with a duration, animation and depending of the restoreOriginalFrame, it will restore the original frame or not.
  The 'delay' parameter of the animation will be overrided by the duration parameter.
  @since v0.99.0
  */
--(id) initWithDuration:(ccTime)duration animation:(id<CCAnimationProtocol>)animation restoreOriginalFrame:(BOOL)b;
+-(id) initWithDuration:(ccTime)duration animation:(CCAnimation*)animation restoreOriginalFrame:(BOOL)b;
 @end
 
 

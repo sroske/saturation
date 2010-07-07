@@ -244,6 +244,7 @@ typedef struct _PVRTexHeader
 {
 	if (![url isFileURL])
 	{
+		CCLOG(@"cocos2d: CCPVRTexture: Only files are supported");
 		[self release];
 		return nil;
 	}
@@ -269,7 +270,7 @@ typedef struct _PVRTexHeader
 
 - (void)dealloc
 {
-	CCLOG( @"cocos2d: deallocing %@", self);
+	CCLOGINFO( @"cocos2d: deallocing %@", self);
 
 	[_imageData release];
 	
